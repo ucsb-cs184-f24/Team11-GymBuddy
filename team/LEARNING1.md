@@ -14,6 +14,8 @@ C++, Python, Numpy, Java, Java Script, Github, Communication skills, No felonies
 
 # Aavash Adhikari
 
+c++, python, java script, github, react, vs code, full stack web development. No experience with mobile development but excited to learn.
+
 # Chris Woolson
 
 C++< Python, Java, Java Script, React, Angular. Interested in working on making a mobile app with strong backend.
