@@ -1,3 +1,3 @@
-Scribe: Liam Ronarc'h
-Scrum Master: Sawyer Rice
-Product Owner: Tyler Canepa
+Scribe: Liam Ronarc'h <br>
+Scrum Master: Sawyer Rice <br>
+Product Owner: Tyler Canepa <br>
