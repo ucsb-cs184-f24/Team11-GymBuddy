@@ -2,7 +2,7 @@
 
 # App Name: ELE
 
-Image if there was strava but for working out.
+Imagine if there was strava but for working out.
 
 # Govt. Names and Github IDs
 
