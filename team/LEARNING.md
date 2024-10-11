@@ -27,3 +27,6 @@ Lots of experience with React, JavaScript, and frontend development. Some experi
 # Liam Ronarc'h
 
 C++, Python, HTML, CSS, JavaScript. Frameworks: Java Springboot, Python Flask, and React. 
+
+# Pro's and Cons discussion
+React Native's main pro is that it is cross-platform, allowing us to make an app for both iOS and Android. It also uses native API's so the app's performance is often similar to native iOS and Android performance. It is also a fairly well-used platform making it easier to pick up quickly. The down side is that because it is cross-platform, it can be more difficult to debug apps, as different issues can arise between iOS and Android. 
