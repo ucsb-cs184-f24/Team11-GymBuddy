@@ -1,0 +1,34 @@
+#idk why this file is needed in this folder but it is.
+#Auto Generated Files
+/node_modules
+/project/node_modules
+.project/.expo/
+.project/.expo-shared/
+.project/expo-env.d.ts
+/project/expo-env.d.ts
+expo-env.d.ts
+package-lock.json
+# Temporary Files
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+*.log
+*.lock
+*.tmp
+*.temp
+web-build/
+
+#Build FIles
+.project/ios/
+.project/android/
+.project/dist/
+.project/build/
+
+# macOS
+.DS_Store
+
+
