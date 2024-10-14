@@ -4,6 +4,8 @@
 
 I only have prior experience working with web applications and web frameworks such as Django and Spring Boot. I am interested in learning how a social media app runs under the hood.
 
+REACT TUTORIAL LINK: https://reactnative.dev/docs/environment-setup
+
 # Tyler Canepa
 
 C++, Python, Java Script, React, VS Code, Data Analysis, Blockchain, Full Stack Development, Flask, Interested in working on the app's user interface and usability
