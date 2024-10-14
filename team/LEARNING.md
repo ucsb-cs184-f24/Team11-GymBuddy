@@ -39,6 +39,7 @@ https://reactnative.dev/docs/environment-setup <br>
 https://docs.expo.dev/ <br>
 https://www.youtube.com/watch?v=mJ3bGvy0WAY&t=849s <br>
 https://reactnative.dev/docs/components-and-apis
+https://www.youtube.com/watch?v=_sp097GEMSY
 
 
 # Benefits and Challenges Discussion
