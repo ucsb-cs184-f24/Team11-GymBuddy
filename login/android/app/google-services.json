@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "721434766816",
+    "project_id": "login-9cc46",
+    "storage_bucket": "login-9cc46.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:721434766816:android:51893c58d7fcf10a1d8f85",
+        "android_client_info": {
+          "package_name": "com.coryzz.login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "721434766816-ajgl10onfoke5oupbb3nsmbk7tgn75rm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.coryzz.login",
+            "certificate_hash": "8140d2b50a909bfd820ddd6002d3a441b0b440fd"
+          }
+        },
+        {
+          "client_id": "721434766816-836ni22c5j95eha27l9i9e8jdsh11j8p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM3IEVWrTg5tkppbVv7i4kzheXNnuOZEw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "721434766816-836ni22c5j95eha27l9i9e8jdsh11j8p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "721434766816-6q5cua2nk7e6craal8st5e88e915cfoa.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.coryzz.login"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
