@@ -1,4 +1,4 @@
-import { Stack, useRouter, useSegments } from "expo-router";
+import {  useRouter, useSegments, Tabs } from "expo-router";
 import { useEffect, useState } from "react";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 
@@ -36,9 +36,10 @@ const Layout = () => {
   }, [user, initializing]);
 
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-    </Stack>
+    <Tabs>
+        <Tabs.Screen name="Home" options={{ headerShown: false }} />
+        <Tabs.Screen name="Profile" options={{ headerShown: false }} />
+    </Tabs>
   );
 };
 
