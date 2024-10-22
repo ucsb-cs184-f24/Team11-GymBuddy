@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ReactNative_HelloWorld",
-    "slug": "ReactNative_HelloWorld",
+    "name": "gym_buddy",
+    "slug": "gym_buddy",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
