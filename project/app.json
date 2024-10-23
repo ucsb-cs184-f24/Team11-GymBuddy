@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "gym_buddy",
-    "slug": "gym_buddy",
+    "slug": "gymbuddy",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
@@ -31,6 +31,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1ceafb6e-2db7-4bdb-998e-09b2922cbf73"
+      }
+    },
+    "owner": "gym_buddy"
   }
 }
