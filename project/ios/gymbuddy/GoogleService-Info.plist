@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>654847414653-dfpkpis6ceul0auvkk7vesjbeggpe053.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.654847414653-dfpkpis6ceul0auvkk7vesjbeggpe053</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>654847414653-339v7p3to5bvcfcesbte18jk8f8gms59.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBsMiRRsvtlXIGEA4Q6dnrI78t0eGZmHCw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>654847414653</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.coryzz</string>
+	<key>PROJECT_ID</key>
+	<string>gym-buddy-e48f7</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gym-buddy-e48f7.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:654847414653:ios:026a359176464b0d8d3c14</string>
+</dict>
+</plist>
