@@ -1,9 +1,13 @@
 import { Slot } from "expo-router";
 import React from "react";
-
-// we want to add the navbar and tabs here. Ideally, we should use expo router
+import NavBar from "./NavBar";
 const AppLayout = () => {
-    return <Slot />;
-}
+  return (
+    <>
+      <Slot />
+      <NavBar />
+    </>
+  );
+};
 
 export default AppLayout;
