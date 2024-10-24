@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState  } from "react";
 import {
   Text,
   View,
@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Button,
 } from "react-native";
 import {
   signInWithEmailAndPassword,
@@ -80,6 +81,8 @@ const Register = () => {
       >
         <Text style={styles.createAccountButtonText}>Create an account</Text>
       </TouchableOpacity>
+
+      <Button onPress= {() => router.replace("/(auth)/page")} title = "Back To Sign In" />
     </View>
   );
 };
