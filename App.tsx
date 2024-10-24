@@ -3,14 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StyleSheet, Text, View } from 'react-native';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { FIREBASE_AUTH } from './FirebaseConfig'; // Adjust the path as necessary
 import Login from './app/screens/Login'; // Adjust the path as necessary
 import Home from './app/screens/Home'; // Adjust the path as necessary
 import Details from './app/screens/Details'; // Adjust the path as necessary
 import Profile from './app/screens/Profile'; // Adjust the path as necessary
-import { setUserId } from 'firebase/analytics';
-import { FIREBASE_AUTH } from './FirebaseConfig'; // Adjust the path as necessary
-import { onAuthStateChanged, User } from 'firebase/auth';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
