@@ -10,11 +10,11 @@
 * a change: We need to communicate with each other more about what is going on and how to divide tasks
 * a measurement: We can measure the effect by seeing if the slack page is more active and if we are able to get any of the issues finished up because we play to work on them in pairs which will require more communication
 
-## Optional
+## Additional Notes
 
 * Notes: At this point we have almost nothing started for the app so it would be great to see that we have made a significant jump in progress by the next retro
 
-* ## Retro Assessment
+## Retro Assessment
 
 * We started with discussing what we planned to get done for the MVP and the process of which we planned to go about getting everything done and in which order to do it.
 * It went pretty well and I think we got a good idea of what the process we will run through will be

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState  } from "react";
 import {
   Text,
   View,
@@ -7,30 +7,36 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Button,
 } from "react-native";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  updateProfile
 } from "firebase/auth";
 import { useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Register from "./Register";
 
-const Login = () => {
+const Register = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  const router = useRouter(); 
+
+
 
   // Handle Sign-in (existing users)
-  const handleSignIn = async () => {
+  const handleSignUp = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      
+      await updateProfile(userCredential.user, {
+        displayName: name
+        });
       // Save user session in AsyncStorage
       await AsyncStorage.setItem("@user", JSON.stringify(user));
-
+      Alert.alert("User Created");
       // After successful sign-in, redirect to the home page
       router.replace("/(app)/Home/page");
     } catch (e: any) {
@@ -39,28 +45,18 @@ const Login = () => {
     }
   };
 
-  // Handle Create Account (new users)
-  const handleCreateAccount = async () => {
-    try {
-      //switch to Register page
-      router.replace("/(auth)/Register");
-    } catch (e: any) {
-      Alert.alert("Registration failed: ", e.message);
-    }
-  };
-
-  const handleForgotPassword = async () => {
-    // TODO - handle forgot password logic
-  };
 
   return (
     <View style={styles.container}>
-      {/* TODO - create a logo */}
-      <Image
-        source={{ uri: "https://via.placeholder.com/150" }}
-        style={styles.logo}
+      <Text style={styles.title}>Sign Up</Text>
+      <TextInput
+        placeholder="Name"
+        style={styles.input}
+        value={name}
+        autoCapitalize="none"
+        onChangeText={(text) => setName(text)}
+        placeholderTextColor="#888"
       />
-      <Text style={styles.title}>Sign in</Text>
       <TextInput
         placeholder="Email"
         style={styles.input}
@@ -68,6 +64,7 @@ const Login = () => {
         autoCapitalize="none"
         onChangeText={setEmail}
         keyboardType="email-address"
+        placeholderTextColor="#888"
       />
       <TextInput
         placeholder="Password"
@@ -76,24 +73,16 @@ const Login = () => {
         autoCapitalize="none"
         onChangeText={setPassword}
         secureTextEntry
+        placeholderTextColor="#888"
       />
-      <TouchableOpacity onPress={handleForgotPassword}>
-        <Text style={styles.forgotPasswordText}>Forgot password?</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
-        <Text style={styles.signInButtonText}>Sign in</Text>
-      </TouchableOpacity>
-      <View style={styles.orContainer}>
-        <View style={styles.line} />
-        <Text style={styles.orText}>or</Text>
-        <View style={styles.line} />
-      </View>
       <TouchableOpacity
         style={styles.createAccountButton}
-        onPress={handleCreateAccount}
+        onPress={handleSignUp}
       >
         <Text style={styles.createAccountButtonText}>Create an account</Text>
       </TouchableOpacity>
+
+      <Button onPress= {() => router.replace("/(auth)/page")} title = "Back To Sign In" />
     </View>
   );
 };
@@ -177,4 +166,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Register;
