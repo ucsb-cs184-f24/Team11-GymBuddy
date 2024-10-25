@@ -16,7 +16,7 @@ import { useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Register from "./Register";
-
+const logo  = require('../.././.expo/web/cache/production/images/favicon/Favicon/favicon-32x32.png')
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -57,7 +57,7 @@ const Login = () => {
     <View style={styles.container}>
       {/* TODO - create a logo */}
       <Image
-        source={{ uri: "https://via.placeholder.com/150" }}
+        source={logo}
         style={styles.logo}
       />
       <Text style={styles.title}>Sign in</Text>
