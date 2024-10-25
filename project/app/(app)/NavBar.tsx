@@ -7,33 +7,47 @@ const NavBar = () => {
 
   return (
     <View style={styles.navBar}>
-      <TouchableOpacity onPress={() => router.push("/(app)/Profile/Profile")}>
-        <Text>Profile</Text>
+      <TouchableOpacity style={styles.button} onPress={() => router.push("/(app)/Profile/Profile")}>
+        <Text style={styles.buttonText}>Profile</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/(app)/Search/Search")}>
-        <Text>Search</Text>
+      <TouchableOpacity style={styles.button} onPress={() => router.push("/(app)/Search/Search")}>
+        <Text style={styles.buttonText}>Search</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/(app)/Stats/Stats")}>
-        <Text>Stats</Text>
+      <TouchableOpacity style={styles.button} onPress={() => router.push("/(app)/Stats/Stats")}>
+        <Text style={styles.buttonText}>Stats</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/(app)/Workout/Workout")}>
-        <Text>Workout</Text>
+      <TouchableOpacity style={styles.button} onPress={() => router.push("/(app)/Workout/Workout")}>
+        <Text style={styles.buttonText}>Workout</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push("/(app)/Home/page")}>
-        <Text>Page</Text>
+      <TouchableOpacity style={styles.button} onPress={() => router.push("/(app)/Home/page")}>
+        <Text style={styles.buttonText}>Page</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   navBar: {
     flexDirection: "row",
     justifyContent: "space-around",
+    alignItems: "center", 
     padding: 10,
     backgroundColor: "#eee",
     position: "absolute",
     bottom: 0,
     width: "100%",
+    height: 80,
+  },
+  button: {
+    padding: 10,
+    margin: 5,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#000", 
+  },
+  buttonText: {
+    fontSize: 16,
   },
 });
+
 export default NavBar;
