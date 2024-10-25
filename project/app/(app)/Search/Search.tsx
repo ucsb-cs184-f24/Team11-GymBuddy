@@ -1,13 +1,39 @@
 // Home.tsx
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, TextInput, StyleSheet } from "react-native";
 
 const Search = () => {
   return (
-    <View>
-      <Text>search</Text>
+    <View style={styles.container}>
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search..."
+      />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    paddingTop: 70, // Add padding to push content down
+  },
+  searchBar: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    width: "80%",
+    marginBottom: 20,
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+});
 
 export default Search;

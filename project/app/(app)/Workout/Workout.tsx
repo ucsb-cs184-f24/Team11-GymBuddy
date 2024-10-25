@@ -1,13 +1,25 @@
-// Home.tsx
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 const Workout = () => {
   return (
-    <View>
-      <Text>wk</Text>
+    <View style={styles.container}>
+      <Text style={styles.text}>Workout</Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+});
 
 export default Workout;
