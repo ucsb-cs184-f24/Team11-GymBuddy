@@ -10,12 +10,10 @@ import {
 } from "react-native";
 import {
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Register from "./Register";
 
 const Login = () => {
   const [email, setEmail] = useState("");
