@@ -8,7 +8,9 @@ import testUserData from './testUsers.json'; // Import initial feed data
 import testPersonalData from './testPersonal.json'; // Import new post data
 
 const Home = () => {
+    // State to hold the posts for the feed
   const [posts, setPosts] = useState<{ id: string; uName: string; area: string; exercise: string; sets: number; reps: number; date: string; time: string }[]>([]);
+   // State to hold the personal posts that can be added
   const [personalPosts, setPersonalPosts] = useState<{ id: string; uName: string; area: string; exercise: string; sets: number; reps: number; date: string; time: string }[]>([]);
 
   useEffect(() => {
@@ -16,6 +18,8 @@ const Home = () => {
     setPosts(testUserData);
     setPersonalPosts(testPersonalData);
   }, []);
+
+    // Function to add a new post from personalPosts to the top of the feed
 
   const addNewPost = () => {
     if (personalPosts.length > 0) {
@@ -26,6 +30,7 @@ const Home = () => {
       Alert.alert('No more personal posts available');
     }
   };
+  // Function to render each item in the FlatList
 
   const renderItem = ({ item }: { item: { id: string; uName: string; area: string; exercise: string; sets: number; reps: number; date: string; time: string } }) => (
     <View style={styles.post}>
@@ -36,6 +41,7 @@ const Home = () => {
       <Text>{`Date: ${item.date}, Time: ${item.time}`}</Text>
     </View>
   );
+  //Header section with title and profile picture
   return (
     <View style={styles.container}>
       <View style={styles.header}>
