@@ -1,17 +1,15 @@
-import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
 import {
+  View,
+  Text,
   Image,
+  TouchableOpacity,
+  StyleSheet,
   Platform,
   SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
 } from 'react-native';
-import { getAuth } from 'firebase/auth';
-
+import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
 
 interface ProfileData {
   name: string;
@@ -19,7 +17,7 @@ interface ProfileData {
 }
 
 const Profile: React.FC = () => {
-  const [profileImage, setProfileImage] = useState<string | null>(null); //when state changes, will rerender
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [profileData, setProfileData] = useState<ProfileData>({
     name: 'John Doe',
     email: 'john.doe@example.com',
@@ -67,11 +65,11 @@ const Profile: React.FC = () => {
         <View style={styles.infoContainer}>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Name</Text>
-            <Text style={styles.infoValue}>{getAuth().currentUser?.displayName}</Text>
+            <Text style={styles.infoValue}>{profileData.name}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Email</Text>
-            <Text style={styles.infoValue}>{getAuth().currentUser?.email}</Text>
+            <Text style={styles.infoValue}>{profileData.email}</Text>
           </View>
         </View>
       </View>
