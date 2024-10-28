@@ -1,0 +1,82 @@
+[
+    {
+      "id": "1",
+      "uName": "You",
+      "area": "Chest",
+      "exercise": "Bench Press",
+      "sets": 3,
+      "reps": 10
+    },
+    {
+      "id": "2",
+      "uName": "You",
+      "area": "Shoulder",
+      "exercise": "Overhead Press",
+      "sets": 3,
+      "reps": 10
+    },
+    {
+      "id": "3",
+      "uName": "You",
+      "area": "Legs",
+      "exercise": "Squats",
+      "sets": 4,
+      "reps": 12
+    },
+    {
+      "id": "4",
+      "uName": "You",
+      "area": "Back",
+      "exercise": "Deadlift",
+      "sets": 3,
+      "reps": 8
+    },
+    {
+      "id": "5",
+      "uName": "You",
+      "area": "Arms",
+      "exercise": "Bicep Curls",
+      "sets": 3,
+      "reps": 15
+    },
+    {
+      "id": "6",
+      "uName": "You",
+      "area": "Core",
+      "exercise": "Planks",
+      "sets": 3,
+      "reps": 60 
+    },
+    {
+      "id": "7",
+      "uName": "You",
+      "area": "Legs",
+      "exercise": "Leg Press",
+      "sets": 4,
+      "reps": 10
+    },
+    {
+      "id": "8",
+      "uName": "You",
+      "area": "Chest",
+      "exercise": "Chest Fly",
+      "sets": 3,
+      "reps": 12
+    },
+    {
+      "id": "9",
+      "uName": "You",
+      "area": "Back",
+      "exercise": "Bent Over Rows",
+      "sets": 3,
+      "reps": 10
+    },
+    {
+      "id": "10",
+      "uName": "You",
+      "area": "Shoulder",
+      "exercise": "Front Raises",
+      "sets": 3,
+      "reps": 15
+    }
+  ]

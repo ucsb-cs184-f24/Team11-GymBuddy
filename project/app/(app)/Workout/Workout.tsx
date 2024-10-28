@@ -1,25 +1,16 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { Text, View } from 'react-native';
+import Body, { ExtendedBodyPart, Slug } from "react-native-body-highlighter";
 
-const Workout = () => {
+export default function Workout() {
+
+  const data: ExtendedBodyPart[] = [
+    { slug: "chest" as Slug, intensity: 1 },
+    { slug: "abs" as Slug, intensity: 2 },
+  ];
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Workout</Text>
+    <View>
+      <Body data={data} />
     </View>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-});
-
-export default Workout;
+}

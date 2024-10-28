@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "react-native-body-highlighter": "^3.1.0"
+  },
+  "devDependencies": {
+    "@react-native-community/cli": "latest"
+  }
+}
