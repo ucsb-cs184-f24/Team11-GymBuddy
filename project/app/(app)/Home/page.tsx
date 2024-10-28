@@ -12,12 +12,41 @@ const Home = () => {
   const [posts, setPosts] = useState<{ id: string; uName: string; area: string; exercise: string; sets: number; reps: number; date: string; time: string }[]>([]);
    // State to hold the personal posts that can be added
   const [personalPosts, setPersonalPosts] = useState<{ id: string; uName: string; area: string; exercise: string; sets: number; reps: number; date: string; time: string }[]>([]);
-
   useEffect(() => {
     // Load the initial feed data when the component mounts
-    setPosts(testUserData);
-    setPersonalPosts(testPersonalData);
+    const loadPosts = async () => {
+      try {
+        const savedPosts = await AsyncStorage.getItem('posts');
+        const savedPersonalPosts = await AsyncStorage.getItem('personalPosts');
+        if (savedPosts !== null) {
+          setPosts(JSON.parse(savedPosts));
+        } else {
+          setPosts(testUserData);
+        }
+        if (savedPersonalPosts !== null) {
+          setPersonalPosts(JSON.parse(savedPersonalPosts));
+        } else {
+          setPersonalPosts(testPersonalData);
+        }
+      } catch (error) {
+        console.error("Failed to load posts from AsyncStorage", error);
+      }
+    };
+    loadPosts();
   }, []);
+
+  useEffect(() => {
+    // Save the posts to AsyncStorage whenever they are updated
+    const savePosts = async () => {
+      try {
+        await AsyncStorage.setItem('posts', JSON.stringify(posts));
+        await AsyncStorage.setItem('personalPosts', JSON.stringify(personalPosts));
+      } catch (error) {
+        console.error("Failed to save posts to AsyncStorage", error);
+      }
+    };
+    savePosts();
+  }, [posts, personalPosts]);
 
     // Function to add a new post from personalPosts to the top of the feed
 
