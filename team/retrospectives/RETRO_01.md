@@ -21,4 +21,4 @@
 * Get everyone organized and talking because it allows everyone to give input and there are some creative ideas that come from it
 
 ## Retro Update
-*The experiment continues to go according to plan. We have more team communication in the Slack channel and seem to be getting more organization and work done. Using the slack has really helped keep each other accountable and asign tasks
+* The experiment continues to go according to plan. We have more team communication in the Slack channel and seem to be getting more organization and work done. Using the slack has really helped keep each other accountable and asign tasks
