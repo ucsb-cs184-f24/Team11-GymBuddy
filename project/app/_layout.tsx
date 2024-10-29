@@ -11,7 +11,7 @@ const RootLayout = () => {
       const storedUser = await AsyncStorage.getItem("@user");
       if (storedUser) {
         // If user exists, redirect to the home page
-        router.replace("/(app)/Home/page");
+        router.replace("/(app)/Home/Home");
       } else {
         // If no user, redirect to login page
         router.replace("/(auth)/page");

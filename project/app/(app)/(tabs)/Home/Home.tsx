@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, Alert } from "react-native";
+import { Link } from "expo-router";
 import { useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -41,6 +42,9 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome back {user?.email}</Text>
+      <Link href="/Profile/Profile" style={styles.button}>
+        Go to Profile screen
+      </Link>
       <Button title="Logout" onPress={() => logout()} />
     </View>
   );
@@ -58,6 +62,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
+  button: {
+    fontSize: 20,
+    textDecorationLine: 'underline',
+    color: '#000',
+  }
 });
 
 export default Home;

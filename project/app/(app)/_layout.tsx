@@ -1,12 +1,12 @@
-import { Slot } from "expo-router";
+import { Stack } from "expo-router";
 import React from "react";
-import NavBar from "./NavBar";
+
 const AppLayout = () => {
   return (
-    <>
-      <Slot />
-      <NavBar />
-    </>
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="+not-found" />
+    </Stack>
   );
 };
 

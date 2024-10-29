@@ -19,7 +19,7 @@ const NavBar = () => {
       <TouchableOpacity style={styles.button} onPress={() => router.push("/(app)/Workout/Workout")}>
         <Text style={styles.buttonText}>Workout</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => router.push("/(app)/Home/page")}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push("/(app)/Home/Home")}>
         <Text style={styles.buttonText}>Page</Text>
       </TouchableOpacity>
     </View>
