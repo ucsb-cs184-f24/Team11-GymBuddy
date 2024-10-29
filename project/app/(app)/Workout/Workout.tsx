@@ -1,4 +1,5 @@
-import React, {useState} from "react";
+import { getUserData } from "@/databaseService";
+import React, {useEffect, useState} from "react";
 import { View, Text, StyleSheet, Button, TouchableOpacity, Modal, FlatList} from "react-native";
 
 const Workout = () => {
@@ -39,6 +40,14 @@ const Workout = () => {
     setSelectedCategory(null);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = await getUserData();
+      console.log('USER', user)
+    };
+    fetchData();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Workout</Text>
@@ -76,7 +85,16 @@ const Workout = () => {
       </Modal>
     </View>
   );
+
+  
+
+
+
 };
+
+
+
+
 
 const styles = StyleSheet.create({
   container: {
