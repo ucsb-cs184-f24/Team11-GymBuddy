@@ -34,7 +34,7 @@ const Profile = () => {
     const fetchData = async () => {
       if (chartPeriod === Period.week) {
         const { startDate, endDate } = getWeekRange(currentDate);
-        setCurrentEndDate(new Date(endDate));
+        setCurrentEndDate(new Date(startDate));
 
         const data = fetchWeeklyData(startDate, endDate, chartCategory);
         const processedData = processWeeklyData(data, chartCategory);
@@ -130,7 +130,18 @@ const Profile = () => {
   return (
     <SafeAreaView style={{ margin: 15 }}>
       <Card>
-        <Text style={styles.text}>Profile</Text>
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: "700",
+            margin: 5,
+            marginBottom: 20,
+          }}
+        >
+          {currentEndDate.toLocaleDateString("en-US", { month: "short" })}{" "}
+          {currentEndDate.getDate()} - {currentDate.getDate()},{" "}
+          {currentDate.getFullYear()}
+        </Text>
         <BarChart
           key={chartKey}
           data={chartData}
@@ -201,10 +212,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
   },
 });
 
