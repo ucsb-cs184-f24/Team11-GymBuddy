@@ -1,4 +1,4 @@
-import { getUserData } from "@/databaseService";
+import { getUserId, saveWorkout } from "@/databaseService";
 import React, {useEffect, useState} from "react";
 import { View, Text, StyleSheet, Button, TouchableOpacity, Modal, FlatList} from "react-native";
 
@@ -32,21 +32,16 @@ const Workout = () => {
     }
   };
 
-  const handleSaveWorkout = () => {
-    console.log("Saved workouts:", selectedWorkouts);
+  const handleSaveWorkout = async () => {
+    const userData = await getUserId();
+    saveWorkout(selectedWorkouts, userData);
+
     setSelectedWorkouts([]);
     setModalVisible(false);
     setWorkoutOptionsVisible(false);
     setSelectedCategory(null);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const user = await getUserData();
-      console.log('USER', user)
-    };
-    fetchData();
-  }, []);
 
   return (
     <View style={styles.container}>
