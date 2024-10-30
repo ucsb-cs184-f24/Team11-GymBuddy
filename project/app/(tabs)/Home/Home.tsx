@@ -18,7 +18,7 @@ const Home = () => {
         setUser(JSON.parse(storedUser));
       } else {
         // If no user is logged in, redirect to the login page
-        router.replace("/(auth)/page");
+        router.replace("/(auth)/SignIn");
       }
     };
     checkUser();
@@ -32,7 +32,7 @@ const Home = () => {
       await AsyncStorage.removeItem("@user");
 
       // After successful logout, redirect to the login page
-      router.replace("/(auth)/page");
+      router.replace("/(auth)/SignIn");
     } catch (e: any) {
       // TODO - more detailed error messages
       Alert.alert("Logout failed: ", e.message);

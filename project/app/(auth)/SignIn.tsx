@@ -30,7 +30,7 @@ const Login = () => {
       await AsyncStorage.setItem("@user", JSON.stringify(user));
 
       // After successful sign-in, redirect to the home page
-      router.replace("/(app)/Home/page");
+      router.replace("/(tabs)/Home/Home");
     } catch (e: any) {
       // TODO - more detailed error messages
       Alert.alert("Sign in failed: ", e.message);

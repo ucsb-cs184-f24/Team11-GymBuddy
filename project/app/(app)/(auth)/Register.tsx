@@ -24,6 +24,8 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const router = useRouter(); 
 
+
+
   // Handle Sign-in (existing users)
   const handleSignUp = async () => {
     try {
