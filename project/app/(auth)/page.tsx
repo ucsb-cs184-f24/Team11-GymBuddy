@@ -28,7 +28,7 @@ const Login = () => {
       
       // Save user session in AsyncStorage
       await AsyncStorage.setItem("@user", JSON.stringify(user));
-
+      
       // After successful sign-in, redirect to the home page
       router.replace("/(app)/Home/page");
     } catch (e: any) {
