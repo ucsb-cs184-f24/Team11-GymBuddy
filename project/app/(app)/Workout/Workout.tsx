@@ -34,7 +34,11 @@ const Workout = () => {
 
   const handleSaveWorkout = async () => {
     const userData = await getUserId();
-    saveWorkout(selectedWorkouts, userData);
+    const workoutLog = {
+      date: Math.floor(Date.now() / 1000),
+      workouts: selectedWorkouts,
+    };
+    saveWorkout(workoutLog, userData);
 
     setSelectedWorkouts([]);
     setModalVisible(false);
