@@ -1,47 +1,94 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, Button, StyleSheet, Alert, FlatList, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "firebase/auth";
+import testUserData from './testUsers.json'; // Import initial feed data
+import testPersonalData from './testPersonal.json'; // Import new post data
 
 const Home = () => {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-
+    // State to hold the posts for the feed
+  const [posts, setPosts] = useState<{ id: string; uName: string; area: string; exercise: string; sets: number; reps: number; date: string; time: string }[]>([]);
+   // State to hold the personal posts that can be added
+  const [personalPosts, setPersonalPosts] = useState<{ id: string; uName: string; area: string; exercise: string; sets: number; reps: number; date: string; time: string }[]>([]);
   useEffect(() => {
-    const checkUser = async () => {
-      const storedUser = await AsyncStorage.getItem("@user");
-      if (storedUser) {
-        // If user exists, store user information
-        setUser(JSON.parse(storedUser));
-      } else {
-        // If no user is logged in, redirect to the login page
-        router.replace("/(auth)/page");
+    // Load the initial feed data when the component mounts
+    const loadPosts = async () => {
+      try {
+        const savedPosts = await AsyncStorage.getItem('posts');
+        const savedPersonalPosts = await AsyncStorage.getItem('personalPosts');
+        if (savedPosts !== null) {
+          setPosts(JSON.parse(savedPosts));
+        } else {
+          setPosts(testUserData);
+        }
+        if (savedPersonalPosts !== null) {
+          setPersonalPosts(JSON.parse(savedPersonalPosts));
+        } else {
+          setPersonalPosts(testPersonalData);
+        }
+      } catch (error) {
+        console.error("Failed to load posts from AsyncStorage", error);
       }
     };
-    checkUser();
+    loadPosts();
   }, []);
 
-  const logout = async () => {
-    try {
-      await auth.signOut();
+  useEffect(() => {
+    // Save the posts to AsyncStorage whenever they are updated
+    const savePosts = async () => {
+      try {
+        await AsyncStorage.setItem('posts', JSON.stringify(posts));
+        await AsyncStorage.setItem('personalPosts', JSON.stringify(personalPosts));
+      } catch (error) {
+        console.error("Failed to save posts to AsyncStorage", error);
+      }
+    };
+    savePosts();
+  }, [posts, personalPosts]);
 
-      // Remove the user token from AsyncStorage
-      await AsyncStorage.removeItem("@user");
+    // Function to add a new post from personalPosts to the top of the feed
 
-      // After successful logout, redirect to the login page
-      router.replace("/(auth)/page");
-    } catch (e: any) {
-      // TODO - more detailed error messages
-      Alert.alert("Logout failed: ", e.message);
+  const addNewPost = () => {
+    if (personalPosts.length > 0) {
+      const newPost = personalPosts[0];
+      setPosts(prevPosts => [newPost, ...prevPosts]); // Add new post to the top
+      setPersonalPosts(prevPersonalPosts => prevPersonalPosts.slice(1)); // Remove the added post from personalPosts
+    } else {
+      Alert.alert('No more personal posts available');
     }
   };
+  // Function to render each item in the FlatList
 
+  const renderItem = ({ item }: { item: { id: string; uName: string; area: string; exercise: string; sets: number; reps: number; date: string; time: string } }) => (
+    <View style={styles.post}>
+      <Text style={styles.name}>{item.uName}</Text>
+      <Text>{item.area}</Text>
+      <Text>{item.exercise}</Text>
+      <Text>{`Sets: ${item.sets}, Reps: ${item.reps}`}</Text>
+      <Text>{`Date: ${item.date}, Time: ${item.time}`}</Text>
+    </View>
+  );
+  //Header section with title and profile picture
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome back {user?.email}</Text>
-      <Button title="Logout" onPress={() => logout()} />
+      <View style={styles.header}>
+        <Text style={styles.title}>Workouts</Text>
+        <Image
+          style={styles.profilePic}
+          source={{ uri: 'https://example.com/profile-pic.jpg' }}
+        />
+      </View>
+      <FlatList
+        data={posts}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
+        contentContainerStyle={styles.feed} // Adjust the content container style
+      />
+      <View style={styles.buttonContainer}>
+        <Button title="New Post" onPress={addNewPost} />
+      </View>
     </View>
   );
 };
@@ -49,14 +96,49 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "#fff",
   },
-  text: {
-    fontSize: 18,
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: "#f8f8f8",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+  title: {
+    fontSize: 24,
     fontWeight: "bold",
-    textAlign: "center",
+  },
+  profilePic: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  feed: {
+    paddingBottom: 80, // Add padding to the bottom to account for the nav bar
+  },
+  post: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+  name: {
+    fontWeight: "bold",
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 100,
+    right: 20,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 50,
+    padding: 10,
+    elevation: 5, // Adds shadow for Android
+    shadowColor: '#000', // Adds shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
   },
 });
 
