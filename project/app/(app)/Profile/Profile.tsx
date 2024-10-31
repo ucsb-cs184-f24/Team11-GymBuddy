@@ -5,6 +5,8 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Alert,
+  Button
 } from 'react-native';
 import { User } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,7 +20,6 @@ export default function Profile() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const auth = getAuth();
-  const router = useRouter(); 
 
   const logout = async() => {
     try {
@@ -64,7 +65,6 @@ export default function Profile() {
           />
         </View>
         <View style={styles.container}>
-            <Text style={styles.text}>Profile</Text>
             <Button title="Logout" onPress={logout} color="#4a90e2" />
         </View>
       </ScrollView>
