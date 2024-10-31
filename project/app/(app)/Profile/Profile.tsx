@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { getAuth } from 'firebase/auth';
+
 
 interface ProfileData {
   name: string;
@@ -17,7 +19,7 @@ interface ProfileData {
 }
 
 const Profile: React.FC = () => {
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null); //when state changes, will rerender
   const [profileData, setProfileData] = useState<ProfileData>({
     name: 'John Doe',
     email: 'john.doe@example.com',
@@ -65,11 +67,11 @@ const Profile: React.FC = () => {
         <View style={styles.infoContainer}>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Name</Text>
-            <Text style={styles.infoValue}>{profileData.name}</Text>
+            <Text style={styles.infoValue}>{getAuth().currentUser?.displayName}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Email</Text>
-            <Text style={styles.infoValue}>{profileData.email}</Text>
+            <Text style={styles.infoValue}>{getAuth().currentUser?.email}</Text>
           </View>
         </View>
       </View>
