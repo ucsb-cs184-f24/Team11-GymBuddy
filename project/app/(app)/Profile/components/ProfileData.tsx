@@ -7,6 +7,8 @@ import {
   StyleSheet,
 } from 'react-native';
 
+
+
 interface UserInfoEditorProps {
   initialName: string | undefined;
   initialEmail: string | undefined;

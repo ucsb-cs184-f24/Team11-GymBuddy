@@ -14,6 +14,7 @@ import { useRouter } from "expo-router";
 import { getAuth } from "firebase/auth";
 import ImagePickerComponent from './components/pickImage';
 import UserInfoEditor from './components/ProfileData';
+import { getUserData} from "@/databaseService";
 
 export default function Profile() {
   const router = useRouter();
@@ -34,9 +35,9 @@ export default function Profile() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const storedUser = await AsyncStorage.getItem("@user");
+      const storedUser = await getUserData();
       if (storedUser) {
-        setUser(JSON.parse(storedUser));
+        setUser(storedUser);
       } else {
         router.replace("/(auth)/page");
       }
@@ -65,7 +66,6 @@ export default function Profile() {
           />
         </View>
         <View style={styles.container}>
-            <Text style={styles.text}>Profile</Text>
             <Button title="Logout" onPress={logout} color="#4a90e2" />
         </View>
       </ScrollView>
