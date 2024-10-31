@@ -5,6 +5,7 @@ import { ref, push, get, set } from 'firebase/database';
 interface WorkoutLog {
   date: number;
   workouts: string[];
+  name?: string;
 }
 
 export const getUserData = async () => {
@@ -25,14 +26,20 @@ export const getUserData = async () => {
         const recentWorkouts: { [key: string]: WorkoutLog } = {};
         for (const userId in users) {
           const userWorkoutsRef = ref(database, `users/${userId}/workouts`);
+          const userProfileRef = ref(database, `users/${userId}/profile`);
           const snapshot = await get(userWorkoutsRef);
+          const profileSnapshot = await get(userProfileRef);
           const workouts = snapshot.val();
+          const profile = profileSnapshot.val();
           if (workouts) {
             const workoutArray = Object.values(workouts) as WorkoutLog[];
             workoutArray.sort((a, b) => b.date - a.date);
             if (workoutArray.length > 0) {
               recentWorkouts[userId] = workoutArray[0];
             }
+          }
+          if (profile){
+            recentWorkouts[userId].name = profile.Name;
           }
         }
         return recentWorkouts;
