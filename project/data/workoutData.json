@@ -110,6 +110,238 @@
       "bodyArea": "Back",
       "sets": 3,
       "reps": 10
+    },
+    {
+      "date": "2024-10-21",
+      "time": "08:00",
+      "workoutName": "Bench Press",
+      "bodyArea": "Chest",
+      "sets": 4,
+      "reps": 10
+    },
+    {
+      "date": "2024-10-22",
+      "time": "08:30",
+      "workoutName": "Incline Dumbbell Press",
+      "bodyArea": "Chest",
+      "sets": 3,
+      "reps": 12
+    },
+    {
+      "date": "2024-10-23",
+      "time": "07:00",
+      "workoutName": "Squats",
+      "bodyArea": "Legs",
+      "sets": 5,
+      "reps": 8
+    },
+    {
+      "date": "2024-10-23",
+      "time": "07:45",
+      "workoutName": "Leg Press",
+      "bodyArea": "Legs",
+      "sets": 4,
+      "reps": 10
+    },
+    {
+      "date": "2024-10-24",
+      "time": "06:30",
+      "workoutName": "Deadlift",
+      "bodyArea": "Back",
+      "sets": 4,
+      "reps": 6
+    },
+    {
+      "date": "2024-10-24",
+      "time": "07:15",
+      "workoutName": "Lat Pulldown",
+      "bodyArea": "Back",
+      "sets": 3,
+      "reps": 12
+    },
+    {
+      "date": "2024-10-25",
+      "time": "09:00",
+      "workoutName": "Overhead Press",
+      "bodyArea": "Shoulders",
+      "sets": 4,
+      "reps": 10
+    },
+    {
+      "date": "2024-10-25",
+      "time": "09:30",
+      "workoutName": "Lateral Raises",
+      "bodyArea": "Shoulders",
+      "sets": 3,
+      "reps": 15
+    },
+    {
+      "date": "2024-10-26",
+      "time": "08:00",
+      "workoutName": "Bicep Curls",
+      "bodyArea": "Arms",
+      "sets": 4,
+      "reps": 12
+    },
+    {
+      "date": "2024-10-26",
+      "time": "08:30",
+      "workoutName": "Tricep Extensions",
+      "bodyArea": "Arms",
+      "sets": 4,
+      "reps": 12
+    },
+    {
+      "date": "2024-10-27",
+      "time": "07:45",
+      "workoutName": "Leg Curl",
+      "bodyArea": "Legs",
+      "sets": 4,
+      "reps": 10
+    },
+    {
+      "date": "2024-10-27",
+      "time": "08:15",
+      "workoutName": "Calf Raises",
+      "bodyArea": "Legs",
+      "sets": 3,
+      "reps": 15
+    },
+    {
+      "date": "2024-10-28",
+      "time": "06:30",
+      "workoutName": "Pull Ups",
+      "bodyArea": "Back",
+      "sets": 4,
+      "reps": 8
+    },
+    {
+      "date": "2024-10-28",
+      "time": "23:00",
+      "workoutName": "Chin Ups",
+      "bodyArea": "Back",
+      "sets": 3,
+      "reps": 10
+    },
+    {
+      "date": "2024-10-21",
+      "time": "08:00",
+      "workoutName": "Bench Press",
+      "bodyArea": "Chest",
+      "sets": 4,
+      "reps": 10
+    },
+    {
+      "date": "2024-10-22",
+      "time": "08:30",
+      "workoutName": "Incline Dumbbell Press",
+      "bodyArea": "Chest",
+      "sets": 3,
+      "reps": 12
+    },
+    {
+      "date": "2024-10-23",
+      "time": "07:00",
+      "workoutName": "Squats",
+      "bodyArea": "Legs",
+      "sets": 5,
+      "reps": 8
+    },
+    {
+      "date": "2024-10-23",
+      "time": "07:45",
+      "workoutName": "Leg Press",
+      "bodyArea": "Legs",
+      "sets": 4,
+      "reps": 10
+    },
+    {
+      "date": "2024-10-24",
+      "time": "06:30",
+      "workoutName": "Deadlift",
+      "bodyArea": "Back",
+      "sets": 4,
+      "reps": 6
+    },
+    {
+      "date": "2024-10-24",
+      "time": "07:15",
+      "workoutName": "Lat Pulldown",
+      "bodyArea": "Back",
+      "sets": 3,
+      "reps": 12
+    },
+    {
+      "date": "2024-10-25",
+      "time": "09:00",
+      "workoutName": "Overhead Press",
+      "bodyArea": "Shoulders",
+      "sets": 4,
+      "reps": 10
+    },
+    {
+      "date": "2024-10-25",
+      "time": "09:30",
+      "workoutName": "Lateral Raises",
+      "bodyArea": "Shoulders",
+      "sets": 3,
+      "reps": 15
+    },
+    {
+      "date": "2024-10-26",
+      "time": "08:00",
+      "workoutName": "Bicep Curls",
+      "bodyArea": "Arms",
+      "sets": 4,
+      "reps": 12
+    },
+    {
+      "date": "2024-10-26",
+      "time": "08:30",
+      "workoutName": "Tricep Extensions",
+      "bodyArea": "Arms",
+      "sets": 4,
+      "reps": 12
+    },
+    {
+      "date": "2024-10-27",
+      "time": "07:45",
+      "workoutName": "Leg Curl",
+      "bodyArea": "Legs",
+      "sets": 4,
+      "reps": 10
+    },
+    {
+      "date": "2024-10-27",
+      "time": "08:15",
+      "workoutName": "Calf Raises",
+      "bodyArea": "Legs",
+      "sets": 3,
+      "reps": 15
+    },
+    {
+      "date": "2024-10-27",
+      "time": "06:30",
+      "workoutName": "Pull Ups",
+      "bodyArea": "Back",
+      "sets": 4,
+      "reps": 8
+    },
+    {
+      "date": "2024-10-28",
+      "time": "06:30",
+      "workoutName": "Pull Ups",
+      "bodyArea": "Back",
+      "sets": 4,
+      "reps": 8
+    },
+    {
+      "date": "2024-10-28",
+      "time": "23:00",
+      "workoutName": "Chin Ups",
+      "bodyArea": "Back",
+      "sets": 3,
+      "reps": 10
     }
   ]
   
