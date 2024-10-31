@@ -6,6 +6,8 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Alert,
+  Button
 } from 'react-native';
 import { User } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -19,6 +21,20 @@ export default function Profile() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const auth = getAuth();
+<<<<<<< HEAD
+=======
+
+  const logout = async() => {
+    try {
+      await auth.signOut()
+      await AsyncStorage.removeItem("@user");
+      router.replace("/(auth)/page");
+      Alert.alert('Logged Out');
+    } catch (error) {
+      Alert.alert('Error logging out');
+    }
+  };
+>>>>>>> b2640b8 (my bad I accidentaly made sawyer merge)
 
   useEffect(() => {
     const checkUser = async () => {
@@ -52,6 +68,12 @@ export default function Profile() {
             initialEmail={user?.email || ''}
           />
         </View>
+<<<<<<< HEAD
+=======
+        <View style={styles.container}>
+            <Button title="Logout" onPress={logout} color="#4a90e2" />
+        </View>
+>>>>>>> b2640b8 (my bad I accidentaly made sawyer merge)
       </ScrollView>
     </SafeAreaView>
   );
