@@ -1,16 +1,16 @@
 [
   {
-    "id": "6",
+    "id": "1",
     "uName": "You",
     "area": "Core",
-    "exercise": "Planks",
+    "exercise": "Plank",
     "sets": 3,
     "reps": 60,
     "date": "2023-10-06",
     "time": "03:00 PM"
   },
   {
-    "id": "7",
+    "id": "2",
     "uName": "You",
     "area": "Legs",
     "exercise": "Leg Press",
@@ -20,30 +20,30 @@
     "time": "04:00 PM"
   },
   {
-    "id": "8",
+    "id": "3",
     "uName": "You",
     "area": "Chest",
-    "exercise": "Chest Fly",
+    "exercise": "Bench Press",
     "sets": 3,
     "reps": 12,
     "date": "2023-10-08",
     "time": "05:00 PM"
   },
   {
-    "id": "9",
+    "id": "4",
     "uName": "You",
     "area": "Back",
-    "exercise": "Bent Over Rows",
+    "exercise": "Seated Row",
     "sets": 3,
     "reps": 10,
     "date": "2023-10-09",
     "time": "06:00 PM"
   },
   {
-    "id": "10",
+    "id": "5",
     "uName": "You",
     "area": "Shoulder",
-    "exercise": "Front Raises",
+    "exercise": "Shoulder Press",
     "sets": 3,
     "reps": 15,
     "date": "2023-10-10",

@@ -1,0 +1,105 @@
+{
+    "exercises": [
+      {
+        "name": "Bench Press",
+        "muscles": ["chest", "triceps", "deltoids"],
+        "position": "front"
+      },
+      {
+        "name": "Deadlift",
+        "muscles": ["lower-back", "hamstring", "gluteal", "forearm", "trapezius"],
+        "position": "back"
+      },
+      {
+        "name": "Bicep Curl",
+        "muscles": ["biceps", "forearm"],
+        "position": "front"
+      },
+      {
+        "name": "Tricep Extension",
+        "muscles": ["triceps", "forearm"],
+        "position": "back"
+      },
+      {
+        "name": "Lat Pulldown",
+        "muscles": ["upper-back", "biceps", "forearm"],
+        "position": "back"
+      },
+      {
+        "name": "Squat",
+        "muscles": ["gluteal", "hamstring", "quads", "calves"],
+        "position": "back"
+      },
+      {
+        "name": "Leg Press",
+        "muscles": ["gluteal", "hamstring", "quads", "calves"],
+        "position": "back"
+      },
+      {
+        "name": "Shoulder Press",
+        "muscles": ["deltoids", "triceps"],
+        "position": "front"
+      },
+      {
+        "name": "Pull-Up",
+        "muscles": ["upper-back", "biceps", "forearm", "trapezius"],
+        "position": "back"
+      },
+      {
+        "name": "Crunch",
+        "muscles": ["abs"],
+        "position": "front"
+      },
+      {
+        "name": "Russian Twist",
+        "muscles": ["obliques", "abs"],
+        "position": "front"
+      },
+      {
+        "name": "Calf Raise",
+        "muscles": ["calves"],
+        "position": "back"
+      },
+      {
+        "name": "Shrug",
+        "muscles": ["trapezius", "forearm"],
+        "position": "back"
+      },
+      {
+        "name": "Reverse Curl",
+        "muscles": ["forearm", "biceps"],
+        "position": "front"
+      },
+      {
+        "name": "Neck Flexion",
+        "muscles": ["neck"],
+        "position": "back"
+      },
+      {
+        "name": "Leg Curl",
+        "muscles": ["hamstring"],
+        "position": "back"
+      },
+      {
+        "name": "Plank",
+        "muscles": ["abs", "obliques", "upper-back", "lower-back"],
+        "position": "front"
+      },
+      {
+        "name": "Hip Abduction",
+        "muscles": ["adductors", "gluteal"],
+        "position": "back"
+      },
+      {
+        "name": "Seated Row",
+        "muscles": ["upper-back", "biceps", "forearm"],
+        "position": "back"
+      },
+      {
+        "name": "Toe Raise",
+        "muscles": ["tibialis", "ankles"],
+        "position": "front"
+      }
+    ]
+  }
+  
