@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -21,6 +22,31 @@ export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const auth = getAuth();
 
+import React, { useState, useEffect } from 'react';
+
+import {
+  Image,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+interface ProfileData {
+  name: string;
+  email: string;
+}
+
+const Profile: React.FC = () => {
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  const [user, setUser] = useState<User | null>(null);
+  const auth = getAuth();
+
+
+
   const logout = async() => {
     try {
       await auth.signOut()
@@ -32,13 +58,6 @@ export default function Profile() {
     }
   };
 
-  useEffect(() => {
-    const checkUser = async () => {
-      const storedUser = await AsyncStorage.getItem("@user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      } else {
-        router.replace("/(auth)/page");
       }
     };
     checkUser();
@@ -46,6 +65,31 @@ export default function Profile() {
 
   const handleImageSelected = (uri: string) => {
     setProfileImage(uri);
+
+  const [profileData, setProfileData] = useState<ProfileData>({
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+  });
+
+  const pickImage = async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+        return;
+      }
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setProfileImage(result.assets[0].uri);
+    }
   };
 
   return (
@@ -70,6 +114,11 @@ export default function Profile() {
       </ScrollView>
     </SafeAreaView>
 
+        <View style={styles.container}>
+            <Button title="Logout" onPress={logout} color="#4a90e2" />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
