@@ -1,35 +1,71 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, StyleSheet, Alert, FlatList, Image } from "react-native";
-import { useRouter } from "expo-router";
-import { auth } from "@/firebaseConfig";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Image,
+  StyleSheet,
+  FlatList,
+  Alert,
+  Modal,
+  SafeAreaView,
+  Switch,
+  useColorScheme,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { User } from "firebase/auth";
-import testUserData from './testUsers.json'; // Import initial feed data
-import testPersonalData from './testPersonal.json'; // Import new post data
 import { getAllUsersRecentWorkouts } from "@/databaseService";
 
+interface Post {
+  id: string;
+  uName: string;
+  area: string;
+  exercise: string;
+  sets: number;
+  reps: number;
+  date: string;
+  time: string;
+  image: string;
+}
+
+interface NavbarProps {
+  setModalVisible: (visible: boolean) => void;
+  isDarkMode: boolean;
+  toggleDarkMode: () => void;
+}
+
 const Home = () => {
-    // State to hold the posts for the feed
-  const [posts, setPosts] = useState<{ id: string; uName: string; area: string; exercise: string; sets: number; reps: number; date: string; time: string }[]>([]);
-   // State to hold the personal posts that can be added
-  const [personalPosts, setPersonalPosts] = useState<{ id: string; uName: string; area: string; exercise: string; sets: number; reps: number; date: string; time: string }[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [newPost, setNewPost] = useState({
+    exercise: '',
+    duration: '',
+  });
+  const [modalVisible, setModalVisible] = useState(false);
+  const systemColorScheme = useColorScheme();
+  const [isDarkMode, setIsDarkMode] = useState(systemColorScheme === 'dark');
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(prevMode => !prevMode);
+  };
+
   useEffect(() => {
-    // Load the initial feed data when the component mounts
+    // Load posts when the component mounts
     const loadPosts = async () => {
       try {
         const recentWorkouts = await getAllUsersRecentWorkouts(1);
         console.log('Recent workouts:', recentWorkouts);
-        const posts = Object.entries(recentWorkouts).map(([id, workout]) => ({
+        const postsArray = Object.entries(recentWorkouts).map(([id, workout]) => ({
           id,
-          uName: recentWorkouts[id].name || 'null',
+          uName: workout.name || 'null',
           area: 'N/A',
-          exercise: recentWorkouts[id].workouts.toString(),
+          exercise: workout.workouts.toString(),
           sets: 0,
           reps: 0,
-          date: new Date(recentWorkouts[id].date * 1000)?.toLocaleDateString() || 'N/A',
+          date: new Date(workout.date * 1000)?.toLocaleDateString() || 'N/A',
           time: 'N/A',
+          image: 'https://example.com/placeholder.jpg',
         }));
-        setPosts(posts);
+        setPosts(postsArray);
       } catch (error) {
         console.error("Failed to load posts", error);
       }
@@ -42,105 +78,341 @@ const Home = () => {
     const savePosts = async () => {
       try {
         await AsyncStorage.setItem('posts', JSON.stringify(posts));
-        await AsyncStorage.setItem('personalPosts', JSON.stringify(personalPosts));
       } catch (error) {
         console.error("Failed to save posts to AsyncStorage", error);
       }
     };
     savePosts();
-  }, [posts, personalPosts]);
+  }, [posts]);
 
-    // Function to add a new post from personalPosts to the top of the feed
+  const addPost = async () => {
+    if (newPost.exercise && newPost.duration) {
+      const newPostItem: Post = {
+        id: Date.now().toString(),
+        uName: 'current_user',
+        area: 'N/A',
+        exercise: newPost.exercise,
+        sets: 0,
+        reps: 0,
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString(),
+        image: 'https://example.com/placeholder.jpg',
+      };
 
-  const addNewPost = () => {
-    if (personalPosts.length > 0) {
-      const newPost = personalPosts[0];
-      setPosts(prevPosts => [newPost, ...prevPosts]); // Add new post to the top
-      setPersonalPosts(prevPersonalPosts => prevPersonalPosts.slice(1)); // Remove the added post from personalPosts
-    } else {
-      Alert.alert('No more personal posts available');
+      const updatedPosts = [newPostItem, ...posts];
+      setPosts(updatedPosts);
+      try {
+        await AsyncStorage.setItem('posts', JSON.stringify(updatedPosts));
+      } catch (error) {
+        Alert.alert('Error', 'Failed to save post');
+      }
+      setNewPost({ exercise: '', duration: '' });
+      setModalVisible(false);
     }
   };
-  // Function to render each item in the FlatList
 
-  const renderItem = ({ item }: { item: { id: string; uName: string; area: string; exercise: string; sets: number; reps: number; date: string; time: string } }) => (
-    <View style={styles.post}>
-      <Text style={styles.name}>{item.uName}</Text>
-      <Text>{item.area}</Text>
-      <Text>{item.exercise}</Text>
-      <Text>{`Sets: ${item.sets}, Reps: ${item.reps}`}</Text>
-      <Text>{`Date: ${item.date}, Time: ${item.time}`}</Text>
+  const deletePost = async (id: string) => {
+    const updatedPosts = posts.filter(post => post.id !== id);
+    setPosts(updatedPosts);
+    try {
+      await AsyncStorage.setItem('posts', JSON.stringify(updatedPosts));
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete post');
+    }
+  };
+
+  const Navbar = ({ setModalVisible, isDarkMode, toggleDarkMode }: NavbarProps) => {
+    return (
+      <View style={[styles.navbar, isDarkMode && styles.navbarDark]}>
+        <TouchableOpacity
+          style={[styles.postWorkoutButton, isDarkMode && styles.postWorkoutButtonDark]}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={[styles.postWorkoutButtonText, isDarkMode && styles.postWorkoutButtonTextDark]}>+</Text>
+        </TouchableOpacity>
+        <Text style={[styles.navbarTitle, isDarkMode && styles.navbarTitleDark]}>Workouts</Text>
+        <View style={styles.navbarIcons}>
+          <Switch
+            trackColor={{ false: "#767577", true: isDarkMode ? "#81b0ff" : "#81b0ff" }}
+            thumbColor={isDarkMode ? "#f4f3f4" : "#f5dd4b"}
+            onValueChange={toggleDarkMode}
+            value={isDarkMode}
+          />
+          <TouchableOpacity style={styles.navbarIcon}>
+            <Image
+              source={{ uri: 'https://example.com/profile-pic.jpg' }}
+              style={styles.profilePic}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
+  const renderPost = ({ item }: { item: Post }) => (
+    <View style={[styles.workoutCard, isDarkMode && styles.workoutCardDark]}>
+      <View style={styles.workoutHeader}>
+        <Image
+          source={{ uri: 'https://example.com/profile-pic.jpg' }}
+          style={styles.workoutProfilePic}
+        />
+        <Text style={[styles.username, isDarkMode && styles.usernameDark]}>{item.uName}</Text>
+        <TouchableOpacity style={styles.moreOptions}
+          onPress={() => {
+            Alert.alert(
+              "Delete Workout",
+              "Are you sure you want to delete this workout?",
+              [
+                {
+                  text: "Cancel",
+                  style: "cancel"
+                },
+                {
+                  text: "Delete",
+                  onPress: () => deletePost(item.id),
+                  style: "destructive"
+                }
+              ]
+            );
+          }}>
+          <Text style={[styles.moreOptionsText, isDarkMode && styles.moreOptionsTextDark]}>•••</Text>
+        </TouchableOpacity>
+      </View>
+      <Image source={{ uri: item.image }} style={styles.workoutImage} />
+      <View style={styles.workoutInfo}>
+        <Text style={[styles.exerciseText, isDarkMode && styles.exerciseTextDark]}>{item.exercise}</Text>
+        <Text style={[styles.durationText, isDarkMode && styles.durationTextDark]}>{`Sets: ${item.sets}, Reps: ${item.reps}`}</Text>
+        <Text style={[styles.durationText, isDarkMode && styles.durationTextDark]}>{`Date: ${item.date}, Time: ${item.time}`}</Text>
+      </View>
     </View>
   );
-  //Header section with title and profile picture
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Workouts</Text>
-        <Image
-          style={styles.profilePic}
-          source={{ uri: 'https://example.com/profile-pic.jpg' }}
-        />
-      </View>
+    <SafeAreaView style={[styles.container, isDarkMode && styles.containerDark]}>
+      <Navbar setModalVisible={setModalVisible} isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       <FlatList
         data={posts}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `${item.id}-${index}`}
-        contentContainerStyle={styles.feed} // Adjust the content container style
+        renderItem={renderPost}
+        keyExtractor={(item) => item.id}
+        style={styles.workoutList}
       />
-      <View style={styles.buttonContainer}>
-        <Button title="New Post" onPress={addNewPost} />
-      </View>
-    </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={[styles.modalView, isDarkMode && styles.modalViewDark]}>
+          <Text style={[styles.modalTitle, isDarkMode && styles.modalTitleDark]}>Post Workout</Text>
+          <TextInput
+            style={[styles.input, isDarkMode && styles.inputDark]}
+            placeholder="Exercise"
+            placeholderTextColor={isDarkMode ? "#888" : "#999"}
+            value={newPost.exercise}
+            onChangeText={(text) => setNewPost((prev) => ({ ...prev, exercise: text }))}
+          />
+          <TextInput
+            style={[styles.input, isDarkMode && styles.inputDark]}
+            placeholder="Duration"
+            placeholderTextColor={isDarkMode ? "#888" : "#999"}
+            value={newPost.duration}
+            onChangeText={(text) => setNewPost((prev) => ({ ...prev, duration: text }))}
+          />
+          <TouchableOpacity style={styles.addButton} onPress={addPost}>
+            <Text style={styles.addButtonText}>Add Workout</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => setModalVisible(false)}
+          >
+            <Text style={[styles.cancelButtonText, isDarkMode && styles.cancelButtonTextDark]}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fafafa',
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 16,
-    backgroundColor: "#f8f8f8",
+  containerDark: {
+    backgroundColor: '#121212',
+  },
+  navbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+    borderBottomColor: '#dbdbdb',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
+  navbarDark: {
+    backgroundColor: '#1c1c1c',
+    borderBottomColor: '#2c2c2c',
+  },
+  navbarTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  navbarTitleDark: {
+    color: '#ffffff',
+  },
+  navbarIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  navbarIcon: {
+    marginLeft: 15,
   },
   profilePic: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+  },
+  workoutList: {
+    flex: 1,
+  },
+  workoutCard: {
+    backgroundColor: '#ffffff',
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#dbdbdb',
+  },
+  workoutCardDark: {
+    backgroundColor: '#1c1c1c',
+    borderBottomColor: '#2c2c2c',
+  },
+  workoutHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  workoutProfilePic: {
     width: 40,
     height: 40,
     borderRadius: 20,
+    marginRight: 10,
   },
-  feed: {
-    paddingBottom: 80, // Add padding to the bottom to account for the nav bar
+  username: {
+    fontWeight: 'bold',
+    flex: 1,
   },
-  post: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+  usernameDark: {
+    color: '#ffffff',
   },
-  name: {
-    fontWeight: "bold",
+  moreOptions: {
+    padding: 5,
   },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 100,
-    right: 20,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 50,
+  moreOptionsText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  moreOptionsTextDark: {
+    color: '#ffffff',
+  },
+  postWorkoutButton: {
+    backgroundColor: 'white',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  postWorkoutButtonDark: {
+    backgroundColor: '#2c2c2c',
+  },
+  postWorkoutButtonText: {
+    fontSize: 24,
+    color: '#4a90e2',
+    fontWeight: 'bold',
+  },
+  postWorkoutButtonTextDark: {
+    color: '#81b0ff',
+  },
+  workoutImage: {
+    width: '100%',
+    height: 300,
+  },
+  workoutInfo: {
     padding: 10,
-    elevation: 5, // Adds shadow for Android
-    shadowColor: '#000', // Adds shadow for iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
+  },
+  exerciseText: {
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  exerciseTextDark: {
+    color: '#ffffff',
+  },
+  durationText: {
+    color: '#666',
+  },
+  durationTextDark: {
+    color: '#888',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalViewDark: {
+    backgroundColor: '#1c1c1c',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  modalTitleDark: {
+    color: '#ffffff',
+  },
+  input: {
+    height: 40,
+    width: '100%',
+    borderColor: '#dbdbdb',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  inputDark: {
+    borderColor: '#2c2c2c',
+    color: '#ffffff',
+    backgroundColor: '#2c2c2c',
+  },
+  addButton: {
+    backgroundColor: '#0095f6',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  addButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  cancelButton: {
+    marginTop: 10,
+  },
+  cancelButtonText: {
+    color: '#0095f6',
+  },
+  cancelButtonTextDark: {
+    color: '#81b0ff',
   },
 });
 
