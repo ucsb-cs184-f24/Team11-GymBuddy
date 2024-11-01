@@ -37,9 +37,8 @@ const Register = () => {
       // Save user session in AsyncStorage
       await AsyncStorage.setItem("@user", JSON.stringify(user));
       Alert.alert("User Created");
-      console.log(JSON.stringify(user));
       // After successful sign-in, redirect to the home page
-      router.replace("/(app)/Home/page");
+      router.replace("/(tabs)/Home");
     } catch (e: any) {
       // TODO - more detailed error messages
       Alert.alert("Sign in failed: ", e.message);
@@ -83,7 +82,7 @@ const Register = () => {
         <Text style={styles.createAccountButtonText}>Create an account</Text>
       </TouchableOpacity>
 
-      <Button onPress= {() => router.replace("/(auth)/page")} title = "Back To Sign In" />
+      <Button onPress= {() => router.replace("/(auth)/SignIn")} title = "Back To Sign In" />
     </View>
   );
 };

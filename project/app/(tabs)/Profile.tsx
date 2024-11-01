@@ -12,8 +12,8 @@ import { User } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { getAuth } from "firebase/auth";
-import ImagePickerComponent from './components/pickImage';
-import UserInfoEditor from './components/ProfileData';
+import ImagePickerComponent from '../components/pickImage';
+import UserInfoEditor from '../components/ProfileData';
 
 export default function Profile() {
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function Profile() {
     try {
       await auth.signOut()
       await AsyncStorage.removeItem("@user");
-      router.replace("/(auth)/page");
+      router.replace("/(auth)/SignIn");
       Alert.alert('Logged Out');
     } catch (error) {
       Alert.alert('Error logging out');
@@ -38,7 +38,7 @@ export default function Profile() {
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       } else {
-        router.replace("/(auth)/page");
+        router.replace("/(auth)/SignIn");
       }
     };
     checkUser();
@@ -65,12 +65,10 @@ export default function Profile() {
           />
         </View>
         <View style={styles.container}>
-            <Text style={styles.text}>Profile</Text>
             <Button title="Logout" onPress={logout} color="#4a90e2" />
         </View>
       </ScrollView>
     </SafeAreaView>
-
   );
 }
 
