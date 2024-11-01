@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,26 +6,29 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
-} from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { Ionicons } from '@expo/vector-icons';
+} from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { Ionicons } from "@expo/vector-icons";
 
 interface ImagePickerComponentProps {
   onImageSelected?: (uri: string) => void;
   initialImage?: string | null;
 }
 
-const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({ 
+const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
   onImageSelected,
-  initialImage 
+  initialImage,
 }) => {
-  const [profileImage, setProfileImage] = useState<string | null>(initialImage || null);
+  const [profileImage, setProfileImage] = useState<string | null>(
+    initialImage || null
+  );
 
   const pickImage = async () => {
-    if (Platform.OS !== 'web') {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
+    if (Platform.OS !== "web") {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
         return;
       }
     }
@@ -62,7 +65,7 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
 
 const styles = StyleSheet.create({
   profileImageContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 32,
   },
   profileImage: {
@@ -72,15 +75,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   placeholderImage: {
-    backgroundColor: '#E5E5EA',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#E5E5EA",
+    justifyContent: "center",
+    alignItems: "center",
   },
   uploadButton: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   uploadButtonText: {
-    color: '#007AFF',
+    color: "#007AFF",
     fontSize: 17,
   },
 });
