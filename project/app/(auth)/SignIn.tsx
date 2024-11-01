@@ -57,7 +57,7 @@ const Login = () => {
     <View style={styles.container}>
       {/* TODO - create a logo */}
       <Image
-        source={require("../../.expo/web/cache/production/images/favicon/favicon-24272cdaeff82cc5facdaccd982a6f05b60c4504704bbf94c19a6388659880bb-contain-transparent/favicon-32x32.png")}
+        source={require("../../assets/logo.png")}
         style={styles.logo}
       />
       <Text style={styles.title}>Sign in</Text>
