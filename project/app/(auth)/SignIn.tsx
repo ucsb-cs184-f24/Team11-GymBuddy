@@ -8,9 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import {
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -23,14 +21,18 @@ const Login = () => {
   // Handle Sign-in (existing users)
   const handleSignIn = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
-      
+
       // Save user session in AsyncStorage
       await AsyncStorage.setItem("@user", JSON.stringify(user));
-      
+
       // After successful sign-in, redirect to the home page
-      router.replace("/(app)/Home/page");
+      router.replace("/(tabs)/Home");
     } catch (e: any) {
       // TODO - more detailed error messages
       Alert.alert("Sign in failed: ", e.message);

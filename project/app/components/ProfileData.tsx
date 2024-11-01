@@ -1,29 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
   StyleSheet,
-} from 'react-native';
+} from "react-native";
 
 
 
 interface UserInfoEditorProps {
   initialName: string | undefined;
   initialEmail: string | undefined;
-
 }
 export default function UserInfoEditor({
   initialName,
   initialEmail,
 }: UserInfoEditorProps) {
-  const [name, setName] = useState(initialName || '');
-  const [email, setEmail] = useState(initialEmail || '');
- 
+  const [name, setName] = useState(initialName || "");
+  const [email, setEmail] = useState(initialEmail || "");
+
   useEffect(() => {
-    setName(initialName || '');
-    setEmail(initialEmail || '');
+    setName(initialName || "");
+    setEmail(initialEmail || "");
   }, [initialName, initialEmail]);
 
   return (
@@ -35,7 +32,6 @@ export default function UserInfoEditor({
       <View style={styles.fieldContainer}>
         <Text style={styles.label}>Email</Text>
         <Text style={styles.value}>{email}</Text>
-        
       </View>
     </View>
   );
@@ -43,12 +39,12 @@ export default function UserInfoEditor({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 10,
     padding: 16,
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -59,30 +55,30 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: '#6B7280',
+    color: "#6B7280",
     marginBottom: 4,
   },
   value: {
     fontSize: 16,
-    color: '#1F2937',
+    color: "#1F2937",
   },
   input: {
     fontSize: 16,
-    color: '#1F2937',
+    color: "#1F2937",
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: "#D1D5DB",
     borderRadius: 6,
     padding: 8,
   },
   button: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: "#3B82F6",
     borderRadius: 6,
     padding: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

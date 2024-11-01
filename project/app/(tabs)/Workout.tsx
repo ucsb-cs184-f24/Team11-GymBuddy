@@ -1,15 +1,29 @@
 import { getUserId, saveWorkout } from "@/databaseService";
-import React, {useEffect, useState} from "react";
-import { View, Text, StyleSheet, Button, TouchableOpacity, Modal, FlatList} from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+} from "react-native";
 
 const Workout = () => {
-
   const [modalVisible, setModalVisible] = useState(false);
   const [workoutOptionsVisible, setWorkoutOptionsVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedWorkouts, setSelectedWorkouts] = useState<string[]>([]);
 
-  const categories = ["Chest", "Back", "Biceps", "Triceps", "Legs", "Shoulders"];
+  const categories = [
+    "Chest",
+    "Back",
+    "Biceps",
+    "Triceps",
+    "Legs",
+    "Shoulders",
+  ];
   const workoutsByCategory: { [key: string]: string[] } = {
     Chest: ["Bench Press", "Chest Fly", "Push-Ups"],
     Back: ["Pull-Ups", "Rows", "Lat Pulldown"],
@@ -46,7 +60,6 @@ const Workout = () => {
     setSelectedCategory(null);
   };
 
-
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Workout</Text>
@@ -55,11 +68,18 @@ const Workout = () => {
       </TouchableOpacity>
 
       {/* Category Selection Modal */}
-      <Modal visible={modalVisible && !workoutOptionsVisible} animationType="slide">
+      <Modal
+        visible={modalVisible && !workoutOptionsVisible}
+        animationType="slide"
+      >
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Select a Category</Text>
           {categories.map((category) => (
-            <TouchableOpacity key={category} onPress={() => handleSelectCategory(category)} style={styles.optionButton}>
+            <TouchableOpacity
+              key={category}
+              onPress={() => handleSelectCategory(category)}
+              style={styles.optionButton}
+            >
               <Text style={styles.optionText}>{category}</Text>
             </TouchableOpacity>
           ))}
@@ -69,12 +89,17 @@ const Workout = () => {
       {/* Workout Options Modal */}
       <Modal visible={workoutOptionsVisible} animationType="slide">
         <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Select Workouts for {selectedCategory}</Text>
+          <Text style={styles.modalTitle}>
+            Select Workouts for {selectedCategory}
+          </Text>
           <FlatList
             data={workoutsByCategory[selectedCategory || ""] || []}
             keyExtractor={(item) => item}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleSelectWorkout(item)} style={styles.optionButton}>
+              <TouchableOpacity
+                onPress={() => handleSelectWorkout(item)}
+                style={styles.optionButton}
+              >
                 <Text style={styles.optionText}>{item}</Text>
               </TouchableOpacity>
             )}
@@ -84,16 +109,7 @@ const Workout = () => {
       </Modal>
     </View>
   );
-
-  
-
-
-
 };
-
-
-
-
 
 const styles = StyleSheet.create({
   container: {
