@@ -24,6 +24,8 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const router = useRouter(); 
 
+
+
   // Handle Sign-in (existing users)
   const handleSignUp = async () => {
     try {
@@ -35,9 +37,8 @@ const Register = () => {
       // Save user session in AsyncStorage
       await AsyncStorage.setItem("@user", JSON.stringify(user));
       Alert.alert("User Created");
-      console.log(JSON.stringify(user));
       // After successful sign-in, redirect to the home page
-      router.replace("/(tabs)/Home/Home");
+      router.replace("/(tabs)/Home");
     } catch (e: any) {
       // TODO - more detailed error messages
       Alert.alert("Sign in failed: ", e.message);
