@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "firebase/auth";
 import testUserData from './testUsers.json'; // Import initial feed data
 import testPersonalData from './testPersonal.json'; // Import new post data
+import { getAllUsersRecentWorkouts } from "@/databaseService";
 
 const Home = () => {
     // State to hold the posts for the feed
@@ -16,20 +17,21 @@ const Home = () => {
     // Load the initial feed data when the component mounts
     const loadPosts = async () => {
       try {
-        const savedPosts = await AsyncStorage.getItem('posts');
-        const savedPersonalPosts = await AsyncStorage.getItem('personalPosts');
-        if (savedPosts !== null) {
-          setPosts(JSON.parse(savedPosts));
-        } else {
-          setPosts(testUserData);
-        }
-        if (savedPersonalPosts !== null) {
-          setPersonalPosts(JSON.parse(savedPersonalPosts));
-        } else {
-          setPersonalPosts(testPersonalData);
-        }
+        const recentWorkouts = await getAllUsersRecentWorkouts(1);
+        console.log('Recent workouts:', recentWorkouts);
+        const posts = Object.entries(recentWorkouts).map(([id, workout]) => ({
+          id,
+          uName: recentWorkouts[id].name || 'null',
+          area: 'N/A',
+          exercise: recentWorkouts[id].workouts.toString(),
+          sets: 0,
+          reps: 0,
+          date: new Date(recentWorkouts[id].date * 1000)?.toLocaleDateString() || 'N/A',
+          time: 'N/A',
+        }));
+        setPosts(posts);
       } catch (error) {
-        console.error("Failed to load posts from AsyncStorage", error);
+        console.error("Failed to load posts", error);
       }
     };
     loadPosts();
