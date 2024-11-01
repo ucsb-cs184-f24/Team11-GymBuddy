@@ -1,19 +1,14 @@
-import React, { useState  } from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
   Alert,
-  Image,
   TextInput,
   TouchableOpacity,
   StyleSheet,
   Button,
 } from "react-native";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  updateProfile
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -22,18 +17,20 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter(); 
-
-
+  const router = useRouter();
 
   // Handle Sign-in (existing users)
   const handleSignUp = async () => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
       await updateProfile(userCredential.user, {
-        displayName: name
-        });
+        displayName: name,
+      });
       // Save user session in AsyncStorage
       await AsyncStorage.setItem("@user", JSON.stringify(user));
       Alert.alert("User Created");
@@ -44,7 +41,6 @@ const Register = () => {
       Alert.alert("Sign in failed: ", e.message);
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -82,7 +78,10 @@ const Register = () => {
         <Text style={styles.createAccountButtonText}>Create an account</Text>
       </TouchableOpacity>
 
-      <Button onPress= {() => router.replace("/(auth)/SignIn")} title = "Back To Sign In" />
+      <Button
+        onPress={() => router.replace("/(auth)/SignIn")}
+        title="Back To Sign In"
+      />
     </View>
   );
 };
