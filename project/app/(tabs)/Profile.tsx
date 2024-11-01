@@ -13,8 +13,8 @@ import { User } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { getAuth } from "firebase/auth";
-import ImagePickerComponent from "../components/pickImage";
-import UserInfoEditor from "../components/ProfileData";
+import ImagePickerComponent from "../../components/Profile/pickImage";
+import UserInfoEditor from "../../components/Profile/ProfileData";
 
 export default function Profile() {
   const router = useRouter();

@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-} from "react-native";
-
-
+import { View, Text, StyleSheet } from "react-native";
 
 interface UserInfoEditorProps {
   initialName: string | undefined;
   initialEmail: string | undefined;
 }
+
 export default function UserInfoEditor({
   initialName,
   initialEmail,
