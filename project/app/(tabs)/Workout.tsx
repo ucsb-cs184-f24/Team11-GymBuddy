@@ -1,4 +1,4 @@
-import { getUserId, saveWorkout } from "@/databaseService";
+import { getUserId, saveWorkout, getWorkouts } from "@/databaseService"; // Assuming getWorkouts is a function to fetch previous workouts
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Button, ScrollView } from "react-native";
 
@@ -7,6 +7,7 @@ const Workout = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedWorkouts, setSelectedWorkouts] = useState<string[]>([]);
   const [userData, setUserData] = useState(null);
+  const [previousWorkouts, setPreviousWorkouts] = useState<any[]>([]); // State to store previous workouts
   const [isButtonPressed, setIsButtonPressed] = useState(false);
   const categories = ["Chest", "Back", "Biceps", "Triceps", "Legs", "Shoulders", "Abs"];
   const workoutsByCategory: { [key: string]: string[] } = {
@@ -22,10 +23,22 @@ const Workout = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const data = await getUserId();
+      console.log("Fetched user data:", data); // Log user data
       setUserData(data);
     };
     fetchUserData();
   }, []);
+
+  useEffect(() => {
+    const fetchPreviousWorkouts = async () => {
+      if (userData) {
+        const workouts = await getWorkouts(userData);
+        console.log("Fetched previous workouts:", workouts); // Log fetched workouts
+        setPreviousWorkouts(workouts || []);
+      }
+    };
+    fetchPreviousWorkouts();
+  }, [userData]);
 
   const handleAddWorkout = () => {
     setModalVisible(true);
@@ -58,6 +71,11 @@ const Workout = () => {
 
     if (userData) {
       saveWorkout(workoutLog, userData);
+      // Close all dropdowns, unselect all options, and close the modal
+      setSelectedCategory(null);
+      setSelectedWorkouts([]);
+      setModalVisible(false);
+      setIsButtonPressed(false);
     } else {
       console.error("User data is null. Cannot save workout.");
     }
@@ -65,7 +83,20 @@ const Workout = () => {
 
   return (
     <View style={styles.container}>
-      <Button title="Add Workout" onPress={handleAddWorkout} />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Text style={styles.title}>Previous Workouts</Text>
+        {previousWorkouts && previousWorkouts.length > 0 ? (
+          previousWorkouts.map((workout, index) => (
+            <View key={index} style={styles.workoutLog}>
+              <Text style={styles.workoutLogText}>Date: {new Date(workout.date).toLocaleDateString()}</Text>
+              <Text style={styles.workoutLogText}>Category: {workout.name}</Text>
+              <Text style={styles.workoutLogText}>Workouts: {workout.workouts.join(", ")}</Text>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.noWorkoutsText}>No previous workouts found.</Text>
+        )}
+      </ScrollView>
       <Modal visible={modalVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Select a Category</Text>
@@ -105,6 +136,11 @@ const Workout = () => {
           <Button title="Close" onPress={handleCloseDropdown} />
         </View>
       </Modal>
+      <View style={styles.bottomBar}>
+        <TouchableOpacity onPress={handleAddWorkout} style={styles.addButton}>
+          <Text style={styles.addButtonText}>Add Workout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -115,6 +151,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginVertical: 20,
+  },
+  workoutLog: {
+    backgroundColor: '#e0e0e0',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+    width: '90%',
+  },
+  workoutLogText: {
+    fontSize: 16,
+  },
+  noWorkoutsText: {
+    fontSize: 16,
+    color: 'gray',
+    textAlign: 'center',
+    marginVertical: 20,
   },
   modalContainer: {
     backgroundColor: "white",
@@ -154,6 +211,24 @@ const styles = StyleSheet.create({
   },
   selectedWorkoutText: {
     color: "blue",
+  },
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: '#0095f6',
+    padding: 15,
+    alignItems: 'center',
+  },
+  addButton: {
+    backgroundColor: '#0095f6',
+    padding: 15,
+    borderRadius: 10,
+  },
+  addButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
   },
 });
 
