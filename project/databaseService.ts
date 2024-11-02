@@ -80,22 +80,40 @@ export const checkUserExists = async () => {
     const user = await getUserData();
 
     if (user) {
-      const userRef = ref(database, `users/${user.uid}`);
+      const userRef = ref(database, `users/${user.uid}/profile`);
       const snapshot = await get(userRef);
       if (!snapshot.exists()) {
-        await push(userRef, {
-          profile: {
-            email: user.email,
-            //Unix time
-            joined: user.createdAt ? user.createdAt : "",
-            Name: "First",
-            LastName: "Last",
-          },
-        });
+        await set (
+          userRef,{
+              'email': user.email,
+              //Unix time
+              'joined': user.createdAt? user.createdAt : '',
+              'Name': 'First',
+              'LastName': 'Last'
+          });
       }
     }
     return false;
   } catch (e) {
     console.error("Error checking if user exists", e);
   }
-};
+}
+
+export const getProfile = async (user: string) => {
+  try {
+    const userRef = ref(database, `users/${user}/profile`);
+    const snapshot = await get(userRef);
+    return snapshot.val();
+  } catch (e) {
+    console.error('Error getting profile', e);
+  }
+}
+
+export const updateProfile = async (user: string, profile: any) => {
+  try {
+    const userRef = ref(database, `users/${user}/profile`);
+    await set(userRef, profile);
+  } catch (e) {
+    console.error('Error updating profile', e);
+  }
+}
