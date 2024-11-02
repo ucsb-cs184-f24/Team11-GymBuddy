@@ -16,6 +16,9 @@ import { getAuth } from "firebase/auth";
 import ImagePickerComponent from "../../components/Profile/pickImage";
 import UserInfoEditor from "../../components/Profile/ProfileData";
 
+// TODO - delete
+import { getWorkouts } from "@/databaseService";
+
 export default function Profile() {
   const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -48,6 +51,11 @@ export default function Profile() {
   const handleImageSelected = (uri: string) => {
     setProfileImage(uri);
   };
+
+  const temp = async () => {
+    console.log( await getWorkouts("LovL6rTn5QctKqbGQyxbB7kvMsq1") );
+  }
+  temp();
 
   return (
     <SafeAreaView style={styles.container}>
