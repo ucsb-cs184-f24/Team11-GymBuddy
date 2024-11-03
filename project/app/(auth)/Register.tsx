@@ -20,8 +20,8 @@ import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-
 const { width } = Dimensions.get('window');
+import { createProfile } from "@/databaseService";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -56,14 +56,15 @@ const Register = () => {
         displayName: name,
       });
 
-      // Save user session in AsyncStorage
       await AsyncStorage.setItem("@user", JSON.stringify({
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
       }));
+      Alert.alert("User Created");
 
-      // After successful sign-up, redirect to the home page
+      await createProfile(user.uid, email, name);
+
       router.replace("/(tabs)/Home");
     } catch (e: any) {
       Alert.alert("Registration Failed", e.message);
