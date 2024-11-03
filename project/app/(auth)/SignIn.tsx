@@ -241,14 +241,14 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={['#4c669f', '#3b5998', '#192f6a']}
         style={styles.gradient}
       >
         <BlurView intensity={10} tint="dark" style={styles.header}>
-          <Text style={styles.headerTitle}>Sign In</Text>
+  
         </BlurView>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -269,7 +269,7 @@ const Login = () => {
                   autoCapitalize="none"
                   onChangeText={setEmail}
                   keyboardType="email-address"
-                  placeholderTextColor="#A0A0A0"
+                  placeholderTextColor="#FFFFFFFF"
                 />
                 <TextInput
                   placeholder="Password"
@@ -278,7 +278,7 @@ const Login = () => {
                   autoCapitalize="none"
                   onChangeText={setPassword}
                   secureTextEntry
-                  placeholderTextColor="#A0A0A0"
+                  placeholderTextColor="#FFFFFFFF"
                 />
               </View>
               <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotPasswordButton}>
@@ -302,7 +302,7 @@ const Login = () => {
           </Animated.View>
         </KeyboardAvoidingView>
       </LinearGradient>
-    </SafeAreaView>
+    </View>
   );
 };
 
