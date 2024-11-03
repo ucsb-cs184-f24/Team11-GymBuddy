@@ -53,7 +53,6 @@ const Home = () => {
     const loadPosts = async () => {
       try {
         const recentWorkouts = await getAllUsersRecentWorkouts(1);
-        console.log("Recent workouts:", recentWorkouts);
         const postsArray = Object.entries(recentWorkouts).map(
           ([id, workout]) => ({
             id,

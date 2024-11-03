@@ -9,18 +9,26 @@ import {
   Alert,
   Button,
 } from "react-native";
-import { User } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { getAuth } from "firebase/auth";
+
 import ImagePickerComponent from "@/components/Profile/pickImage";
 import UserInfoEditor from "@/components/Profile/ProfileData";
 import AnalyticCharts from "@/components/Profile/AnalyticCharts";
+import { checkUserExists, getProfile, getUserId } from "@/databaseService";
+
+
+interface UserData {
+  Name: string;
+  Email: string;
+  joined: string;
+}
 
 export default function Profile() {
   const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const auth = getAuth();
 
   const logout = async () => {
@@ -35,15 +43,14 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    const checkUser = async () => {
-      const storedUser = await AsyncStorage.getItem("@user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      } else {
-        router.replace("/(auth)/SignIn");
-      }
-    };
-    checkUser();
+    checkUserExists().then(async () => {
+      const profile = await getProfile(await getUserId());
+      setUserData({
+        Name: profile.Name,
+        Email: profile.email,
+        joined: new Date(Number(profile.joined)).toLocaleDateString(),
+      });
+    });
   }, []);
 
   const handleImageSelected = (uri: string) => {
@@ -59,8 +66,9 @@ export default function Profile() {
             initialImage={profileImage}
           />
           <UserInfoEditor
-            initialName={user?.displayName || ""}
-            initialEmail={user?.email || ""}
+            initialName={userData?.Name || "loading"}
+            initialEmail={userData?.Email || "loading"}
+            initialJoined={userData?.joined || "loading"}
           />
         </View>
         <AnalyticCharts />
