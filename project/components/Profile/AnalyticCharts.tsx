@@ -69,6 +69,11 @@ const AnalyticCharts = () => {
   ) => {
     const result: WorkoutDayResults = {};
 
+    // If workoutData is null, we set it to an empty object
+    if (!workoutData) {
+      workoutData = {};
+    }
+
     Object.entries(workoutData).forEach(([_, workout]) => {
       const workoutDate = new Date(workout.date * 1000).getTime(); // Convert UNIX timestamp to milliseconds
 
