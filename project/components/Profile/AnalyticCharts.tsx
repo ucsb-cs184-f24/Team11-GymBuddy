@@ -8,9 +8,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { BarChart, barDataItem } from "react-native-gifted-charts";
-import workoutData from "@/data/workoutData.json";
 import {
-  parseDateTime,
   processChartData,
   getRangeForPeriod,
   Period,
@@ -19,6 +17,13 @@ import {
 } from "@/utils/Profile/dataProcessHelpers";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { SymbolView } from "expo-symbols";
+import { getWorkouts, getUserId } from "@/databaseService";
+
+type WorkoutEntry = {
+  category: string;
+  date: number;
+  workouts: string[];
+};
 
 const AnalyticCharts = () => {
   const { width, height } = useWindowDimensions();
@@ -40,7 +45,9 @@ const AnalyticCharts = () => {
         chartPeriod,
         currentDate
       );
-      const data = filterData(startDate, endDate);
+      const userId = await getUserId();
+      const workoutData = await getWorkouts(userId);
+      const data = await filterData(startDate, endDate, workoutData);
       const processedData = processChartData(
         data,
         chartCategory,
@@ -55,54 +62,42 @@ const AnalyticCharts = () => {
     fetchData();
   }, [currentDate, chartCategory, chartPeriod]);
 
-  const filterData = (startDate: number, endDate: number) => {
-    const filteredData = workoutData.filter((workout) => {
-      const { year, zeroIndexedMonth, day, hour, minute } = parseDateTime(
-        workout.date,
-        workout.time
-      );
-      const workoutDate = new Date(
-        year,
-        zeroIndexedMonth,
-        day,
-        hour,
-        minute
-      ).getTime();
-      return workoutDate >= startDate && workoutDate <= endDate;
-    });
-
+  const filterData = async (
+    startDate: number,
+    endDate: number,
+    workoutData: { [key: string]: WorkoutEntry }
+  ) => {
     const result: WorkoutDayResults = {};
 
-    filteredData.forEach((workout) => {
-      const { year, zeroIndexedMonth, day, hour, minute } = parseDateTime(
-        workout.date,
-        workout.time
-      );
-      const workoutDate = new Date(
-        year,
-        zeroIndexedMonth,
-        day,
-        hour,
-        minute
-      ).toLocaleDateString();
+    Object.entries(workoutData).forEach(([_, workout]) => {
+      const workoutDate = new Date(workout.date * 1000).getTime(); // Convert UNIX timestamp to milliseconds
 
-      // Initialize the date key if it doesn't exist
-      if (!result[workoutDate]) {
-        result[workoutDate] = {
-          totalWorkout: 0,
-          bodyAreas: {},
-        };
+      // Check if the workout date is within the specified range
+      if (workoutDate >= startDate && workoutDate <= endDate) {
+        const formattedDate = new Date(
+          workout.date * 1000
+        ).toLocaleDateString();
+
+        // Initialize the date key if it doesn't exist
+        if (!result[formattedDate]) {
+          result[formattedDate] = {
+            totalWorkout: 0,
+            bodyAreas: {},
+          };
+        }
+
+        const category = workout.category;
+        const numWorkouts = workout.workouts.length;
+
+        // Increment totalWorkout for the date
+        result[formattedDate].totalWorkout += numWorkouts;
+
+        // Initialize the body area count if it doesn't exist
+        if (!result[formattedDate].bodyAreas[category]) {
+          result[formattedDate].bodyAreas[category] = 0;
+        }
+        result[formattedDate].bodyAreas[category] += numWorkouts;
       }
-
-      // Increment totalWorkout for the date
-      result[workoutDate].totalWorkout += 1;
-
-      const bodyArea = workout.bodyArea;
-      // Initialize the body area count if it doesn't exist
-      if (!result[workoutDate].bodyAreas[bodyArea]) {
-        result[workoutDate].bodyAreas[bodyArea] = 0;
-      }
-      result[workoutDate].bodyAreas[bodyArea] += 1;
     });
 
     return result;
@@ -171,30 +166,21 @@ const AnalyticCharts = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.analyticsContainer}>
-        <Text style={{ fontSize: 32, fontWeight: "700", marginBottom: 16 }}>
-          Analytics
-        </Text>
+        <Text style={styles.analyticsTitle}>Analytics</Text>
         <SegmentedControl
           values={periodOptions}
-          style={{ marginBottom: 10 }}
+          style={styles.segmentedControl}
           selectedIndex={periodOptions.indexOf(chartPeriod)}
           onChange={(event) => {
             const index = event.nativeEvent.selectedSegmentIndex;
             setChartPeriod(periodOptions[index]);
           }}
         />
-        <Text
-          style={{
-            fontSize: 14,
-            color: "#5A5A5A",
-            fontWeight: "700",
-            margin: 5,
-            marginBottom: 20,
-          }}
-        >
+        <Text style={styles.dateRange}>
           {currentEndDate.toLocaleDateString("en-US", { month: "short" })}{" "}
-          {currentEndDate.getDate()} - {currentDate.getDate()},{" "}
-          {currentDate.getFullYear()}
+          {currentEndDate.getDate()}, {currentEndDate.getFullYear()} -{" "}
+          {currentDate.toLocaleDateString("en-US", { month: "short" })}{" "}
+          {currentDate.getDate()}, {currentDate.getFullYear()}
         </Text>
         <BarChart
           key={chartKey}
@@ -211,35 +197,28 @@ const AnalyticCharts = () => {
             color: "gray",
             fontSize: chartData.length > 25 ? 5 : 12,
           }}
-          yAxisTextStyle={{ color: "gray" }}
+          yAxisTextStyle={styles.axisText}
           animationDuration={300}
           showFractionalValues={false}
           isAnimated
           showGradient
         />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "baseline",
-            marginTop: 16,
-          }}
-        >
+        <View style={styles.navigationContainer}>
           <TouchableOpacity
-            style={{ alignItems: "center" }}
+            style={styles.navigationButton}
             onPress={handlePreviousPeriod}
           >
             <SymbolView
               name="chevron.left.circle.fill"
               size={40}
               type="hierarchical"
-              tintColor={"gray"}
+              tintColor="gray"
             />
-            <Text style={{ fontSize: 11, color: "gray" }}>prev</Text>
+            <Text style={styles.navigationText}>prev</Text>
           </TouchableOpacity>
           <SegmentedControl
             values={chartCategoryOptions}
-            style={{ width: 180 }}
+            style={styles.segmentedControl}
             selectedIndex={chartCategoryOptions.indexOf(chartCategory)}
             onChange={(event) => {
               const index = event.nativeEvent.selectedSegmentIndex;
@@ -247,33 +226,64 @@ const AnalyticCharts = () => {
             }}
           />
           <TouchableOpacity
-            style={{ alignItems: "center" }}
+            style={styles.navigationButton}
             onPress={handleNextPeriod}
           >
             <SymbolView
               name="chevron.right.circle.fill"
               size={40}
               type="hierarchical"
-              tintColor={"gray"}
+              tintColor="gray"
             />
-            <Text style={{ fontSize: 11, color: "gray" }}>next</Text>
+            <Text style={styles.navigationText}>next</Text>
           </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
     backgroundColor: "#ECECEC",
+    marginVertical: 20,
   },
   analyticsContainer: {
     width: "100%",
     backgroundColor: "white",
     padding: 15,
+  },
+  analyticsTitle: {
+    fontSize: 32,
+    fontWeight: "700",
+    marginBottom: 16,
+  },
+  segmentedControl: {
+    marginBottom: 10,
+  },
+  dateRange: {
+    fontSize: 14,
+    color: "#5A5A5A",
+    fontWeight: "700",
+    marginVertical: 5,
+    marginBottom: 20,
+  },
+  axisText: {
+    color: "gray",
+  },
+  navigationContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "baseline",
+    marginTop: 16,
+  },
+  navigationButton: {
+    alignItems: "center",
+  },
+  navigationText: {
+    fontSize: 11,
+    color: "gray",
   },
 });
 

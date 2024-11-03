@@ -55,7 +55,7 @@ export const getRangeForPeriod = (period: Period, date: Date) => {
 };
 
 const processBodyData = (data: WorkoutDayResults) => {
-  const labels = ["Chest", "Shoulders", "Arms", "Back", "Core", "Legs"];
+  const labels = ["Chest", "Back", "Biceps", "Triceps", "Legs", "Shoulders"];
 
   let barData = labels.map((label) => ({
     label,
@@ -240,14 +240,6 @@ export const processChartData = (
     }
   }
   return [];
-};
-
-export const parseDateTime = (date: string, time: string) => {
-  const [year, month, day] = date.split("-").map(Number);
-  const [hour, minute] = time.split(":").map(Number);
-
-  const zeroIndexedMonth = month - 1;
-  return { year, zeroIndexedMonth, day, hour, minute };
 };
 
 export const parseDateString = (date: string) => {

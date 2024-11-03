@@ -13,11 +13,9 @@ import { User } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { getAuth } from "firebase/auth";
-import ImagePickerComponent from "../../components/Profile/pickImage";
-import UserInfoEditor from "../../components/Profile/ProfileData";
-
-// TODO - delete
-import { getWorkouts } from "@/databaseService";
+import ImagePickerComponent from "@/components/Profile/pickImage";
+import UserInfoEditor from "@/components/Profile/ProfileData";
+import AnalyticCharts from "@/components/Profile/AnalyticCharts";
 
 export default function Profile() {
   const router = useRouter();
@@ -52,17 +50,9 @@ export default function Profile() {
     setProfileImage(uri);
   };
 
-  const temp = async () => {
-    console.log( await getWorkouts("LovL6rTn5QctKqbGQyxbB7kvMsq1") );
-  }
-  temp();
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Profile</Text>
-        </View>
         <View style={styles.content}>
           <ImagePickerComponent
             onImageSelected={handleImageSelected}
@@ -73,6 +63,7 @@ export default function Profile() {
             initialEmail={user?.email || ""}
           />
         </View>
+        <AnalyticCharts />
         <View style={styles.container}>
           <Button title="Logout" onPress={logout} color="#4a90e2" />
         </View>
@@ -95,11 +86,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",
     alignItems: "center",
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#111827",
   },
   content: {
     flex: 1,
