@@ -1,4 +1,3 @@
-// Profile.tsx
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -13,8 +12,9 @@ import { User } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { getAuth } from "firebase/auth";
-import ImagePickerComponent from "../../components/Profile/pickImage";
-import UserInfoEditor from "../../components/Profile/ProfileData";
+import ImagePickerComponent from "@/components/Profile/pickImage";
+import UserInfoEditor from "@/components/Profile/ProfileData";
+
 
 export default function Profile() {
   const router = useRouter();
@@ -34,19 +34,31 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    const checkUser = async () => {
+    const checkUserAndLoadImage = async () => {
       const storedUser = await AsyncStorage.getItem("@user");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
+        
+        // Retrieve the saved image
+        const savedImage = await AsyncStorage.getItem("@profile_image");
+        if (savedImage) {
+          setProfileImage(savedImage);
+        }
       } else {
         router.replace("/(auth)/SignIn");
       }
     };
-    checkUser();
+    checkUserAndLoadImage();
   }, []);
 
-  const handleImageSelected = (uri: string) => {
+  const handleImageSelected = async (uri: string) => {
     setProfileImage(uri);
+    // Save the new image to AsyncStorage
+    try {
+      await AsyncStorage.setItem("@profile_image", uri);
+    } catch (error) {
+      console.error("Error saving image:", error);
+    }
   };
 
   return (
@@ -65,7 +77,7 @@ export default function Profile() {
             initialEmail={user?.email || ""}
           />
         </View>
-        <View style={styles.container}>
+        <View style={styles.logoutContainer}>
           <Button title="Logout" onPress={logout} color="#4a90e2" />
         </View>
       </ScrollView>
@@ -99,9 +111,8 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     paddingHorizontal: 16,
   },
-  text: {
-    fontSize: 16,
-    color: "#111827",
-    marginVertical: 8,
+  logoutContainer: {
+    padding: 16,
+    alignItems: "center",
   },
 });
