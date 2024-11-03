@@ -38,7 +38,7 @@ export const getAllUsersRecentWorkouts = async (k: number) => {
             recentWorkouts[userId] = workoutArray[0];
           }
         }
-        if (profile) {
+        if (profile && recentWorkouts[userId]) {
           recentWorkouts[userId].name = profile.Name;
         }
       }
