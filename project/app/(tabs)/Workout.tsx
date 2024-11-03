@@ -36,7 +36,7 @@ const Workout = () => {
 
   const handleAddWorkout = () => {
     setModalVisible(true);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Haptic feedback for opening modal
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); //Haptic feedback for opening modal
   };
 
   const handleSelectCategory = (category: string) => {
