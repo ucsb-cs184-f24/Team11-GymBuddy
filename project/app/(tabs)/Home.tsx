@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllUsersRecentWorkouts } from "@/databaseService";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 interface Post {
   id: string;
@@ -36,6 +37,7 @@ interface NavbarProps {
 
 const Home = () => {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [userName, setUserName] = useState("");
   const [newPost, setNewPost] = useState({
     exercise: "",
     duration: "",
@@ -47,6 +49,21 @@ const Home = () => {
   const toggleDarkMode = () => {
     setIsDarkMode((prevMode) => !prevMode);
   };
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, get their display name
+        setUserName(user.displayName || "User");
+      } else {
+        // User is signed out
+        setUserName("");
+      }
+    });
+  
+    // Clean up the subscription when the component unmounts
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     // Load posts when the component mounts
@@ -57,7 +74,7 @@ const Home = () => {
         const postsArray = Object.entries(recentWorkouts).map(
           ([id, workout]) => ({
             id,
-            uName: workout.name || "null",
+            uName: userName || "null",
             area: "N/A",
             exercise: workout.workouts.toString(),
             sets: 0,
@@ -75,6 +92,7 @@ const Home = () => {
     loadPosts();
   }, []);
 
+
   useEffect(() => {
     // Save the posts to AsyncStorage whenever they are updated
     const savePosts = async () => {
@@ -91,7 +109,7 @@ const Home = () => {
     if (newPost.exercise && newPost.duration) {
       const newPostItem: Post = {
         id: Date.now().toString(),
-        uName: "current_user",
+        uName: userName,
         area: "N/A",
         exercise: newPost.exercise,
         sets: 0,
