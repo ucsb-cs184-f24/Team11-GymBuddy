@@ -51,6 +51,7 @@ const Workout = () => {
     const workoutLog = {
       date: Math.floor(Date.now() / 1000),
       workouts: selectedWorkouts,
+      category: selectedCategory,
     };
     saveWorkout(workoutLog, userData);
 
