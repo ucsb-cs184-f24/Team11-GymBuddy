@@ -35,7 +35,6 @@ const Register = () => {
       await AsyncStorage.setItem("@user", JSON.stringify(user));
       Alert.alert("User Created");
 
-      console.log("NEW USERL ", user.uid, name, email);
       await createProfile(user.uid, email, name);
 
       // After successful sign-in, redirect to the home page

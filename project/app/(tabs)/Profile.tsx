@@ -9,14 +9,12 @@ import {
   Alert,
   Button,
 } from "react-native";
-import { User } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { getAuth } from "firebase/auth";
-import ImagePickerComponent from '../../components/Profile/pickImage'
-import { checkUserExists, getProfile, getUserData, getUserId } from '@/databaseService';
-import UserInfoEditor from '../../components/Profile/ProfileData';
-import { get } from 'firebase/database';
+import ImagePickerComponent from "../../components/Profile/pickImage";
+import { checkUserExists, getProfile, getUserId } from "@/databaseService";
+import UserInfoEditor from "../../components/Profile/ProfileData";
 
 interface UserData {
   Name: string;
@@ -27,7 +25,6 @@ interface UserData {
 export default function Profile() {
   const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
   const auth = getAuth();
 
@@ -42,31 +39,16 @@ export default function Profile() {
     }
   };
 
-  // useEffect(() => {
-  //   const checkUser = async () => {
-  //     const storedUser = await AsyncStorage.getItem("@user");
-  //     if (storedUser) {
-  //       setUser(JSON.parse(storedUser));
-  //       console.log(JSON.parse(storedUser));
-  //     } else {
-  //       router.replace("/(auth)/SignIn");
-  //     }
-  //   };
-  //   checkUser();
-  // }, []);
-
   useEffect(() => {
     checkUserExists().then(async () => {
-      const profile = await getProfile(await getUserId())
-      console.log(profile)
+      const profile = await getProfile(await getUserId());
       setUserData({
         Name: profile.Name,
         Email: profile.email,
         joined: new Date(Number(profile.joined)).toLocaleDateString(),
       });
-
-    })
-  }, [])
+    });
+  }, []);
 
   const handleImageSelected = (uri: string) => {
     setProfileImage(uri);
@@ -84,9 +66,9 @@ export default function Profile() {
             initialImage={profileImage}
           />
           <UserInfoEditor
-            initialName={userData?.Name || 'loading'}
-            initialEmail={userData?.Email|| 'loading'}
-            initialJoined={userData?.joined || 'loading'}
+            initialName={userData?.Name || "loading"}
+            initialEmail={userData?.Email || "loading"}
+            initialJoined={userData?.joined || "loading"}
           />
         </View>
         <View style={styles.container}>

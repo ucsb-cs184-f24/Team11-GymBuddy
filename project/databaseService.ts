@@ -83,21 +83,20 @@ export const checkUserExists = async () => {
       const userRef = ref(database, `users/${user.uid}/profile`);
       const snapshot = await get(userRef);
       if (!snapshot.exists()) {
-        await set (
-          userRef,{
-              'email': user.email,
-              //Unix time
-              'joined': user.createdAt? user.createdAt : '',
-              'Name': 'First',
-              'LastName': 'Last'
-          });
+        await set(userRef, {
+          email: user.email,
+          //Unix time
+          joined: user.createdAt ? user.createdAt : "",
+          Name: "First",
+          LastName: "Last",
+        });
       }
     }
     return false;
   } catch (e) {
     console.error("Error checking if user exists", e);
   }
-}
+};
 
 export const getProfile = async (user: string) => {
   try {
@@ -105,33 +104,37 @@ export const getProfile = async (user: string) => {
     const snapshot = await get(userRef);
     return snapshot.val();
   } catch (e) {
-    console.error('Error getting profile', e);
+    console.error("Error getting profile", e);
   }
-}
+};
 
 export const updateProfile = async (user: string, profile: any) => {
   try {
     const userRef = ref(database, `users/${user}/profile`);
     await set(userRef, profile);
   } catch (e) {
-    console.error('Error updating profile', e);
+    console.error("Error updating profile", e);
   }
-}
+};
 
-export const createProfile = async (userId: string, email: string, name: string) => {
+export const createProfile = async (
+  userId: string,
+  email: string,
+  name: string
+) => {
   try {
     const account = {
       profile: {
         email: email,
         joined: Math.floor(Date.now()),
         Name: name,
-        LastName: ''
-      }
+        LastName: "",
+      },
     };
 
     const userRef = ref(database, `users/${userId}`);
     await set(userRef, account); // Use set instead of push
   } catch (e) {
-    console.error('Error creating profile', e);
+    console.error("Error creating profile", e);
   }
-}
+};
