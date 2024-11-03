@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
+  SafeAreaView,
 } from "react-native";
 
 const Workout = () => {
@@ -89,7 +90,7 @@ const Workout = () => {
 
       {/* Workout Options Modal */}
       <Modal visible={workoutOptionsVisible} animationType="slide">
-        <View style={styles.modalContainer}>
+        <SafeAreaView style={styles.modalContainer}>
           <Text style={styles.modalTitle}>
             Select Workouts for {selectedCategory}
           </Text>
@@ -106,7 +107,7 @@ const Workout = () => {
             )}
           />
           <Button title="Save Workouts" onPress={handleSaveWorkout} />
-        </View>
+        </SafeAreaView>
       </Modal>
     </View>
   );
