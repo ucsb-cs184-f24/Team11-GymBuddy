@@ -4,19 +4,24 @@ import { View, Text, StyleSheet } from "react-native";
 interface UserInfoEditorProps {
   initialName: string | undefined;
   initialEmail: string | undefined;
+  initialJoined: string | undefined;
+
 }
 
 export default function UserInfoEditor({
   initialName,
   initialEmail,
+  initialJoined
 }: UserInfoEditorProps) {
-  const [name, setName] = useState(initialName || "");
-  const [email, setEmail] = useState(initialEmail || "");
+  const [name, setName] = useState(initialName || '');
+  const [email, setEmail] = useState(initialEmail || '');
+  const [joinDate, setJoinDate] = useState(initialJoined || '');
 
   useEffect(() => {
-    setName(initialName || "");
-    setEmail(initialEmail || "");
-  }, [initialName, initialEmail]);
+    setName(initialName || '');
+    setEmail(initialEmail || '');
+    setJoinDate(initialJoined || '');
+  }, [initialName, initialEmail, initialJoined]);
 
   return (
     <View style={styles.container}>
@@ -27,6 +32,10 @@ export default function UserInfoEditor({
       <View style={styles.fieldContainer}>
         <Text style={styles.label}>Email</Text>
         <Text style={styles.value}>{email}</Text>
+      </View>
+      <View style={styles.fieldContainer}>
+        <Text style={styles.label}>Joined</Text>
+        <Text style={styles.value}>{joinDate}</Text>
       </View>
     </View>
   );
