@@ -68,10 +68,6 @@ export default function Profile() {
     })
   }, [])
 
-  useEffect(() => {
-    console.log(userData)
-  }, [userData])
-
   const handleImageSelected = (uri: string) => {
     setProfileImage(uri);
   };

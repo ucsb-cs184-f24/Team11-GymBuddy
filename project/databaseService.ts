@@ -117,3 +117,21 @@ export const updateProfile = async (user: string, profile: any) => {
     console.error('Error updating profile', e);
   }
 }
+
+export const createProfile = async (userId: string, email: string, name: string) => {
+  try {
+    const account = {
+      profile: {
+        email: email,
+        joined: Math.floor(Date.now()),
+        Name: name,
+        LastName: ''
+      }
+    };
+
+    const userRef = ref(database, `users/${userId}`);
+    await set(userRef, account); // Use set instead of push
+  } catch (e) {
+    console.error('Error creating profile', e);
+  }
+}
