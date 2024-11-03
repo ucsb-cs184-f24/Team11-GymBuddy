@@ -1,15 +1,17 @@
 import { getUserId, saveWorkout } from "@/databaseService";
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-  Modal,
-  FlatList,
-  SafeAreaView,
-} from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Dimensions } from "react-native";
+import * as Haptics from "expo-haptics";
+
+const { width, height } = Dimensions.get("window");
+const vw = (percentage: number) => (width * percentage) / 100;
+const vh = (percentage: number) => (height * percentage) / 100;
+
+interface WorkoutLog {
+  date: number;
+  workouts: string[];
+  name?: string;
+}
 
 const Workout = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -17,14 +19,7 @@ const Workout = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedWorkouts, setSelectedWorkouts] = useState<string[]>([]);
 
-  const categories = [
-    "Chest",
-    "Back",
-    "Biceps",
-    "Triceps",
-    "Legs",
-    "Shoulders",
-  ];
+  const categories = ["Chest", "Back", "Biceps", "Triceps", "Legs", "Shoulders"];
   const workoutsByCategory: { [key: string]: string[] } = {
     Chest: ["Bench Press", "Chest Fly", "Push-Ups"],
     Back: ["Pull-Ups", "Rows", "Lat Pulldown"],
@@ -34,27 +29,35 @@ const Workout = () => {
     Shoulders: ["Shoulder Press", "Lateral Raises", "Front Raises"],
   };
 
-  const handleAddWorkout = () => setModalVisible(true);
+  const maxWorkouts = 10; // Max workouts allowed for selection, adjust as needed
+
+  const handleAddWorkout = () => {
+    setModalVisible(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Haptic feedback for opening modal
+  };
 
   const handleSelectCategory = (category: string) => {
     setSelectedCategory(category);
     setWorkoutOptionsVisible(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Light haptic feedback on category select
   };
 
   const handleSelectWorkout = (workout: string) => {
-    if (!selectedWorkouts.includes(workout)) {
+    if (!selectedWorkouts.includes(workout) && selectedWorkouts.length < maxWorkouts) {
       setSelectedWorkouts([...selectedWorkouts, workout]);
+      Haptics.selectionAsync(); // Selection feedback on workout select
     }
   };
 
   const handleSaveWorkout = async () => {
     const userData = await getUserId();
-    const workoutLog = {
-      date: Math.floor(Date.now() / 1000),
+    const workoutLog: WorkoutLog = {
+      date: Date.now(),
       workouts: selectedWorkouts,
-      category: selectedCategory,
+      name: userData.name, // Assuming userData has a name property
     };
     saveWorkout(workoutLog, userData);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success); // Success feedback on save
 
     setSelectedWorkouts([]);
     setModalVisible(false);
@@ -70,44 +73,47 @@ const Workout = () => {
       </TouchableOpacity>
 
       {/* Category Selection Modal */}
-      <Modal
-        visible={modalVisible && !workoutOptionsVisible}
-        animationType="slide"
-      >
+      <Modal visible={modalVisible && !workoutOptionsVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Select a Category</Text>
-          {categories.map((category) => (
-            <TouchableOpacity
-              key={category}
-              onPress={() => handleSelectCategory(category)}
-              style={styles.optionButton}
-            >
-              <Text style={styles.optionText}>{category}</Text>
-            </TouchableOpacity>
-          ))}
+          <View style={styles.optionListContainer}>
+            {categories.map((category) => (
+              <TouchableOpacity
+                key={category}
+                onPress={() => handleSelectCategory(category)}
+                style={styles.optionButton}
+              >
+                <Text style={styles.optionText}>{category}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
         </View>
       </Modal>
 
       {/* Workout Options Modal */}
       <Modal visible={workoutOptionsVisible} animationType="slide">
-        <SafeAreaView style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>
-            Select Workouts for {selectedCategory}
-          </Text>
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Select Workouts for {selectedCategory}</Text>
           <FlatList
             data={workoutsByCategory[selectedCategory || ""] || []}
             keyExtractor={(item) => item}
+            contentContainerStyle={styles.optionListContainer}
             renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => handleSelectWorkout(item)}
-                style={styles.optionButton}
-              >
+              <TouchableOpacity onPress={() => handleSelectWorkout(item)} style={styles.optionButton}>
                 <Text style={styles.optionText}>{item}</Text>
               </TouchableOpacity>
             )}
           />
-          <Button title="Save Workouts" onPress={handleSaveWorkout} />
-        </SafeAreaView>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSaveWorkout}>
+            <Text style={styles.saveButtonText}>Save Workouts</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.closeButton} onPress={() => setWorkoutOptionsVisible(false)}>
+            <Text style={styles.closeButtonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </Modal>
     </View>
   );
@@ -118,42 +124,100 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#f0f4f7",
+    padding: vw(5),
   },
   text: {
-    fontSize: 24,
+    fontSize: vw(7),
     fontWeight: "bold",
+    color: "#333",
+    marginBottom: vh(2),
   },
   button: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: "#007BFF",
-    borderRadius: 5,
+    paddingVertical: vh(1.5),
+    paddingHorizontal: vw(6),
+    backgroundColor: "#1e90ff",
+    borderRadius: vw(6),
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: vh(0.5) },
+    shadowOpacity: 0.2,
+    shadowRadius: vw(3),
+    marginBottom: vh(2),
   },
   buttonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: vw(4),
+    fontWeight: "600",
+    textAlign: "center",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(240, 244, 247, 0.9)",
+    paddingHorizontal: vw(5),
+    paddingVertical: vh(5),
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: vw(6.5),
     fontWeight: "bold",
-    marginBottom: 20,
+    color: "#333",
+    marginBottom: vh(1.5),
+    textAlign: "center",
+  },
+  optionListContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
   },
   optionButton: {
-    padding: 15,
-    backgroundColor: "#007BFF",
-    borderRadius: 5,
-    marginVertical: 5,
+    paddingVertical: vh(1.5),
+    paddingHorizontal: vw(10),
+    backgroundColor: "#1e90ff",
+    borderRadius: vw(5),
+    marginVertical: vh(1),
+    width: "80%",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: vh(0.3) },
+    shadowOpacity: 0.2,
+    shadowRadius: vw(3),
   },
   optionText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: vw(4),
+    fontWeight: "500",
+    textAlign: "center",
+  },
+  saveButton: {
+    paddingVertical: vh(1.5),
+    backgroundColor: "#28a745",
+    borderRadius: vw(5),
+    alignItems: "center",
+    justifyContent: "center",
+    width: "80%",
+    alignSelf: "center",
+    marginVertical: vh(1.5),
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontSize: vw(4),
+    fontWeight: "600",
+  },
+  closeButton: {
+    paddingVertical: vh(1.5),
+    backgroundColor: "#dc3545",
+    borderRadius: vw(5),
+    alignItems: "center",
+    justifyContent: "center",
+    width: "80%",
+    alignSelf: "center",
+    marginVertical: vh(1),
+  },
+  closeButtonText: {
+    color: "#fff",
+    fontSize: vw(4),
+    fontWeight: "600",
   },
 });
 
