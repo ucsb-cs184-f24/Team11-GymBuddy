@@ -39,7 +39,15 @@ export const getAllUsersRecentWorkouts = async (k: number) => {
           }
         }
         if (profile) {
-          recentWorkouts[userId].name = profile.Name;
+          if (recentWorkouts[userId] == null) {
+            recentWorkouts[userId] = {
+              date: 0,
+              workouts: [],
+            };
+          }
+          else {
+            recentWorkouts[userId].name = profile.Name;
+          }
         }
       }
       return recentWorkouts;
