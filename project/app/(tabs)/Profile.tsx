@@ -1,25 +1,33 @@
-import React, { useState, useEffect } from "react";
+// Profile.tsx
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
-  Text,
   StyleSheet,
   SafeAreaView,
   ScrollView,
   Alert,
   Button,
 } from "react-native";
-import { User } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { getAuth } from "firebase/auth";
 import ImagePickerComponent from "@/components/Profile/pickImage";
 import UserInfoEditor from "@/components/Profile/ProfileData";
+import AnalyticCharts from "@/components/Profile/AnalyticCharts";
+import { checkUserExists, getProfile, getUserId } from "@/databaseService";
+import { useFocusEffect } from "@react-navigation/native";
 
+interface UserData {
+  Name: string;
+  Email: string;
+  joined: string;
+}
 
 export default function Profile() {
   const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [analyticsKey, setAnalyticsKey] = useState(0);
   const auth = getAuth();
 
   const logout = async () => {
@@ -34,24 +42,30 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    const checkUserAndLoadImage = async () => {
-      const storedUser = await AsyncStorage.getItem("@user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-        
-        // Retrieve the saved image
-        const savedImage = await AsyncStorage.getItem("@profile_image");
-        if (savedImage) {
-          setProfileImage(savedImage);
-        }
-      } else {
-        router.replace("/(auth)/SignIn");
+    checkUserExists().then(async () => {
+      const profile = await getProfile(await getUserId());
+      setUserData({
+        Name: profile.Name,
+        Email: profile.email,
+        joined: new Date(Number(profile.joined)).toLocaleDateString(),
+      });
+
+      // Retrieve the saved image
+      const savedImage = await AsyncStorage.getItem("@profile_image");
+      if (savedImage) {
+        setProfileImage(savedImage);
       }
-    };
-    checkUserAndLoadImage();
+    }
   }, []);
 
-  const handleImageSelected = async (uri: string) => {
+  useFocusEffect(
+    useCallback(() => {
+      // Update key to trigger re-render of AnalyticCharts
+      setAnalyticsKey((prevKey) => prevKey + 1);
+    }, [])
+  );
+
+  const handleImageSelected = (uri: string) => {
     setProfileImage(uri);
     // Save the new image to AsyncStorage
     try {
@@ -64,19 +78,18 @@ export default function Profile() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Profile</Text>
-        </View>
         <View style={styles.content}>
           <ImagePickerComponent
             onImageSelected={handleImageSelected}
             initialImage={profileImage}
           />
           <UserInfoEditor
-            initialName={user?.displayName || ""}
-            initialEmail={user?.email || ""}
+            initialName={userData?.Name || "loading"}
+            initialEmail={userData?.Email || "loading"}
+            initialJoined={userData?.joined || "loading"}
           />
         </View>
+        <AnalyticCharts key={analyticsKey} />
         <View style={styles.logoutContainer}>
           <Button title="Logout" onPress={logout} color="#4a90e2" />
         </View>
@@ -99,11 +112,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",
     alignItems: "center",
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#111827",
   },
   content: {
     flex: 1,

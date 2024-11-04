@@ -12,7 +12,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { createProfile } from "@/databaseService";
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,6 +34,9 @@ const Register = () => {
       // Save user session in AsyncStorage
       await AsyncStorage.setItem("@user", JSON.stringify(user));
       Alert.alert("User Created");
+
+      await createProfile(user.uid, email, name);
+
       // After successful sign-in, redirect to the home page
       router.replace("/(tabs)/Home");
     } catch (e: any) {
