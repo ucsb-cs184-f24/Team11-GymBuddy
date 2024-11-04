@@ -249,7 +249,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "#ECECEC",
-    marginVertical: 20,
   },
   analyticsContainer: {
     width: "100%",

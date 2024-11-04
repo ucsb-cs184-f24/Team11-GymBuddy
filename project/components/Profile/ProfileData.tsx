@@ -5,22 +5,21 @@ interface UserInfoEditorProps {
   initialName: string | undefined;
   initialEmail: string | undefined;
   initialJoined: string | undefined;
-
 }
 
 export default function UserInfoEditor({
   initialName,
   initialEmail,
-  initialJoined
+  initialJoined,
 }: UserInfoEditorProps) {
-  const [name, setName] = useState(initialName || '');
-  const [email, setEmail] = useState(initialEmail || '');
-  const [joinDate, setJoinDate] = useState(initialJoined || '');
+  const [name, setName] = useState(initialName || "");
+  const [email, setEmail] = useState(initialEmail || "");
+  const [joinDate, setJoinDate] = useState(initialJoined || "");
 
   useEffect(() => {
-    setName(initialName || '');
-    setEmail(initialEmail || '');
-    setJoinDate(initialJoined || '');
+    setName(initialName || "");
+    setEmail(initialEmail || "");
+    setJoinDate(initialJoined || "");
   }, [initialName, initialEmail, initialJoined]);
 
   return (
@@ -53,6 +52,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    marginBottom: 20,
   },
   fieldContainer: {
     marginBottom: 16,

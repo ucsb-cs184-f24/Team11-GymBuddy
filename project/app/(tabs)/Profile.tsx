@@ -83,7 +83,7 @@ export default function Profile() {
       colors={["#4c669f", "#3b5998", "#192f6a"]}
       style={styles.container}
     >
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <BlurView intensity={80} tint="dark" style={styles.contentBlur}>
             <View style={styles.content}>
@@ -102,9 +102,9 @@ export default function Profile() {
             <AnalyticCharts key={analyticsKey} />
           </BlurView>
           <BlurView intensity={80} tint="dark" style={styles.logoutBlur}>
-            <View style={styles.logoutContainer}>
-              <Button title="Logout" onPress={logout} color="#FFFFFF" />
-            </View>
+            <TouchableOpacity style={styles.logoutContainer} onPress={logout}>
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
           </BlurView>
         </ScrollView>
       </SafeAreaView>
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   contentBlur: {
     margin: 10,
     borderRadius: 10,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   content: {
     alignItems: "center",
@@ -135,15 +135,19 @@ const styles = StyleSheet.create({
   analyticsBlur: {
     margin: 10,
     borderRadius: 10,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   logoutBlur: {
     margin: 10,
     borderRadius: 10,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   logoutContainer: {
     padding: 16,
     alignItems: "center",
+  },
+  logoutText: {
+    color: "#FFFFFF",
+    fontSize: 20,
   },
 });

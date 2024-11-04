@@ -171,8 +171,12 @@ const Home = () => {
       <Image source={{ uri: item.image }} style={styles.workoutImage} />
       <View style={styles.workoutInfo}>
         <Text style={styles.exerciseText}>{item.exercise}</Text>
-        <Text style={styles.durationText}>{`Sets: ${item.sets}, Reps: ${item.reps}`}</Text>
-        <Text style={styles.durationText}>{`Date: ${item.date}, Time: ${item.time}`}</Text>
+        <Text
+          style={styles.durationText}
+        >{`Sets: ${item.sets}, Reps: ${item.reps}`}</Text>
+        <Text
+          style={styles.durationText}
+        >{`Date: ${item.date}, Time: ${item.time}`}</Text>
       </View>
     </BlurView>
   );
@@ -182,7 +186,7 @@ const Home = () => {
       colors={["#4c669f", "#3b5998", "#192f6a"]}
       style={styles.container}
     >
-      <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
+      <SafeAreaView style={styles.safeArea} edges={["bottom", "left", "right"]}>
         <Navbar setModalVisible={setModalVisible} />
         <View style={styles.spacer} />
         <FlatList
