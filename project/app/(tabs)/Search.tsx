@@ -1,11 +1,12 @@
 // Search.tsx
 import React from "react";
-import { View, TextInput, StyleSheet } from "react-native";
+import { View, TextInput, StyleSheet, Text } from "react-native";
 
 const Search = () => {
   return (
     <View style={styles.container}>
       <TextInput style={styles.searchBar} placeholder="Search..." />
+      <Text>Coming Soon</Text>
     </View>
   );
 };
