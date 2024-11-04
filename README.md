@@ -83,7 +83,16 @@ Before you begin, ensure you have the following installed:
 
 ### Dependencies
 
-TODO
+The project uses several libraries and add-ons:
+
+- **@expo/vector-icons**: For using vector icons in the app.
+- **@react-navigation/native**: Manages navigation within the app.
+- **expo-image-picker**: Allows users to pick images from their device.
+- **firebase**: Backend services for authentication and database.
+- **react-native-gifted-charts**: Displays interactive charts.
+- **react-native-reanimated**: Enables advanced animations.
+- **expo-auth-session**: Handles authentication flows.
+- **@react-native-async-storage/async-storage**: Handles storing local data.
 
 *Refer to `package.json` for the complete list of dependencies*
 
