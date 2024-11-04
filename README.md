@@ -122,6 +122,9 @@ Follow these steps to set up the project:
     Press 's' when the option appears in terminal to switch to Expo Go.
 
 5. **Run the app with Expo Go**
+   <br>
+   <br>
+   Scan the QR code produced in terminal.
 
 ### Functionality
 
