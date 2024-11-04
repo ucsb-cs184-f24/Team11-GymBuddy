@@ -103,9 +103,7 @@ Follow these steps to set up the project:
 1. **Clone the repository**
    ```bash
    git clone git@github.com:ucsb-cs184-f24/Team11-GymBuddy.git
-
-
-
+   
 2. **Navigate to the project directory**
    ```bash
    cd Team11-GymBuddy
