@@ -56,7 +56,7 @@ const Home = () => {
             exercise: workout.workouts.toString(),
             sets: 0,
             reps: 0,
-            date: new Date(workout.date * 1000)?.toLocaleDateString() || "N/A",
+            date: new Date(workout.date)?.toLocaleDateString() || "N/A",
             time: "N/A",
             image: "https://example.com/placeholder.jpg",
           })
