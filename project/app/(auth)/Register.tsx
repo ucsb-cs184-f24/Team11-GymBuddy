@@ -1,26 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
   Alert,
+  Image,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Button,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  Animated,
+  Dimensions,
+  StatusBar,
 } from "react-native";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
+const { width } = Dimensions.get('window');
 import { createProfile } from "@/databaseService";
+
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const fadeAnim = new Animated.Value(0);
 
-  // Handle Sign-in (existing users)
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   const handleSignUp = async () => {
+    if (!name.trim()) {
+      Alert.alert("Validation Error", "Please enter your name.");
+      return;
+    }
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -28,63 +50,93 @@ const Register = () => {
         password
       );
       const user = userCredential.user;
-      await updateProfile(userCredential.user, {
+      
+      // Update user profile with display name
+      await updateProfile(user, {
         displayName: name,
       });
-      // Save user session in AsyncStorage
-      await AsyncStorage.setItem("@user", JSON.stringify(user));
+
+      await AsyncStorage.setItem("@user", JSON.stringify({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+      }));
       Alert.alert("User Created");
 
       await createProfile(user.uid, email, name);
 
-      // After successful sign-in, redirect to the home page
       router.replace("/(tabs)/Home");
     } catch (e: any) {
-      // TODO - more detailed error messages
-      Alert.alert("Sign in failed: ", e.message);
+      Alert.alert("Registration Failed", e.message);
     }
+  };
+
+  const handleBackToLogin = () => {
+    router.replace("/(auth)/SignIn");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
-      <TextInput
-        placeholder="Name"
-        style={styles.input}
-        value={name}
-        autoCapitalize="none"
-        onChangeText={(text) => setName(text)}
-        placeholderTextColor="#888"
-      />
-      <TextInput
-        placeholder="Email"
-        style={styles.input}
-        value={email}
-        autoCapitalize="none"
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        placeholderTextColor="#888"
-      />
-      <TextInput
-        placeholder="Password"
-        style={styles.input}
-        value={password}
-        autoCapitalize="none"
-        onChangeText={setPassword}
-        secureTextEntry
-        placeholderTextColor="#888"
-      />
-      <TouchableOpacity
-        style={styles.createAccountButton}
-        onPress={handleSignUp}
+      <StatusBar barStyle="light-content" />
+      <LinearGradient
+        colors={['#4c669f', '#3b5998', '#192f6a']}
+        style={styles.gradient}
       >
-        <Text style={styles.createAccountButtonText}>Create an account</Text>
-      </TouchableOpacity>
-
-      <Button
-        onPress={() => router.replace("/(auth)/SignIn")}
-        title="Back To Sign In"
-      />
+        <BlurView intensity={10} tint="dark" style={styles.header}>
+        </BlurView>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.keyboardAvoidingView}
+        >
+          <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+            <BlurView intensity={100} style={styles.blurContainer}>
+              <Text style={styles.title}>Create Account</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder="Name"
+                  style={styles.input}
+                  value={name}
+                  autoCapitalize="words"
+                  onChangeText={setName}
+                  placeholderTextColor="#FFFFFFFF"
+                />
+                <TextInput
+                  placeholder="Email"
+                  style={styles.input}
+                  value={email}
+                  autoCapitalize="none"
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  placeholderTextColor="#FFFFFFFF"
+                />
+                <TextInput
+                  placeholder="Password"
+                  style={styles.input}
+                  value={password}
+                  autoCapitalize="none"
+                  onChangeText={setPassword}
+                  secureTextEntry
+                  placeholderTextColor="#FFFFFFFF"
+                />
+              </View>
+              <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
+                <Text style={styles.signUpButtonText}>Sign Up</Text>
+              </TouchableOpacity>
+              <View style={styles.orContainer}>
+                <View style={styles.line} />
+                <Text style={styles.orText}>or</Text>
+                <View style={styles.line} />
+              </View>
+              <TouchableOpacity
+                style={styles.backToLoginButton}
+                onPress={handleBackToLogin}
+              >
+                <Text style={styles.backToLoginButtonText}>Back to Login</Text>
+              </TouchableOpacity>
+            </BlurView>
+          </Animated.View>
+        </KeyboardAvoidingView>
+      </LinearGradient>
     </View>
   );
 };
@@ -92,79 +144,100 @@ const Register = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  gradient: {
+    flex: 1,
+  },
+  header: {
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#fff",
+  },
+  blurContainer: {
+    width: width - 40,
+    padding: 20,
+    borderRadius: 20,
+    alignItems: 'center',
+    overflow: 'hidden',
   },
   logo: {
-    width: 150,
-    height: 150,
+    width: 100,
+    height: 100,
     marginBottom: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
     marginBottom: 20,
+    color: "#FFFFFF",
+  },
+  inputContainer: {
+    width: "100%",
+    marginBottom: 20,
   },
   input: {
     width: "100%",
     height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    marginBottom: 15,
     fontSize: 16,
+    color: "#FFFFFF",
   },
-  forgotPasswordText: {
-    color: "#007AFF",
-    marginBottom: 20,
-    alignSelf: "flex-start",
-  },
-  signInButton: {
+  signUpButton: {
     width: "100%",
     height: 50,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 8,
-    marginBottom: 10,
+    borderRadius: 25,
+    marginBottom: 20,
   },
-  signInButtonText: {
-    color: "#fff",
+  signUpButtonText: {
+    color: "#3b5998",
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "600",
   },
   orContainer: {
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    marginVertical: 10,
+    marginBottom: 20,
   },
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: "#ccc",
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
   },
   orText: {
-    fontSize: 16,
-    color: "#888",
+    fontSize: 14,
+    color: "#FFFFFF",
     marginHorizontal: 10,
   },
-  createAccountButton: {
+  backToLoginButton: {
     width: "100%",
     height: 50,
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 8,
-    marginBottom: 20,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: "#FFFFFF",
   },
-  createAccountButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+  backToLoginButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
 
