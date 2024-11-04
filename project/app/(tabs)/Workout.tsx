@@ -9,6 +9,7 @@ import {
   Modal,
   ScrollView,
 } from "react-native";
+import { workoutsByCategory } from "@/utils/Workout/workoutCatagory";
 
 interface WorkoutLog {
   date: number;
@@ -25,15 +26,7 @@ const Workout = () => {
   const [isButtonPressed, setIsButtonPressed] = useState(false);
   const categories = ["Chest", "Back", "Biceps", "Triceps", "Legs", "Shoulders", "Abs"];
 
-  const workoutsByCategory: { [key: string]: string[] } = {
-    Chest: ["Bench Press", "Chest Fly", "Push-Ups"],
-    Back: ["Pull-Ups", "Rows", "Lat Pulldown"],
-    Biceps: ["Curls", "Hammer Curls", "Preacher Curl"],
-    Triceps: ["Tricep Extension", "Dips", "Skull Crushers"],
-    Legs: ["Squats", "Lunges", "Leg Press"],
-    Shoulders: ["Shoulder Press", "Lateral Raises", "Front Raises"],
-    Abs: ["Crunches", "Planks", "Leg Raises"],
-  };
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
