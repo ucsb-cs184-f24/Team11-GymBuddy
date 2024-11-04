@@ -9,12 +9,16 @@ import {
   FlatList,
   Alert,
   Modal,
-  SafeAreaView,
-  Switch,
-  useColorScheme,
+  Dimensions,
+  StatusBar,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import { getAllUsersRecentWorkouts } from "@/databaseService";
+
+const { width } = Dimensions.get("window");
 
 interface Post {
   id: string;
@@ -30,8 +34,6 @@ interface Post {
 
 interface NavbarProps {
   setModalVisible: (visible: boolean) => void;
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
 }
 
 const Home = () => {
@@ -41,15 +43,8 @@ const Home = () => {
     duration: "",
   });
   const [modalVisible, setModalVisible] = useState(false);
-  const systemColorScheme = useColorScheme();
-  const [isDarkMode, setIsDarkMode] = useState(systemColorScheme === "dark");
-
-  const toggleDarkMode = () => {
-    setIsDarkMode((prevMode) => !prevMode);
-  };
 
   useEffect(() => {
-    // Load posts when the component mounts
     const loadPosts = async () => {
       try {
         const recentWorkouts = await getAllUsersRecentWorkouts(1);
@@ -75,7 +70,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    // Save the posts to AsyncStorage whenever they are updated
     const savePosts = async () => {
       try {
         await AsyncStorage.setItem("posts", JSON.stringify(posts));
@@ -122,44 +116,17 @@ const Home = () => {
     }
   };
 
-  const Navbar = ({
-    setModalVisible,
-    isDarkMode,
-    toggleDarkMode,
-  }: NavbarProps) => {
+  const Navbar = ({ setModalVisible }: NavbarProps) => {
     return (
-      <View style={[styles.navbar, isDarkMode && styles.navbarDark]}>
+      <BlurView intensity={100} tint="dark" style={styles.navbar}>
         <TouchableOpacity
-          style={[
-            styles.postWorkoutButton,
-            isDarkMode && styles.postWorkoutButtonDark,
-          ]}
+          style={styles.postWorkoutButton}
           onPress={() => setModalVisible(true)}
         >
-          <Text
-            style={[
-              styles.postWorkoutButtonText,
-              isDarkMode && styles.postWorkoutButtonTextDark,
-            ]}
-          >
-            +
-          </Text>
+          <Text style={styles.postWorkoutButtonText}>+</Text>
         </TouchableOpacity>
-        <Text
-          style={[styles.navbarTitle, isDarkMode && styles.navbarTitleDark]}
-        >
-          Workouts
-        </Text>
+        <Text style={styles.navbarTitle}>Workouts</Text>
         <View style={styles.navbarIcons}>
-          <Switch
-            trackColor={{
-              false: "#767577",
-              true: isDarkMode ? "#81b0ff" : "#81b0ff",
-            }}
-            thumbColor={isDarkMode ? "#f4f3f4" : "#f5dd4b"}
-            onValueChange={toggleDarkMode}
-            value={isDarkMode}
-          />
           <TouchableOpacity style={styles.navbarIcon}>
             <Image
               source={{ uri: "https://example.com/profile-pic.jpg" }}
@@ -167,22 +134,19 @@ const Home = () => {
             />
           </TouchableOpacity>
         </View>
-      </View>
+      </BlurView>
     );
   };
 
   const renderPost = ({ item }: { item: Post }) => (
-    <View style={[styles.workoutCard, isDarkMode && styles.workoutCardDark]}>
+    <BlurView intensity={80} tint="dark" style={styles.workoutCard}>
       <View style={styles.workoutHeader}>
         <Image
           source={{ uri: "https://example.com/profile-pic.jpg" }}
           style={styles.workoutProfilePic}
         />
-        <Text style={[styles.username, isDarkMode && styles.usernameDark]}>
-          {item.uName}
-        </Text>
+        <Text style={styles.username}>{item.uName}</Text>
         <TouchableOpacity
-          style={styles.moreOptions}
           onPress={() => {
             Alert.alert(
               "Delete Workout",
@@ -201,128 +165,180 @@ const Home = () => {
             );
           }}
         >
-          <Text
-            style={[
-              styles.moreOptionsText,
-              isDarkMode && styles.moreOptionsTextDark,
-            ]}
-          >
-            •••
-          </Text>
+          <Text style={styles.moreOptionsText}>•••</Text>
         </TouchableOpacity>
       </View>
       <Image source={{ uri: item.image }} style={styles.workoutImage} />
       <View style={styles.workoutInfo}>
-        <Text
-          style={[styles.exerciseText, isDarkMode && styles.exerciseTextDark]}
-        >
-          {item.exercise}
-        </Text>
-        <Text
-          style={[styles.durationText, isDarkMode && styles.durationTextDark]}
-        >{`Sets: ${item.sets}, Reps: ${item.reps}`}</Text>
-        <Text
-          style={[styles.durationText, isDarkMode && styles.durationTextDark]}
-        >{`Date: ${item.date}, Time: ${item.time}`}</Text>
+        <Text style={styles.exerciseText}>{item.exercise}</Text>
+        <Text style={styles.durationText}>{`Sets: ${item.sets}, Reps: ${item.reps}`}</Text>
+        <Text style={styles.durationText}>{`Date: ${item.date}, Time: ${item.time}`}</Text>
       </View>
-    </View>
+    </BlurView>
   );
 
   return (
-    <SafeAreaView
-      style={[styles.container, isDarkMode && styles.containerDark]}
+    <LinearGradient
+      colors={["#4c669f", "#3b5998", "#192f6a"]}
+      style={styles.container}
     >
-      <Navbar
-        setModalVisible={setModalVisible}
-        isDarkMode={isDarkMode}
-        toggleDarkMode={toggleDarkMode}
-      />
-      <FlatList
-        data={posts}
-        renderItem={renderPost}
-        keyExtractor={(item) => item.id}
-        style={styles.workoutList}
-      />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={[styles.modalView, isDarkMode && styles.modalViewDark]}>
-          <Text
-            style={[styles.modalTitle, isDarkMode && styles.modalTitleDark]}
-          >
-            Post Workout
-          </Text>
-          <TextInput
-            style={[styles.input, isDarkMode && styles.inputDark]}
-            placeholder="Exercise"
-            placeholderTextColor={isDarkMode ? "#888" : "#999"}
-            value={newPost.exercise}
-            onChangeText={(text) =>
-              setNewPost((prev) => ({ ...prev, exercise: text }))
-            }
-          />
-          <TextInput
-            style={[styles.input, isDarkMode && styles.inputDark]}
-            placeholder="Duration"
-            placeholderTextColor={isDarkMode ? "#888" : "#999"}
-            value={newPost.duration}
-            onChangeText={(text) =>
-              setNewPost((prev) => ({ ...prev, duration: text }))
-            }
-          />
-          <TouchableOpacity style={styles.addButton} onPress={addPost}>
-            <Text style={styles.addButtonText}>Add Workout</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={() => setModalVisible(false)}
-          >
-            <Text
-              style={[
-                styles.cancelButtonText,
-                isDarkMode && styles.cancelButtonTextDark,
-              ]}
-            >
-              Cancel
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </SafeAreaView>
+      <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
+        <Navbar setModalVisible={setModalVisible} />
+        <View style={styles.spacer} />
+        <FlatList
+          data={posts}
+          renderItem={renderPost}
+          keyExtractor={(item) => item.id}
+          style={[styles.workoutList, { paddingTop: 10 }]}
+        />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <BlurView intensity={100} tint="dark" style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Post Workout</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Exercise"
+                placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                value={newPost.exercise}
+                onChangeText={(text) =>
+                  setNewPost((prev) => ({ ...prev, exercise: text }))
+                }
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Duration"
+                placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                value={newPost.duration}
+                onChangeText={(text) =>
+                  setNewPost((prev) => ({ ...prev, duration: text }))
+                }
+              />
+              <TouchableOpacity style={styles.addButton} onPress={addPost}>
+                <Text style={styles.addButtonText}>Add Workout</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </BlurView>
+        </Modal>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fafafa",
   },
-  containerDark: {
-    backgroundColor: "#121212",
+  safeArea: {
+    flex: 1,
   },
   navbar: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#ffffff",
     paddingVertical: 10,
     paddingHorizontal: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#dbdbdb",
-  },
-  navbarDark: {
-    backgroundColor: "#1c1c1c",
-    borderBottomColor: "#2c2c2c",
   },
   navbarTitle: {
     fontSize: 20,
     fontWeight: "bold",
+    color: "#FFFFFF",
   },
-  navbarTitleDark: {
-    color: "#ffffff",
+  workoutCard: {
+    marginBottom: 10,
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  username: {
+    fontWeight: "bold",
+    flex: 1,
+    color: "#FFFFFF",
+  },
+  moreOptionsText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
+  postWorkoutButton: {
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  postWorkoutButtonText: {
+    fontSize: 24,
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
+  workoutImage: {
+    width: "100%",
+    height: 300,
+  },
+  workoutInfo: {
+    padding: 10,
+  },
+  exerciseText: {
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "#FFFFFF",
+  },
+  durationText: {
+    color: "rgba(255, 255, 255, 0.7)",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: "90%",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 15,
+    color: "#FFFFFF",
+  },
+  input: {
+    height: 40,
+    width: "100%",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    color: "#FFFFFF",
+  },
+  addButton: {
+    backgroundColor: "#FFFFFF",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  addButtonText: {
+    color: "#3b5998",
+    fontWeight: "bold",
+  },
+  cancelButton: {
+    marginTop: 15,
+  },
+  cancelButtonText: {
+    color: "#FFFFFF",
   },
   navbarIcons: {
     flexDirection: "row",
@@ -339,16 +355,6 @@ const styles = StyleSheet.create({
   workoutList: {
     flex: 1,
   },
-  workoutCard: {
-    backgroundColor: "#ffffff",
-    marginBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#dbdbdb",
-  },
-  workoutCardDark: {
-    backgroundColor: "#1c1c1c",
-    borderBottomColor: "#2c2c2c",
-  },
   workoutHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -360,121 +366,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 10,
   },
-  username: {
-    fontWeight: "bold",
-    flex: 1,
-  },
-  usernameDark: {
-    color: "#ffffff",
-  },
-  moreOptions: {
-    padding: 5,
-  },
-  moreOptionsText: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  moreOptionsTextDark: {
-    color: "#ffffff",
-  },
-  postWorkoutButton: {
-    backgroundColor: "white",
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 10,
-  },
-  postWorkoutButtonDark: {
-    backgroundColor: "#2c2c2c",
-  },
-  postWorkoutButtonText: {
-    fontSize: 24,
-    color: "#4a90e2",
-    fontWeight: "bold",
-  },
-  postWorkoutButtonTextDark: {
-    color: "#81b0ff",
-  },
-  workoutImage: {
-    width: "100%",
-    height: 300,
-  },
-  workoutInfo: {
-    padding: 10,
-  },
-  exerciseText: {
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  exerciseTextDark: {
-    color: "#ffffff",
-  },
-  durationText: {
-    color: "#666",
-  },
-  durationTextDark: {
-    color: "#888",
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalViewDark: {
-    backgroundColor: "#1c1c1c",
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 15,
-  },
-  modalTitleDark: {
-    color: "#ffffff",
-  },
-  input: {
-    height: 40,
-    width: "100%",
-    borderColor: "#dbdbdb",
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  inputDark: {
-    borderColor: "#2c2c2c",
-    color: "#ffffff",
-    backgroundColor: "#2c2c2c",
-  },
-  addButton: {
-    backgroundColor: "#0095f6",
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-  },
-  addButtonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-  cancelButton: {
-    marginTop: 10,
-  },
-  cancelButtonText: {
-    color: "#0095f6",
-  },
-  cancelButtonTextDark: {
-    color: "#81b0ff",
+  spacer: {
+    height: 20,
   },
 });
 
