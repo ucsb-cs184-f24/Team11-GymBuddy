@@ -201,7 +201,7 @@ const AnalyticCharts = () => {
           xAxisThickness={0}
           xAxisLabelTextStyle={{
             color: "gray",
-            fontSize: chartData.length > 25 ? 5 : 12,
+            fontSize: chartData.length > 25 ? 5 : 9,
           }}
           yAxisTextStyle={styles.axisText}
           showFractionalValues={false}
