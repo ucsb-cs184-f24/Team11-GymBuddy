@@ -7,7 +7,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   Animated,
@@ -18,10 +17,10 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "expo-router";
 import { auth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -39,7 +38,11 @@ const Login = () => {
 
   const handleSignIn = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
       await AsyncStorage.setItem("@user", JSON.stringify(user));
       router.replace("/(tabs)/Home");
@@ -64,12 +67,10 @@ const Login = () => {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
+        colors={["#4c669f", "#3b5998", "#192f6a"]}
         style={styles.gradient}
       >
-        <BlurView intensity={10} tint="dark" style={styles.header}>
-  
-        </BlurView>
+        <BlurView intensity={10} tint="dark" style={styles.header}></BlurView>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardAvoidingView}
@@ -101,10 +102,16 @@ const Login = () => {
                   placeholderTextColor="#FFFFFFFF"
                 />
               </View>
-              <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotPasswordButton}>
+              <TouchableOpacity
+                onPress={handleForgotPassword}
+                style={styles.forgotPasswordButton}
+              >
                 <Text style={styles.forgotPasswordText}>Forgot password?</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
+              <TouchableOpacity
+                style={styles.signInButton}
+                onPress={handleSignIn}
+              >
                 <Text style={styles.signInButtonText}>Sign In</Text>
               </TouchableOpacity>
               <View style={styles.orContainer}>
@@ -116,7 +123,9 @@ const Login = () => {
                 style={styles.createAccountButton}
                 onPress={handleCreateAccount}
               >
-                <Text style={styles.createAccountButtonText}>Create an account</Text>
+                <Text style={styles.createAccountButtonText}>
+                  Create an account
+                </Text>
               </TouchableOpacity>
             </BlurView>
           </Animated.View>
@@ -135,8 +144,8 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingVertical: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerTitle: {
     fontSize: 20,
@@ -156,8 +165,8 @@ const styles = StyleSheet.create({
     width: width - 40,
     padding: 20,
     borderRadius: 20,
-    alignItems: 'center',
-    overflow: 'hidden',
+    alignItems: "center",
+    overflow: "hidden",
   },
   logo: {
     width: 100,

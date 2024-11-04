@@ -55,7 +55,7 @@ export default function Profile() {
       if (savedImage) {
         setProfileImage(savedImage);
       }
-    }
+    });
   }, []);
 
   useFocusEffect(
@@ -65,7 +65,7 @@ export default function Profile() {
     }, [])
   );
 
-  const handleImageSelected = (uri: string) => {
+  const handleImageSelected = async (uri: string) => {
     setProfileImage(uri);
     // Save the new image to AsyncStorage
     try {
