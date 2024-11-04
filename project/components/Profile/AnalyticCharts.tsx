@@ -20,7 +20,7 @@ import { SymbolView } from "expo-symbols";
 import { getWorkouts, getUserId } from "@/databaseService";
 
 type WorkoutEntry = {
-  category: string;
+  name: string;
   date: number;
   workouts: string[];
 };
@@ -75,13 +75,11 @@ const AnalyticCharts = () => {
     }
 
     Object.entries(workoutData).forEach(([_, workout]) => {
-      const workoutDate = new Date(workout.date * 1000).getTime(); // Convert UNIX timestamp to milliseconds
+      const workoutDate = new Date(workout.date).getTime();
 
       // Check if the workout date is within the specified range
       if (workoutDate >= startDate && workoutDate <= endDate) {
-        const formattedDate = new Date(
-          workout.date * 1000
-        ).toLocaleDateString();
+        const formattedDate = new Date(workout.date).toLocaleDateString();
 
         // Initialize the date key if it doesn't exist
         if (!result[formattedDate]) {
@@ -91,17 +89,17 @@ const AnalyticCharts = () => {
           };
         }
 
-        const category = workout.category;
+        const name = workout.name;
         const numWorkouts = workout.workouts.length;
 
         // Increment totalWorkout for the date
         result[formattedDate].totalWorkout += numWorkouts;
 
         // Initialize the body area count if it doesn't exist
-        if (!result[formattedDate].bodyAreas[category]) {
-          result[formattedDate].bodyAreas[category] = 0;
+        if (!result[formattedDate].bodyAreas[name]) {
+          result[formattedDate].bodyAreas[name] = 0;
         }
-        result[formattedDate].bodyAreas[category] += numWorkouts;
+        result[formattedDate].bodyAreas[name] += numWorkouts;
       }
     });
 

@@ -1,3 +1,5 @@
+import { workoutsByCategory } from "@/utils/Workout/workoutCatagory";
+
 export enum Period {
   Week = "Week",
   Month = "Month",
@@ -55,7 +57,7 @@ export const getRangeForPeriod = (period: Period, date: Date) => {
 };
 
 const processBodyData = (data: WorkoutDayResults) => {
-  const labels = ["Chest", "Back", "Biceps", "Triceps", "Legs", "Shoulders"];
+  const labels = Object.keys(workoutsByCategory);
 
   let barData = labels.map((label) => ({
     label,
