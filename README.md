@@ -104,19 +104,22 @@ Follow these steps to set up the project:
    ```bash
    git clone git@github.com:ucsb-cs184-f24/Team11-GymBuddy.git
 
+
+
 2. **Navigate to the project directory**
    ```bash
+   cd Team11-GymBuddy
    cd project
 
-3. **Install the dependencies**
+4. **Install the dependencies**
    ```bash
    npm install
 
-4. **Start the development server**
+5. **Start the development server**
    ```bash
    npx expo start
 
-5. **Switch to Expo Go**
+6. **Switch to Expo Go**
    <br>
    <br>
     Press 's' when the option appears in terminal to switch to Expo Go.
