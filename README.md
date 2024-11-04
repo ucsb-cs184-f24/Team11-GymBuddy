@@ -65,3 +65,80 @@ To maintain a secure and user-friendly environment, Gym Buddy App defines specif
   - **User Management**: Can manage user accounts and permissions.
 
 Implementing these roles ensures that while regular users can fully engage with the app's features, admin users retain control over content and user management to prevent misuse and maintain community standards.
+
+# Gym Buddy
+
+## Installation
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** (version 14.x or higher): [Download Node.js](https://nodejs.org/)
+- **npm** (version 6.x or higher): Comes with Node.js
+- **Expo CLI**: Install globally using:
+
+  ```bash
+  npm install -g expo-cli
+
+### Dependencies
+
+TODO
+
+*Refer to `package.json` for the complete list of dependencies*
+
+### Installation Steps
+
+Follow these steps to set up the project:
+
+1. **Clone the repository**
+   ```bash
+   git clone git@github.com:ucsb-cs184-f24/Team11-GymBuddy.git
+
+2. **Navigate to the project directory**
+   ```bash
+   cd project
+
+3. **Install the dependencies**
+   ```bash
+   npm install
+
+4. **Start the development server**
+   ```bash
+   npx expo start
+
+5. **Run the app with Expo Go**
+
+### Functionality
+
+Follow these steps to use GymBuddy
+
+- Create an account or sign in
+- Click on the **Workout** tab to add workouts
+- Click on the **Profile** tab to view your profile data
+- Click on the **Home** tab to see workout logs of other users
+
+### Known Problems
+- **Stats** tab has nothing on it yet. We plan to move code there in the future
+- Given the limitations of Expo Go, our authentication does not fully work as intended
+- You are able to save a workout without it's workout name
+- The profile image is stored locally
+
+## Contributing
+
+We welcome contributions from everyone. Please follow these steps:
+
+1. **Fork the repository**
+2. **Create your feature branch**
+   ```bash
+   git checkout -b my-new-feature
+3. **Commit your changes**
+   ```bash
+   git commit -am 'Add some feature'
+4. **Push to the branch**
+   ```bash
+   git push origin my-new-feature
+5. **Submit a pull request**
+
+### License
+This project is licensed under the MIT License - see the LICENSE.md file for details
