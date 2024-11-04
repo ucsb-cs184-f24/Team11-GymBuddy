@@ -174,11 +174,12 @@ const AnalyticCharts = () => {
         <Text style={styles.analyticsTitle}>Analytics</Text>
         <SegmentedControl
           values={periodOptions}
-          style={styles.segmentedControl}
+          style={styles.timeSegment}
           selectedIndex={periodOptions.indexOf(chartPeriod)}
           onChange={(event) => {
             const index = event.nativeEvent.selectedSegmentIndex;
             setChartPeriod(periodOptions[index]);
+            setCurrentDate(new Date());
           }}
         />
         <Text style={styles.dateRange}>
@@ -203,9 +204,7 @@ const AnalyticCharts = () => {
             fontSize: chartData.length > 25 ? 5 : 12,
           }}
           yAxisTextStyle={styles.axisText}
-          animationDuration={300}
           showFractionalValues={false}
-          isAnimated
           showGradient
         />
         <View style={styles.navigationContainer}>
@@ -223,7 +222,7 @@ const AnalyticCharts = () => {
           </TouchableOpacity>
           <SegmentedControl
             values={chartCategoryOptions}
-            style={styles.segmentedControl}
+            style={styles.categorySegment}
             selectedIndex={chartCategoryOptions.indexOf(chartCategory)}
             onChange={(event) => {
               const index = event.nativeEvent.selectedSegmentIndex;
@@ -264,8 +263,11 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 16,
   },
-  segmentedControl: {
+  timeSegment: {
     marginBottom: 10,
+  },
+  categorySegment: {
+    width: 180,
   },
   dateRange: {
     fontSize: 14,
