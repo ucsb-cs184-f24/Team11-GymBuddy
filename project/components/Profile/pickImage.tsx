@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface ImagePickerComponentProps {
   onImageSelected?: (uri: string) => void;
@@ -19,9 +20,32 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
   onImageSelected,
   initialImage,
 }) => {
-  const [profileImage, setProfileImage] = useState<string | null>(
-    initialImage || null
-  );
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadSavedImage();
+  }, []);
+
+  const loadSavedImage = async () => {
+    try {
+      const savedImage = await AsyncStorage.getItem("@profile_image");
+      if (savedImage) {
+        setProfileImage(savedImage);
+      } else if (initialImage) {
+        setProfileImage(initialImage);
+      }
+    } catch (error) {
+      console.error("Error loading saved image:", error);
+    }
+  };
+
+  const saveImage = async (uri: string) => {
+    try {
+      await AsyncStorage.setItem("@profile_image", uri);
+    } catch (error) {
+      console.error("Error saving image:", error);
+    }
+  };
 
   const pickImage = async () => {
     if (Platform.OS !== "web") {
@@ -43,6 +67,7 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
     if (!result.canceled) {
       const imageUri = result.assets[0].uri;
       setProfileImage(imageUri);
+      saveImage(imageUri);
       onImageSelected?.(imageUri);
     }
   };

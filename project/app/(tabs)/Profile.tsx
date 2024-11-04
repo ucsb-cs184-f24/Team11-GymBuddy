@@ -49,7 +49,13 @@ export default function Profile() {
         Email: profile.email,
         joined: new Date(Number(profile.joined)).toLocaleDateString(),
       });
-    });
+
+      // Retrieve the saved image
+      const savedImage = await AsyncStorage.getItem("@profile_image");
+      if (savedImage) {
+        setProfileImage(savedImage);
+      }
+    }
   }, []);
 
   useFocusEffect(
@@ -61,6 +67,12 @@ export default function Profile() {
 
   const handleImageSelected = (uri: string) => {
     setProfileImage(uri);
+    // Save the new image to AsyncStorage
+    try {
+      await AsyncStorage.setItem("@profile_image", uri);
+    } catch (error) {
+      console.error("Error saving image:", error);
+    }
   };
 
   return (
@@ -78,7 +90,7 @@ export default function Profile() {
           />
         </View>
         <AnalyticCharts key={analyticsKey} />
-        <View style={styles.container}>
+        <View style={styles.logoutContainer}>
           <Button title="Logout" onPress={logout} color="#4a90e2" />
         </View>
       </ScrollView>
@@ -107,9 +119,8 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     paddingHorizontal: 16,
   },
-  text: {
-    fontSize: 16,
-    color: "#111827",
-    marginVertical: 8,
+  logoutContainer: {
+    padding: 16,
+    alignItems: "center",
   },
 });
