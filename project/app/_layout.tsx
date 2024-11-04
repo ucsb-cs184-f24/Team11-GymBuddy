@@ -27,6 +27,6 @@ const RootLayout = () => {
       <Stack.Screen name="+not-found" />
     </Stack>
   );
-}
+};
 
 export default RootLayout;
