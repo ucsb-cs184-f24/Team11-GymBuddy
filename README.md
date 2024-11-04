@@ -116,6 +116,11 @@ Follow these steps to set up the project:
    ```bash
    npx expo start
 
+5. **Switch to Expo Go**
+   <br>
+   <br>
+    Press 's' when the option appears in terminal to switch to Expo Go.
+
 5. **Run the app with Expo Go**
 
 ### Functionality
