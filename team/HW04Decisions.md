@@ -7,6 +7,6 @@ Design/UX 1: Cory Zhao
 Process/Leadership: Chris Woolson
 
 
-Pair 1: Sawyer Rice, Aaron Rosales
-Pair 2: Tyler Canepa, Liam Ronarch
-Pair 3: Aavash Adhikari, Cory Zhao, Chris Woolson
+Pair 1: Sawyer Rice, Aaron Rosales <br>
+Pair 2: Tyler Canepa, Liam Ronarch <br>
+Pair 3: Aavash Adhikari, Cory Zhao, Chris Woolson <br>
