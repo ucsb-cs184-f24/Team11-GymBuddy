@@ -46,7 +46,7 @@ const AnalyticCharts = () => {
         currentDate
       );
       const userId = await getUserId();
-      const workoutData = await getWorkouts(userId);
+      const workoutData = (await getWorkouts(userId)) || {};
       const data = await filterData(startDate, endDate, workoutData);
       const processedData = processChartData(
         data,

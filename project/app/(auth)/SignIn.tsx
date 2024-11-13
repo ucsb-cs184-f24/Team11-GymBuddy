@@ -33,7 +33,7 @@ const Login = () => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start();
   }, []);
 
@@ -76,7 +76,7 @@ const Login = () => {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardAvoidingView}
         >
-          <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+          <Animated.View style={[styles.content, { opacity: 100 }]}>
             <BlurView intensity={100} style={styles.blurContainer}>
               <Image
                 source={require("../../assets/logo.png")}

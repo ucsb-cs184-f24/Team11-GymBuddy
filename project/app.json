@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "default",
     "scheme": "myapp",
+    "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
     "splash": {
       "resizeMode": "contain",

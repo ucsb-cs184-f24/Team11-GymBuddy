@@ -18,38 +18,32 @@ export const getUserData = async () => {
   }
 };
 
-// export const getAllUsersRecentWorkouts = async (k: number) => {
-//   try {
-//     const usersRef = ref(database, "users");
-//     const usersSnapshot = await get(usersRef);
-//     const users = usersSnapshot.val();
-//     if (users) {
-//       const recentWorkouts: { [key: string]: WorkoutLog } = {};
-//       for (const userId in users) {
-//         const userWorkoutsRef = ref(database, `users/${userId}/workouts`);
-//         const userProfileRef = ref(database, `users/${userId}/profile`);
-//         const snapshot = await get(userWorkoutsRef);
-//         const profileSnapshot = await get(userProfileRef);
-//         const workouts = snapshot.val();
-//         const profile = profileSnapshot.val();
-//         if (workouts) {
-//           const workoutArray = Object.values(workouts) as WorkoutLog[];
-//           workoutArray.sort((a, b) => b.date - a.date);
-//           if (workoutArray.length > 0) {
-//             recentWorkouts[userId] = workoutArray[0];
-//           }
-//         }
-//         if (profile && recentWorkouts[userId]) {
-//           recentWorkouts[userId].name = profile.Name;
-//         }
-//       }
-//       return recentWorkouts;
-//     }
-//   } catch (e) {
-//     console.error("Error getting recent workouts", e);
-//   }
-//   return {};
-// };
+export const getAllUsersRecentWorkouts = async (k: number) => {
+  try {
+    const collectionRef = collection(database, "users");
+    const snapshot = await getDocs(collectionRef);
+    const recentWorkouts: any = {};
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.workouts) {
+        const workouts = Object.entries(data.workouts);
+        const sortedWorkouts = workouts.sort((a, b) => (b[1] as WorkoutLog).date - (a[1] as WorkoutLog).date);
+        for (let i = 0; i < k && i < sortedWorkouts.length; i++) {
+          const [id, workout] = sortedWorkouts[i];
+          recentWorkouts[id] = workout;
+        }
+        const profile = data.profile;
+        if (profile) {
+          recentWorkouts[doc.id] = { name: profile.Name, ...recentWorkouts[doc.id] };
+        }
+      }
+    });
+    return recentWorkouts;
+  } catch (e) {
+    console.error("Error getting recent workouts", e);
+  }
+  return {};
+};
 
 export const getUserId = async () => {
   const user = await getUserData();
