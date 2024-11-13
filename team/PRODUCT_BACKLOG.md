@@ -10,6 +10,8 @@ Future implementation suggestions:
   - Fix post workouts and add workouts button
   - Installation and running issues
   - Analytics not working correctly
+  - Uploading pictures to the posts (how to add pictures to database)
+  - Friends implementation
     
 
 
