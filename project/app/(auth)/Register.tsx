@@ -86,7 +86,7 @@ const Register = () => {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardAvoidingView}
         >
-          <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+          <Animated.View style={[styles.content, { opacity: 0 }]}>
             <BlurView intensity={100} style={styles.blurContainer}>
               <Text style={styles.title}>Create Account</Text>
               <View style={styles.inputContainer}>

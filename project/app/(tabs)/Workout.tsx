@@ -120,7 +120,7 @@ export default function WorkoutScreen() {
         style={styles.gradient}
       >
         <SafeAreaView style={styles.safeArea}>
-          <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+          <Animated.View style={[styles.content, { opacity: 100 }]}>
             <Text style={styles.title}>Workout Tracker</Text>
             
             <FlatList
