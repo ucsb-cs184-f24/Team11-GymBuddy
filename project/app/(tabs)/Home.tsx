@@ -16,7 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
-import { getAllUsersRecentWorkouts } from "@/databaseService";
+import { getAllUsersRecentWorkouts } from "@/serviceFiles/databaseService";
 
 const { width } = Dimensions.get("window");
 
@@ -44,30 +44,30 @@ const Home = () => {
   });
   const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        const recentWorkouts = await getAllUsersRecentWorkouts(1);
-        const postsArray = Object.entries(recentWorkouts).map(
-          ([id, workout]) => ({
-            id,
-            uName: workout.name || "null",
-            area: "N/A",
-            exercise: workout.workouts.toString(),
-            sets: 0,
-            reps: 0,
-            date: new Date(workout.date)?.toLocaleDateString() || "N/A",
-            time: "N/A",
-            image: "https://example.com/placeholder.jpg",
-          })
-        );
-        setPosts(postsArray);
-      } catch (error) {
-        console.error("Failed to load posts", error);
-      }
-    };
-    loadPosts();
-  }, []);
+  // useEffect(() => {
+  //   const loadPosts = async () => {
+  //     try {
+  //       const recentWorkouts = await getAllUsersRecentWorkouts(1);
+  //       const postsArray = Object.entries(recentWorkouts).map(
+  //         ([id, workout]) => ({
+  //           id,
+  //           uName: workout.name || "null",
+  //           area: "N/A",
+  //           exercise: workout.workouts.toString(),
+  //           sets: 0,
+  //           reps: 0,
+  //           date: new Date(workout.date)?.toLocaleDateString() || "N/A",
+  //           time: "N/A",
+  //           image: "https://example.com/placeholder.jpg",
+  //         })
+  //       );
+  //       setPosts(postsArray);
+  //     } catch (error) {
+  //       console.error("Failed to load posts", error);
+  //     }
+  //   };
+  //   loadPosts();
+  // }, []);
 
   useEffect(() => {
     const savePosts = async () => {

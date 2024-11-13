@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "expo-router";
-import { auth } from "@/firebaseConfig";
+import { auth } from "@/serviceFiles/authService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";

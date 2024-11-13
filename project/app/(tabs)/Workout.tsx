@@ -15,7 +15,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { getUserId, saveWorkout, getWorkouts } from '@/databaseService';
+import { getUserId, saveWorkout, getWorkouts } from '@/serviceFiles/databaseService';
 import { workoutsByCategory } from '@/utils/Workout/workoutCatagory';
 
 const { width } = Dimensions.get('window');
@@ -56,7 +56,7 @@ export default function WorkoutScreen() {
       if (userData) {
         const workouts = await getWorkouts(userData);
         if (workouts) {
-          const workoutArray: WorkoutLog[] = Object.values(workouts as Record<string, WorkoutLog>).map(w => ({
+          const workoutArray: WorkoutLog[] = Object.values(workouts as unknown as Record<string, WorkoutLog>).map(w => ({
             ...w,
             workouts: w.workouts || [],
           }));
@@ -90,7 +90,7 @@ export default function WorkoutScreen() {
       await saveWorkout(workoutLog, userData);
       const updatedWorkouts = await getWorkouts(userData);
       if (updatedWorkouts) {
-        const workoutArray: WorkoutLog[] = Object.values(updatedWorkouts as Record<string, WorkoutLog>).map(w => ({
+        const workoutArray: WorkoutLog[] = Object.values(updatedWorkouts as unknown as Record<string, WorkoutLog>).map(w => ({
           ...w,
           workouts: w.workouts || [],
         }));

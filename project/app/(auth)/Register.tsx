@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from "react";
+import { createProfile } from "@/serviceFiles/databaseService";
+import { auth } from "@/serviceFiles/authService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from "expo-router";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import React, { useEffect, useState } from "react";
 import {
-  Text,
-  View,
   Alert,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
   Animated,
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
   StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { useRouter } from "expo-router";
-import { auth } from "@/firebaseConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
 const { width } = Dimensions.get('window');
-import { createProfile } from "@/databaseService";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -34,7 +32,7 @@ const Register = () => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start();
   }, []);
 
