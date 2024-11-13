@@ -65,11 +65,11 @@ export default function Profile() {
     fetchData();
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      setAnalyticsKey((prevKey) => prevKey + 1);
-    }, [])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     setAnalyticsKey((prevKey) => prevKey + 1);
+  //   }, [])
+  // );
 
   const handleImageSelected = async (uri: string) => {
     setProfileImage(uri);
