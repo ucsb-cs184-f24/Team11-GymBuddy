@@ -16,7 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
-import { getAllUsersRecentWorkouts } from "@/databaseService";
+import { getAllUsersRecentWorkouts } from "@/serviceFiles/databaseService";
 
 const { width } = Dimensions.get("window");
 
@@ -49,11 +49,11 @@ const Home = () => {
       try {
         const recentWorkouts = await getAllUsersRecentWorkouts(1);
         const postsArray = Object.entries(recentWorkouts).map(
-          ([id, workout]) => ({
+          ([id, workout]: [string, any]) => ({
             id,
             uName: workout.name || "null",
             area: "N/A",
-            exercise: workout.workouts.toString(),
+            exercise: Array.isArray(workout.workouts) ? workout.workouts.join(", ") : workout.workouts.toString(),
             sets: 0,
             reps: 0,
             date: new Date(workout.date)?.toLocaleDateString() || "N/A",

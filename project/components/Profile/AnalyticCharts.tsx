@@ -17,7 +17,7 @@ import {
 } from "@/utils/Profile/dataProcessHelpers";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { SymbolView } from "expo-symbols";
-import { getWorkouts, getUserId } from "@/databaseService";
+import { getWorkouts, getUserId } from "@/serviceFiles/databaseService";
 
 type WorkoutEntry = {
   name: string;
@@ -46,7 +46,7 @@ const AnalyticCharts = () => {
         currentDate
       );
       const userId = await getUserId();
-      const workoutData = await getWorkouts(userId);
+      const workoutData = (await getWorkouts(userId)) || {};
       const data = await filterData(startDate, endDate, workoutData);
       const processedData = processChartData(
         data,
