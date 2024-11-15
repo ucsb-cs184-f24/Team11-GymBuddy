@@ -12,7 +12,7 @@
   ## Additional notes
   * We have a somewhat buggy app so we want to start smoothening those kinks out.
  
-  ## Retro Assessment
+  ## Retro Assessment/Outcome
   * The experiment is kind of working out. We didn't quite hit the two-day mark as we had hoped, but we weren't cramming everything in at the last second either.
   * We have gotten better at getting started on work earlier and have been getting better at planning out roles and obligations through our meetings and communicating on slack outside of class.
   * So far I feel like at least for the past couple of assignments that have been due in class and section, we have started at least talking early about the work that we plan to get done
