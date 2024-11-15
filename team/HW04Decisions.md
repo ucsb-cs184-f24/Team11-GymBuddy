@@ -20,5 +20,7 @@ Tyler C (Evaluation)- I am planning on designing a testing system so we can make
 
 Sawyer Rice (Evaluation) - I will be testing the image upload functionality of the database, as well as the analytics page accuracy. Both of these areas of our application currently have known bugs, and I will be looking to find the situations in which they arise.
 
+Aaron Rosales (Implementation) - I will be working on making the add workout button for the homepage, as well as uploading a visual for our home page. 
+
 # Design Document Link:
 https://docs.google.com/document/d/1AnqllMch9AZfqUlBrN_hT6Jvs0qlEjXLpUmE3VsSnwk/edit?usp=sharing
