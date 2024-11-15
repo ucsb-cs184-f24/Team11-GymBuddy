@@ -1,4 +1,4 @@
-## Future Implementation Suggestions
+## Future Implementation Suggestions/User Stories
 
 ### Profile Pic Needs to Store in Database
 - **Benefits**: All users who want to store a profile picture and see what other users look like.
