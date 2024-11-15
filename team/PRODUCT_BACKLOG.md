@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 ## Future Implementation Suggestions/User Stories
-=======
-## Future Implementation Suggestions
->>>>>>> 0fb71a4 (Update PRODUCT_BACKLOG.md)
 
 ### Profile Pic Needs to Store in Database
 - **Benefits**: All users who want to store a profile picture and see what other users look like.
