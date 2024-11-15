@@ -3,15 +3,14 @@ USER STORIES ADDED:
 
 Future implementation suggestions:
 
-  - Stop email jittering
-  - Profile Pic needs to store in database
   - Fixing live updates in post
-  - way to tap out of email
+      - hi
+  - Profile Pic needs to store in database
   - Fix post workouts and add workouts button
+  - Uploading pictures to the posts (how to add pictures to database)
+  - Stop email jittering
+  - way to tap out of email
   - Installation and running issues
   - Analytics not working correctly
-  - Uploading pictures to the posts (how to add pictures to database)
   - Friends implementation
-    
-
 
