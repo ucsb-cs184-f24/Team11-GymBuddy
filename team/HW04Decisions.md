@@ -24,5 +24,7 @@ Aaron Rosales (Implementation) - I will be working on making the add workout but
 
 Aavash Adhikari (Implementation) - I will be debugging our code specifically the keyboard bugs as well as implementing haptic feedback for the buttons on our app.
 
+Liam Ronarch (Implementation) - I will be working on integrating new features with our updated database. This will include real time udating of posts, profile pictures, and adding friends. 
+
 # Design Document Link:
 https://docs.google.com/document/d/1AnqllMch9AZfqUlBrN_hT6Jvs0qlEjXLpUmE3VsSnwk/edit?usp=sharing
