@@ -22,5 +22,7 @@ Sawyer Rice (Evaluation) - I will be testing the image upload functionality of t
 
 Aaron Rosales (Implementation) - I will be working on making the add workout button for the homepage, as well as uploading a visual for our home page. 
 
+Aavash Adhikari (Implementation) - I will be debugging our code specifically the keyboard bugs as well as implementing haptic feedback for the buttons on our app.
+
 # Design Document Link:
 https://docs.google.com/document/d/1AnqllMch9AZfqUlBrN_hT6Jvs0qlEjXLpUmE3VsSnwk/edit?usp=sharing
