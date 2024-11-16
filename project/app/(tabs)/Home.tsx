@@ -119,12 +119,6 @@ const Home = () => {
   const Navbar = ({ setModalVisible }: NavbarProps) => {
     return (
       <BlurView intensity={100} tint="dark" style={styles.navbar}>
-        <TouchableOpacity
-          style={styles.postWorkoutButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.postWorkoutButtonText}>+</Text>
-        </TouchableOpacity>
         <Text style={styles.navbarTitle}>Workouts</Text>
         <View style={styles.navbarIcons}>
           <TouchableOpacity style={styles.navbarIcon}>
