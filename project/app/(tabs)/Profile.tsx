@@ -19,7 +19,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import ImagePickerComponent from "@/components/Profile/pickImage";
 import UserInfoEditor from "@/components/Profile/ProfileData";
 import AnalyticCharts from "@/components/Profile/AnalyticCharts";
-import { getProfile, getUserId } from "@/serviceFiles/databaseService";
+import { getUserProfile, getUserId } from "@/serviceFiles/databaseService";
 
 const { width } = Dimensions.get("window");
 
@@ -49,7 +49,7 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const profile = await getProfile(await getUserId());
+      const profile = await getUserProfile(await getUserId());
       setUserData({
         Name: profile?.Name || 'loading',
         Email: profile?.email || 'loading',

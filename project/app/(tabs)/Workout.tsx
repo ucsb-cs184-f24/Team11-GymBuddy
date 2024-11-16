@@ -15,16 +15,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { getUserId, saveWorkout, getWorkouts } from '@/serviceFiles/databaseService';
+import { getUserId, createPost, getWorkouts, WorkoutLog } from '@/serviceFiles/databaseService';
 import { workoutsByCategory } from '@/utils/Workout/workoutCatagory';
 
 const { width } = Dimensions.get('window');
-
-interface WorkoutLog {
-  date: number;
-  workouts: string[];
-  name?: string;
-}
 
 export default function WorkoutScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -56,11 +50,8 @@ export default function WorkoutScreen() {
       if (userData) {
         const workouts = await getWorkouts(userData);
         if (workouts) {
-          const workoutArray: WorkoutLog[] = Object.values(workouts as unknown as Record<string, WorkoutLog>).map(w => ({
-            ...w,
-            workouts: w.workouts || [],
-          }));
-          workoutArray.sort((a, b) => b.date - a.date);
+          const workoutArray: WorkoutLog[] = Object.values(workouts as WorkoutLog[])
+          workoutArray.sort((a, b) => b.createdAt - a.createdAt);
           setPreviousWorkouts(workoutArray);
         } else {
           setPreviousWorkouts([]);
@@ -83,18 +74,24 @@ export default function WorkoutScreen() {
   const handleSaveWorkout = async () => {
     if (userData && selectedWorkouts.length > 0) {
       const workoutLog: WorkoutLog = {
-        date: Date.now(),
-        workouts: selectedWorkouts,
-        name: workoutName || selectedCategory || "Custom Workout",
+        caption: workoutName,
+        commentsCount: 0,
+        createdAt: Date.now(),
+        image: '',
+        likesCount: 0,
+        muscleGroup: selectedCategory || '',
+        repsCount: 0,
+        setsCount: 0,
+        userId: userData,
+        weight: 0,
+        workoutName: selectedWorkouts.join(", "),
+        workoutType: '',
       };
-      await saveWorkout(workoutLog, userData);
+      await createPost(workoutLog);
       const updatedWorkouts = await getWorkouts(userData);
       if (updatedWorkouts) {
-        const workoutArray: WorkoutLog[] = Object.values(updatedWorkouts as unknown as Record<string, WorkoutLog>).map(w => ({
-          ...w,
-          workouts: w.workouts || [],
-        }));
-        workoutArray.sort((a, b) => b.date - a.date);
+        const workoutArray: WorkoutLog[] = Object.values(updatedWorkouts as unknown as Record<string, WorkoutLog>)
+        workoutArray.sort((a, b) => b.createdAt - a.createdAt);
         setPreviousWorkouts(workoutArray);
       }
       setSelectedCategory(null);
@@ -106,9 +103,9 @@ export default function WorkoutScreen() {
 
   const renderWorkoutItem = ({ item }: { item: WorkoutLog }) => (
     <BlurView intensity={80} tint="dark" style={styles.workoutLog}>
-      <Text style={styles.workoutLogDate}>{new Date(item.date).toLocaleDateString()}</Text>
-      <Text style={styles.workoutLogCategory}>{item.name}</Text>
-      <Text style={styles.workoutLogExercises}>{item.workouts.join(", ")}</Text>
+      <Text style={styles.workoutLogDate}>{new Date(item.createdAt).toLocaleDateString()}</Text>
+      <Text style={styles.workoutLogCategory}>{item.muscleGroup}</Text>
+      <Text style={styles.workoutLogExercises}>{item.workoutName}</Text>
     </BlurView>
   );
 

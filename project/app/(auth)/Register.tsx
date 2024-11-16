@@ -1,4 +1,4 @@
-import { createProfile } from "@/serviceFiles/databaseService";
+import { createUserProfile } from "@/serviceFiles/databaseService";
 import { auth } from "@/serviceFiles/authService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from 'expo-blur';
@@ -61,7 +61,9 @@ const Register = () => {
       }));
       Alert.alert("User Created");
 
-      await createProfile(user.uid, email, name);
+      await createUserProfile(user.uid, name, 'LastName', 'username', email, 
+        'imageUrl', 'bio', false
+      );
 
       router.replace("/(tabs)/Home");
     } catch (e: any) {
@@ -86,7 +88,7 @@ const Register = () => {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardAvoidingView}
         >
-          <Animated.View style={[styles.content, { opacity: 0 }]}>
+          <Animated.View style={[styles.content, { opacity: 100 }]}>
             <BlurView intensity={100} style={styles.blurContainer}>
               <Text style={styles.title}>Create Account</Text>
               <View style={styles.inputContainer}>
