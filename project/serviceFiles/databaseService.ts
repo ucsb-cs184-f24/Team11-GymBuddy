@@ -1,13 +1,32 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getFirestore, addDoc, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
-import { app } from './firebaseConfig'
-interface WorkoutLog {
-  date: number;
-  workouts: string[];
-  name?: string;
-}
+import { 
+  getFirestore, 
+  addDoc, 
+  collection, 
+  doc, 
+  getDoc, 
+  getDocs, 
+  setDoc 
+} from 'firebase/firestore';
+import { app } from './firebaseConfig';
 
 export const database = getFirestore(app);
+
+export interface WorkoutLog {
+  caption: string;
+  commentsCount: number;
+  createdAt: number;
+  image: string;
+  likesCount: number;
+  muscleGroup: string;
+  repsCount: number;
+  setsCount: number;
+  userId: string;
+  weight: number;
+  workoutName: string;
+  workoutType: string;
+  username?: string;
+}
 
 export const getUserData = async () => {
   try {
@@ -18,94 +37,158 @@ export const getUserData = async () => {
   }
 };
 
-export const getAllUsersRecentWorkouts = async (k: number) => {
-  try {
-    const collectionRef = collection(database, "users");
-    const snapshot = await getDocs(collectionRef);
-    const recentWorkouts: any = {};
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      if (data.workouts) {
-        const workouts = Object.entries(data.workouts);
-        const sortedWorkouts = workouts.sort((a, b) => (b[1] as WorkoutLog).date - (a[1] as WorkoutLog).date);
-        for (let i = 0; i < k && i < sortedWorkouts.length; i++) {
-          const [id, workout] = sortedWorkouts[i];
-          recentWorkouts[id] = workout;
-        }
-        const profile = data.profile;
-        if (profile) {
-          recentWorkouts[doc.id] = { name: profile.Name, ...recentWorkouts[doc.id] };
-        }
-      }
-    });
-    return recentWorkouts;
-  } catch (e) {
-    console.error("Error getting recent workouts", e);
-  }
-  return {};
-};
-
 export const getUserId = async () => {
-  const user = await getUserData();
-  return user ? user.uid : "";
-};
-//Saves new workout to the database
-export const saveWorkout = async (workout: WorkoutLog, user: string) => {
   try {
-    const collectionRef = collection(database, `users/${user}/workouts`);
-    await addDoc(collectionRef, workout);
+    const user = await getUserData();
+    return user?.uid;
   } catch (e) {
-    console.error("Error saving workout", e);
+    console.error("Error getting user ID", e);
   }
+}
+
+export const uidToUsername = async (userId: string) => {
+  try {
+    const docRef = doc(database, `users/${userId}`);
+    const snapshot = await getDoc(docRef);
+    return snapshot.data()?.firstName || "unknown user";
+  } catch (e) {
+    console.error("Error getting user name", e);
+  }
+}
+
+export const getAllUsersRecentWorkouts = async (): Promise<WorkoutLog[]> => {
+  try {
+    const workoutsRef = collection(database, `posts`);
+      const snapshot = await getDocs(workoutsRef);
+      const workoutLogs: WorkoutLog[] = [];
+      for (const doc of snapshot.docs) {
+        const data = doc.data();
+        const username = await uidToUsername(data.userId);
+        workoutLogs.push({
+          caption: data.caption,
+          commentsCount: data.commentsCount,
+          createdAt: data.createdAt,
+          image: data.image,
+          likesCount: data.likesCount,
+          muscleGroup: data.muscleGroup,
+          repsCount: data.repsCount,
+          setsCount: data.setsCount,
+          userId: data.userId,
+          weight: data.weight,
+          workoutName: data.workoutName,
+          workoutType: data.workoutType,
+          username: username
+        } as WorkoutLog);
+      }
+      return workoutLogs;
+    } catch (e) {
+      console.error("Error getting workouts", e);
+    }
+    return [];
 };
 
-export const getWorkouts = async (user: string) => {
+export const getWorkouts = async (userId: string): Promise<WorkoutLog[]> => {
   try {
-    const collectionRef = collection(database, `users/${user}/workouts`);
-    const snapshot = await getDocs(collectionRef);
-    return snapshot.docs.map((doc) => doc.data());
+  const workoutsRef = collection(database, `posts`);
+    const snapshot = await getDocs(workoutsRef);
+    return snapshot.docs
+      .filter(doc => doc.data().userId === userId)
+      .map(doc => ({
+      caption: doc.data().caption,
+      commentsCount: doc.data().commentsCount,
+      createdAt: doc.data().createdAt,
+      image: doc.data().image,
+      likesCount: doc.data().likesCount,
+      muscleGroup: doc.data().muscleGroup,
+      repsCount: doc.data().repsCount,
+      setsCount: doc.data().setsCount,
+      userId: doc.data().userId,
+      weight: doc.data().weight,
+      workoutName: doc.data().workoutName,
+      workoutType: doc.data().workoutType
+      } as WorkoutLog));
   } catch (e) {
     console.error("Error getting workouts", e);
   }
+  return [];
 };
 
-export const getProfile = async (user: string) => {
-  try {
-    const docRef = doc(database, `users/${user}/profile/profile`)
-    const snapshot = await getDoc(docRef)
-    return snapshot.data();
-  } catch (e) {
-    console.error("Error getting profile", e);
-  }
-};
-
-export const updateProfile = async (user: string, profile: any) => {
-  try {
-    const docRef = doc(database, `users/${user}/profile/profile`)
-    await setDoc(docRef, profile);
-  } catch (e) {
-    console.error("Error updating profile", e);
-  }
-};
-
-export const createProfile = async (
+export const createUserProfile = async (
   userId: string,
+  firstName: string,
+  lastName: string,
+  username: string,
   email: string,
-  name: string
+  profilePicture: string,
+  bio: string,
+  isPrivate: boolean
 ) => {
   try {
-    const account = {
-      profile: {
-        email: email,
-        joined: Math.floor(Date.now()),
-        Name: name,
-        LastName: "",
-      },
+    const userProfile = {
+      firstName,
+      lastName,
+      username,
+      email,
+      profilePicture,
+      followerCount: 0,
+      followingCount: 0,
+      bio,
+      createdAt: new Date().getTime(),
+      isPrivate,
     };
 
-    const docRef = doc(database, `users/${userId}/profile/profile`);
-    await setDoc(docRef, account.profile);
+    const docRef = doc(database, `users/${userId}`);
+    await setDoc(docRef, userProfile);
   } catch (e) {
-    console.error("Error creating profile", e);
+    console.error("Error creating user profile", e);
+  }
+};
+
+export const getUserProfile = async (userId: string) => {
+  try {
+    const docRef = doc(database, `users/${userId}`);
+    const snapshot = await getDoc(docRef);
+    return snapshot.data();
+  } catch (e) {
+    console.error("Error getting user profile", e);
+  }
+};
+
+export const updateUserProfile = async (userId: string, profile: any) => {
+  try {
+    const docRef = doc(database, `users/${userId}`);
+    await setDoc(docRef, profile, { merge: true });
+  } catch (e) {
+    console.error("Error updating user profile", e);
+  }
+};
+
+export const createPost = async (
+  post: WorkoutLog,
+) => {
+  try {
+    const postsRef = collection(database, "posts");
+    await addDoc(postsRef, post);
+  } catch (e) {
+    console.error("Error creating post", e);
+  }
+};
+
+export const getPost = async (postId: string) => {
+  try {
+    const docRef = doc(database, `posts/${postId}`);
+    const snapshot = await getDoc(docRef);
+    return snapshot.data();
+  } catch (e) {
+    console.error("Error getting post", e);
+  }
+};
+
+export const updatePost = async (postId: string, post: any) => {
+  try {
+    const docRef = doc(database, `posts/${postId}`);
+    await setDoc(docRef, post, { merge: true });
+  } catch (e) {
+    console.error("Error updating post", e);
   }
 };

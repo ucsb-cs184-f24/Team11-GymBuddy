@@ -16,28 +16,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
-import { getAllUsersRecentWorkouts } from "@/serviceFiles/databaseService";
+import { getAllUsersRecentWorkouts, uidToUsername, WorkoutLog } from "@/serviceFiles/databaseService";
 
 const { width } = Dimensions.get("window");
-
-interface Post {
-  id: string;
-  uName: string;
-  area: string;
-  exercise: string;
-  sets: number;
-  reps: number;
-  date: string;
-  time: string;
-  image: string;
-}
 
 interface NavbarProps {
   setModalVisible: (visible: boolean) => void;
 }
 
 const Home = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<WorkoutLog[]>([]);
   const [newPost, setNewPost] = useState({
     exercise: "",
     duration: "",
@@ -47,20 +35,9 @@ const Home = () => {
   useEffect(() => {
     const loadPosts = async () => {
       try {
-        const recentWorkouts = await getAllUsersRecentWorkouts(1);
-        const postsArray = Object.entries(recentWorkouts).map(
-          ([id, workout]: [string, any]) => ({
-            id,
-            uName: workout.name || "null",
-            area: "N/A",
-            exercise: Array.isArray(workout.workouts) ? workout.workouts.join(", ") : workout.workouts.toString(),
-            sets: 0,
-            reps: 0,
-            date: new Date(workout.date)?.toLocaleDateString() || "N/A",
-            time: "N/A",
-            image: "https://example.com/placeholder.jpg",
-          })
-        );
+        const recentWorkouts = await getAllUsersRecentWorkouts();
+        const postsArray = Object.values(recentWorkouts as WorkoutLog[])
+        postsArray.sort((a, b) => b.createdAt - a.createdAt);
         setPosts(postsArray);
       } catch (error) {
         console.error("Failed to load posts", error);
@@ -81,39 +58,39 @@ const Home = () => {
   }, [posts]);
 
   const addPost = async () => {
-    if (newPost.exercise && newPost.duration) {
-      const newPostItem: Post = {
-        id: Date.now().toString(),
-        uName: "current_user",
-        area: "N/A",
-        exercise: newPost.exercise,
-        sets: 0,
-        reps: 0,
-        date: new Date().toLocaleDateString(),
-        time: new Date().toLocaleTimeString(),
-        image: "https://example.com/placeholder.jpg",
-      };
+    // if (newPost.exercise && newPost.duration) {
+    //   const newPostItem: WorkoutLog = {
+    //     id: Date.now().toString(),
+    //     uName: "current_user",
+    //     area: "N/A",
+    //     exercise: newPost.exercise,
+    //     sets: 0,
+    //     reps: 0,
+    //     date: new Date().toLocaleDateString(),
+    //     time: new Date().toLocaleTimeString(),
+    //     image: "https://example.com/placeholder.jpg",
+    //   };
 
-      const updatedPosts = [newPostItem, ...posts];
-      setPosts(updatedPosts);
-      try {
-        await AsyncStorage.setItem("posts", JSON.stringify(updatedPosts));
-      } catch (error) {
-        Alert.alert("Error", "Failed to save post");
-      }
-      setNewPost({ exercise: "", duration: "" });
-      setModalVisible(false);
-    }
+    //   const updatedPosts = [newPostItem, ...posts];
+    //   setPosts(updatedPosts);
+    //   try {
+    //     await AsyncStorage.setItem("posts", JSON.stringify(updatedPosts));
+    //   } catch (error) {
+    //     Alert.alert("Error", "Failed to save post");
+    //   }
+    //   setNewPost({ exercise: "", duration: "" });
+    //   setModalVisible(false);
+    //}
   };
 
   const deletePost = async (id: string) => {
-    const updatedPosts = posts.filter((post) => post.id !== id);
-    setPosts(updatedPosts);
-    try {
-      await AsyncStorage.setItem("posts", JSON.stringify(updatedPosts));
-    } catch (error) {
-      Alert.alert("Error", "Failed to delete post");
-    }
+  //   const updatedPosts = posts.filter((post) => post.id !== id);
+  //   setPosts(updatedPosts);
+  //   try {
+  //     await AsyncStorage.setItem("posts", JSON.stringify(updatedPosts));
+  //   } catch (error) {
+  //     Alert.alert("Error", "Failed to delete post");
+  //   }
   };
 
   const Navbar = ({ setModalVisible }: NavbarProps) => {
@@ -138,14 +115,14 @@ const Home = () => {
     );
   };
 
-  const renderPost = ({ item }: { item: Post }) => (
+  const renderPost = ({ item }: { item: WorkoutLog }) => (
     <BlurView intensity={80} tint="dark" style={styles.workoutCard}>
       <View style={styles.workoutHeader}>
         <Image
           source={{ uri: "https://example.com/profile-pic.jpg" }}
           style={styles.workoutProfilePic}
         />
-        <Text style={styles.username}>{item.uName}</Text>
+        <Text style={styles.username}>{item.username}</Text>
         <TouchableOpacity
           onPress={() => {
             Alert.alert(
@@ -158,7 +135,7 @@ const Home = () => {
                 },
                 {
                   text: "Delete",
-                  onPress: () => deletePost(item.id),
+                  //onPress: () => deletePost(item.id),
                   style: "destructive",
                 },
               ]
@@ -170,13 +147,17 @@ const Home = () => {
       </View>
       <Image source={{ uri: item.image }} style={styles.workoutImage} />
       <View style={styles.workoutInfo}>
-        <Text style={styles.exerciseText}>{item.exercise}</Text>
+        <Text style={styles.exerciseText}>{item.workoutName}</Text>
         <Text
           style={styles.durationText}
-        >{`Sets: ${item.sets}, Reps: ${item.reps}`}</Text>
-        <Text
-          style={styles.durationText}
-        >{`Date: ${item.date}, Time: ${item.time}`}</Text>
+        >{`Sets: ${item.setsCount}, Reps: ${item.repsCount}`}</Text>
+        <Text style={styles.durationText}>
+          {`Date: ${new Date(item.createdAt).toLocaleDateString()}, Time: ${new Date(item.createdAt)
+          .toLocaleTimeString(
+            'en-US',
+            { hour: '2-digit', minute: '2-digit', hour12: true }
+          )}`}
+        </Text>
       </View>
     </BlurView>
   );
@@ -192,7 +173,7 @@ const Home = () => {
         <FlatList
           data={posts}
           renderItem={renderPost}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.userId}
           style={[styles.workoutList, { paddingTop: 10 }]}
         />
         <Modal
