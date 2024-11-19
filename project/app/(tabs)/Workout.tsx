@@ -12,8 +12,6 @@ import {
   TextInput,
   Animated,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { getUserId, createPost, getWorkouts, WorkoutLog } from '@/serviceFiles/databaseService';
 import { workoutsByCategory } from '@/utils/Workout/workoutCatagory';
@@ -23,13 +21,13 @@ const { width } = Dimensions.get('window');
 export default function WorkoutScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedWorkouts, setSelectedWorkouts] = useState<string[]>([]);
   const [userData, setUserData] = useState<string | null>(null);
   const [previousWorkouts, setPreviousWorkouts] = useState<WorkoutLog[]>([]);
   const [workoutName, setWorkoutName] = useState('');
+  const [selectedWorkouts, setSelectedWorkouts] = useState<Record<string, { sets: number; reps: number }>>({});
   const fadeAnim = new Animated.Value(0);
 
-  const categories = ["Chest", "Back", "Biceps", "Triceps", "Legs", "Shoulders", "Abs"];
+  const categories = ['Chest', 'Back', 'Biceps', 'Triceps', 'Legs', 'Shoulders', 'Abs'];
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -50,7 +48,7 @@ export default function WorkoutScreen() {
       if (userData) {
         const workouts = await getWorkouts(userData);
         if (workouts) {
-          const workoutArray: WorkoutLog[] = Object.values(workouts as WorkoutLog[])
+          const workoutArray: WorkoutLog[] = Object.values(workouts as WorkoutLog[]);
           workoutArray.sort((a, b) => b.createdAt - a.createdAt);
           setPreviousWorkouts(workoutArray);
         } else {
@@ -66,13 +64,19 @@ export default function WorkoutScreen() {
   };
 
   const handleSelectWorkout = (workout: string) => {
-    setSelectedWorkouts(prev => 
-      prev.includes(workout) ? prev.filter(w => w !== workout) : [...prev, workout]
-    );
+    setSelectedWorkouts((prev) => {
+      if (prev[workout]) {
+        const updated = { ...prev };
+        delete updated[workout];
+        return updated;
+      } else {
+        return { ...prev, [workout]: { sets: 0, reps: 0 } };
+      }
+    });
   };
 
   const handleSaveWorkout = async () => {
-    if (userData && selectedWorkouts.length > 0) {
+    if (userData && Object.keys(selectedWorkouts).length > 0) {
       const workoutLog: WorkoutLog = {
         caption: workoutName,
         commentsCount: 0,
@@ -80,114 +84,165 @@ export default function WorkoutScreen() {
         image: '',
         likesCount: 0,
         muscleGroup: selectedCategory || '',
-        repsCount: 0,
-        setsCount: 0,
+        repsCount: Object.values(selectedWorkouts).reduce((sum, w) => sum + w.reps, 0),
+        setsCount: Object.values(selectedWorkouts).reduce((sum, w) => sum + w.sets, 0),
         userId: userData,
         weight: 0,
-        workoutName: selectedWorkouts.join(", "),
+        workoutName: Object.keys(selectedWorkouts).join(', '),
         workoutType: '',
       };
       await createPost(workoutLog);
       const updatedWorkouts = await getWorkouts(userData);
       if (updatedWorkouts) {
-        const workoutArray: WorkoutLog[] = Object.values(updatedWorkouts as unknown as Record<string, WorkoutLog>)
+        const workoutArray: WorkoutLog[] = Object.values(updatedWorkouts as unknown as Record<string, WorkoutLog>);
         workoutArray.sort((a, b) => b.createdAt - a.createdAt);
         setPreviousWorkouts(workoutArray);
       }
       setSelectedCategory(null);
-      setSelectedWorkouts([]);
+      setSelectedWorkouts({});
       setWorkoutName('');
       setModalVisible(false);
     }
   };
 
-  const renderWorkoutItem = ({ item }: { item: WorkoutLog }) => (
-    <BlurView intensity={80} tint="dark" style={styles.workoutLog}>
-      <Text style={styles.workoutLogDate}>{new Date(item.createdAt).toLocaleDateString()}</Text>
-      <Text style={styles.workoutLogCategory}>{item.muscleGroup}</Text>
-      <Text style={styles.workoutLogExercises}>{item.workoutName}</Text>
-    </BlurView>
-  );
+  const openModal = () => setModalVisible(true);
+  const closeModal = () => setModalVisible(false);
+
+  const renderWorkoutItem = ({ item }: { item: WorkoutLog }) => {
+    // Parse exercises, sets, and reps
+    const exercises = item.workoutName.split(', '); // Assuming workoutName is comma-separated
+    const setsAndReps = Object.values(selectedWorkouts); // Assuming selectedWorkouts contains sets and reps info
+  
+    return (
+      <BlurView intensity={80} tint="dark" style={styles.workoutLog}>
+        <Text style={styles.workoutLogDate}>
+          {new Date(item.createdAt).toLocaleDateString()}
+        </Text>
+        <Text style={styles.workoutLogCategory}>
+          Muscle Group: {item.muscleGroup}
+        </Text>
+        <Text style={styles.workoutLogTitle}>Exercises:</Text>
+        {exercises.map((exercise, index) => (
+          <View key={index} style={styles.exerciseDetails}>
+            <Text style={styles.exerciseName}>{exercise.trim()}</Text>
+            <Text style={styles.exerciseInfo}>
+              Sets: {setsAndReps[index]?.sets || 0} | Reps: {setsAndReps[index]?.reps || 0}
+            </Text>
+          </View>
+        ))}
+      </BlurView>
+    );
+  };
+  
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
-        style={styles.gradient}
-      >
-        <SafeAreaView style={styles.safeArea}>
-          <Animated.View style={[styles.content, { opacity: 100 }]}>
-            <Text style={styles.title}>Workout Tracker</Text>
-            
-            <FlatList
-              data={previousWorkouts}
-              renderItem={renderWorkoutItem}
-              keyExtractor={(item, index) => index.toString()}
-              ListEmptyComponent={<Text style={styles.noWorkoutsText}>No previous workouts found.</Text>}
-              contentContainerStyle={styles.workoutList}
-            />
+      <TouchableOpacity onPress={openModal} style={styles.modalButton}>
+        <Text style={styles.modalButtonText}>Add Workout</Text>
+      </TouchableOpacity>
 
-            <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
-              <Text style={styles.addButtonText}>Add Workout</Text>
-            </TouchableOpacity>
-          </Animated.View>
-        </SafeAreaView>
-      </LinearGradient>
-
-      <Modal visible={modalVisible} animationType="slide" transparent>
-        <BlurView intensity={100} tint="dark" style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Add New Workout</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Workout Name"
-              placeholderTextColor="rgba(255, 255, 255, 0.6)"
-              value={workoutName}
-              onChangeText={setWorkoutName}
-            />
-            <ScrollView style={styles.categoryList}>
-              {categories.map((category) => (
-                <View key={category}>
-                  <TouchableOpacity
-                    onPress={() => handleSelectCategory(category)}
-                    style={[
-                      styles.categoryButton,
-                      selectedCategory === category && styles.selectedCategoryButton
-                    ]}
-                  >
-                    <Text style={styles.categoryText}>{category}</Text>
-                  </TouchableOpacity>
-                  {selectedCategory === category && (
-                    <View style={styles.workoutList}>
-                      {workoutsByCategory[category].map((workout) => (
+      <Modal 
+      visible={modalVisible}
+       animationType="slide"
+        transparent={true}
+        onRequestClose={closeModal}>
+        <View style={styles.modalContainer}>
+          <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <Text style={styles.modalTitle}>Select Muscle Groups</Text>
+            {categories.map((category) => (
+              <View key={category}>
+                <TouchableOpacity
+                  onPress={() => handleSelectCategory(category)}
+                  style={[
+                    styles.categoryButton,
+                    selectedCategory === category && styles.selectedCategoryButton,
+                  ]}
+                >
+                  <Text style={styles.categoryText}>{category}</Text>
+                </TouchableOpacity>
+                {selectedCategory === category && (
+                  <View style={styles.workoutList}>
+                    {workoutsByCategory[category].map((workout) => (
+                      <View key={workout}>
                         <TouchableOpacity
-                          key={workout}
                           onPress={() => handleSelectWorkout(workout)}
                           style={[
                             styles.workoutButton,
-                            selectedWorkouts.includes(workout) && styles.selectedWorkoutButton,
+                            selectedWorkouts[workout] && styles.selectedWorkoutButton,
                           ]}
                         >
                           <Text style={styles.workoutText}>{workout}</Text>
                         </TouchableOpacity>
-                      ))}
-                    </View>
-                  )}
-                </View>
-              ))}
-            </ScrollView>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
-                <Text style={styles.buttonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.saveButton} onPress={handleSaveWorkout}>
-                <Text style={styles.buttonText}>Save Workout</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </BlurView>
+                        {selectedWorkouts[workout] && (
+                          <View style={styles.setsRepsContainer}>
+                            <View style={styles.inputGroup}>
+                              <Text style={styles.inputLabel}>Sets:</Text>
+                              <TextInput
+                              style={styles.setsRepsInput}
+                              
+                              placeholder="Sets"
+                              placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                              keyboardType="numeric"
+                              value={selectedWorkouts[workout].sets.toString()}
+                              onChangeText={(text) =>
+                                setSelectedWorkouts((prev) => ({
+                                  ...prev,
+                                  [workout]: {
+                                    ...prev[workout],
+                                    sets: parseInt(text) || 0,
+                                  },
+                                }))
+                              }
+                            />
+                              </View>
+                              <View style={styles.inputGroup}>
+                              <Text style={styles.inputLabel}>Reps:</Text>
+                            <TextInput
+                              style={styles.setsRepsInput}
+                              placeholder="Reps"
+                              placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                              keyboardType="numeric"
+                              value={selectedWorkouts[workout].reps.toString()}
+                              onChangeText={(text) =>
+                                setSelectedWorkouts((prev) => ({
+                                  ...prev,
+                                  [workout]: {
+                                    ...prev[workout],
+                                    reps: parseInt(text) || 0,
+                                  },
+                                }))
+                              }
+                            />
+                          </View>
+                        </View>
+                        )}
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </View>
+            ))}
+          </ScrollView>
+          <TouchableOpacity onPress={handleSaveWorkout} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Save Workout</Text>
+           </TouchableOpacity>
+          <TouchableOpacity onPress={closeModal} style={styles.closeModalButton}>
+            <Text style={styles.closeModalText}>Close</Text>
+          </TouchableOpacity>
+        </View>
       </Modal>
+            {/* Display Previous Workouts */}
+            <Text style={styles.title}>Previous Workouts</Text>
+      {previousWorkouts.length > 0 ? (
+        <FlatList
+          data={previousWorkouts}
+          renderItem={renderWorkoutItem} // Use the render function
+          keyExtractor={(item) => item.createdAt.toString()}
+          contentContainerStyle={styles.listContent}
+        />
+      ) : (
+        <Text style={styles.noWorkoutsText}>No previous workouts found.</Text>
+      )}
     </View>
   );
 }
@@ -195,6 +250,11 @@ export default function WorkoutScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   gradient: {
     flex: 1,
@@ -209,7 +269,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: 'blue',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -218,6 +278,12 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
   },
+  workoutLogTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginTop: 10,
+  },
   workoutLogDate: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -225,7 +291,7 @@ const styles = StyleSheet.create({
   },
   workoutLogCategory: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: '#FFFFFF',
     marginTop: 4,
   },
   workoutLogExercises: {
@@ -253,8 +319,9 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
+    backgroundColor: '#000000', // Opaque background to hide underlying screen
+    padding: 20,
     justifyContent: 'center',
-    alignItems: 'center',
   },
   modalContent: {
     width: width - 40,
@@ -264,10 +331,9 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 20,
     textAlign: 'center',
+    marginBottom: 20,
   },
   input: {
     width: '100%',
@@ -328,16 +394,91 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   saveButton: {
-    backgroundColor: 'rgba(52, 199, 89, 0.8)',
-    borderRadius: 25,
-    padding: 12,
-    flex: 1,
-    marginLeft: 8,
+    backgroundColor: '#28a745', // Vibrant green color
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
     alignItems: 'center',
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8, 
   },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
+  setsRepsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  setsRepsInput: {
+    width: '45%',
+    height: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    fontSize: 14,
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
+  scrollViewContent: { paddingBottom: 20 },
+  closeModalButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#FF0000',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  closeModalText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  listContent: {
+    paddingBottom: 20,
+  },
+  modalButton: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 25,
+    padding: 16,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  modalButtonText: {
+    color: '#3b5998',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  inputGroup: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  inputLabel: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    marginRight: 10,
+  },
+  exerciseDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 8,
+  },
+  exerciseName: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    flex: 2,
+  },
+  exerciseInfo: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)',
+    flex: 1,
+    textAlign: 'right',
+  },
+  
 });
