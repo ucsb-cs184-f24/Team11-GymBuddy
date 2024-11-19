@@ -42,7 +42,7 @@ const Login = () => {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       const user = userCredential.user;
       await AsyncStorage.setItem("@user", JSON.stringify(user));

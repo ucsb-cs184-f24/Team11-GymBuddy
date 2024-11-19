@@ -1,8 +1,8 @@
 import { createUserProfile } from "@/serviceFiles/databaseService";
 import { auth } from "@/serviceFiles/authService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BlurView } from 'expo-blur';
-import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import React, { useEffect, useState } from "react";
@@ -17,9 +17,9 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -45,24 +45,34 @@ const Register = () => {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       const user = userCredential.user;
-      
+
       // Update user profile with display name
       await updateProfile(user, {
         displayName: name,
       });
 
-      await AsyncStorage.setItem("@user", JSON.stringify({
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-      }));
+      await AsyncStorage.setItem(
+        "@user",
+        JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+        }),
+      );
       Alert.alert("User Created");
 
-      await createUserProfile(user.uid, name, 'LastName', 'username', email, 
-        'imageUrl', 'bio', false
+      await createUserProfile(
+        user.uid,
+        name,
+        "LastName",
+        "username",
+        email,
+        "imageUrl",
+        "bio",
+        false,
       );
 
       router.replace("/(tabs)/Home");
@@ -79,11 +89,10 @@ const Register = () => {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
+        colors={["#4c669f", "#3b5998", "#192f6a"]}
         style={styles.gradient}
       >
-        <BlurView intensity={10} tint="dark" style={styles.header}>
-        </BlurView>
+        <BlurView intensity={10} tint="dark" style={styles.header}></BlurView>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardAvoidingView}
@@ -119,7 +128,10 @@ const Register = () => {
                   placeholderTextColor="#FFFFFFFF"
                 />
               </View>
-              <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
+              <TouchableOpacity
+                style={styles.signUpButton}
+                onPress={handleSignUp}
+              >
                 <Text style={styles.signUpButtonText}>Sign Up</Text>
               </TouchableOpacity>
               <View style={styles.orContainer}>
@@ -150,8 +162,8 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingVertical: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   keyboardAvoidingView: {
     flex: 1,
@@ -166,8 +178,8 @@ const styles = StyleSheet.create({
     width: width - 40,
     padding: 20,
     borderRadius: 20,
-    alignItems: 'center',
-    overflow: 'hidden',
+    alignItems: "center",
+    overflow: "hidden",
   },
   logo: {
     width: 100,

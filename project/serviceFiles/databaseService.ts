@@ -1,14 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { 
-  getFirestore, 
-  addDoc, 
-  collection, 
-  doc, 
-  getDoc, 
-  getDocs, 
-  setDoc 
-} from 'firebase/firestore';
-import { app } from './firebaseConfig';
+import {
+  getFirestore,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+} from "firebase/firestore";
+import { app } from "./firebaseConfig";
 
 export const database = getFirestore(app);
 
@@ -44,7 +44,7 @@ export const getUserId = async () => {
   } catch (e) {
     console.error("Error getting user ID", e);
   }
-}
+};
 
 export const uidToUsername = async (userId: string) => {
   try {
@@ -54,59 +54,62 @@ export const uidToUsername = async (userId: string) => {
   } catch (e) {
     console.error("Error getting user name", e);
   }
-}
+};
 
 export const getAllUsersRecentWorkouts = async (): Promise<WorkoutLog[]> => {
   try {
     const workoutsRef = collection(database, `posts`);
-      const snapshot = await getDocs(workoutsRef);
-      const workoutLogs: WorkoutLog[] = [];
-      for (const doc of snapshot.docs) {
-        const data = doc.data();
-        const username = await uidToUsername(data.userId);
-        workoutLogs.push({
-          caption: data.caption,
-          commentsCount: data.commentsCount,
-          createdAt: data.createdAt,
-          image: data.image,
-          likesCount: data.likesCount,
-          muscleGroup: data.muscleGroup,
-          repsCount: data.repsCount,
-          setsCount: data.setsCount,
-          userId: data.userId,
-          weight: data.weight,
-          workoutName: data.workoutName,
-          workoutType: data.workoutType,
-          username: username
-        } as WorkoutLog);
-      }
-      return workoutLogs;
-    } catch (e) {
-      console.error("Error getting workouts", e);
+    const snapshot = await getDocs(workoutsRef);
+    const workoutLogs: WorkoutLog[] = [];
+    for (const doc of snapshot.docs) {
+      const data = doc.data();
+      const username = await uidToUsername(data.userId);
+      workoutLogs.push({
+        caption: data.caption,
+        commentsCount: data.commentsCount,
+        createdAt: data.createdAt,
+        image: data.image,
+        likesCount: data.likesCount,
+        muscleGroup: data.muscleGroup,
+        repsCount: data.repsCount,
+        setsCount: data.setsCount,
+        userId: data.userId,
+        weight: data.weight,
+        workoutName: data.workoutName,
+        workoutType: data.workoutType,
+        username: username,
+      } as WorkoutLog);
     }
-    return [];
+    return workoutLogs;
+  } catch (e) {
+    console.error("Error getting workouts", e);
+  }
+  return [];
 };
 
 export const getWorkouts = async (userId: string): Promise<WorkoutLog[]> => {
   try {
-  const workoutsRef = collection(database, `posts`);
+    const workoutsRef = collection(database, `posts`);
     const snapshot = await getDocs(workoutsRef);
     return snapshot.docs
-      .filter(doc => doc.data().userId === userId)
-      .map(doc => ({
-      caption: doc.data().caption,
-      commentsCount: doc.data().commentsCount,
-      createdAt: doc.data().createdAt,
-      image: doc.data().image,
-      likesCount: doc.data().likesCount,
-      muscleGroup: doc.data().muscleGroup,
-      repsCount: doc.data().repsCount,
-      setsCount: doc.data().setsCount,
-      userId: doc.data().userId,
-      weight: doc.data().weight,
-      workoutName: doc.data().workoutName,
-      workoutType: doc.data().workoutType
-      } as WorkoutLog));
+      .filter((doc) => doc.data().userId === userId)
+      .map(
+        (doc) =>
+          ({
+            caption: doc.data().caption,
+            commentsCount: doc.data().commentsCount,
+            createdAt: doc.data().createdAt,
+            image: doc.data().image,
+            likesCount: doc.data().likesCount,
+            muscleGroup: doc.data().muscleGroup,
+            repsCount: doc.data().repsCount,
+            setsCount: doc.data().setsCount,
+            userId: doc.data().userId,
+            weight: doc.data().weight,
+            workoutName: doc.data().workoutName,
+            workoutType: doc.data().workoutType,
+          }) as WorkoutLog,
+      );
   } catch (e) {
     console.error("Error getting workouts", e);
   }
@@ -121,7 +124,7 @@ export const createUserProfile = async (
   email: string,
   profilePicture: string,
   bio: string,
-  isPrivate: boolean
+  isPrivate: boolean,
 ) => {
   try {
     const userProfile = {
@@ -163,9 +166,7 @@ export const updateUserProfile = async (userId: string, profile: any) => {
   }
 };
 
-export const createPost = async (
-  post: WorkoutLog,
-) => {
+export const createPost = async (post: WorkoutLog) => {
   try {
     const postsRef = collection(database, "posts");
     await addDoc(postsRef, post);
