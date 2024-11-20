@@ -1,7 +1,7 @@
 # Design Flow
 
-<img src="https://github.com/user-attachments/assets/dcf6827c-e83b-4bbf-85ab-2ba87da3b4ac" alt="Flow 1" width="200">
-<img src="https://github.com/user-attachments/assets/7bad6719-0e85-4762-815e-f331976be203" alt="Flow 2" width="200">
+<img src="https://github.com/user-attachments/assets/dcf6827c-e83b-4bbf-85ab-2ba87da3b4ac" alt="Flow 1" width="500">
+<img src="https://github.com/user-attachments/assets/7bad6719-0e85-4762-815e-f331976be203" alt="Flow 2" width="500">
 
 # Design Images
 
