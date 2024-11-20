@@ -1,7 +1,6 @@
 # Design Flow
-![CS184 (1)](https://github.com/user-attachments/assets/dcf6827c-e83b-4bbf-85ab-2ba87da3b4ac)
-<img src="https://github.com/user-attachments/assets/dcf6827c-e83b-4bbf-85ab-2ba87da3b4ac" alt="Alt text" width="200">
-![CS184](https://github.com/user-attachments/assets/7bad6719-0e85-4762-815e-f331976be203)
+<img src="https://github.com/user-attachments/assets/dcf6827c-e83b-4bbf-85ab-2ba87da3b4ac" alt="Flow 1" width="200">
+<img src="https://github.com/user-attachments/assets/7bad6719-0e85-4762-815e-f331976be203" alt="Flow 2" width="200">
 # Design Images
 ![Follow](https://github.com/user-attachments/assets/958134e2-1e79-4a59-8f25-89768f56bfdc)
 ![Edit Profile](https://github.com/user-attachments/assets/93fdd51b-95e7-4cea-9d44-cb78a3953537)
