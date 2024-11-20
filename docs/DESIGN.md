@@ -7,9 +7,9 @@
 
 ```python
 app/
-├── (auth)/                            # Authentication pages \\
-│   ├── SignIn.tsx                     # User sign-in page \\
-│   ├── Register.tsx                   # User register page \\
+├── (auth)/                            # Authentication pages
+│   ├── SignIn.tsx                     # User sign-in page
+│   ├── Register.tsx                   # User register page 
 │ 
 ├── (app)/                             # Main app pages
 │   ├── (tabs)/                        # Tabs for navigation
