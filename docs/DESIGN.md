@@ -5,6 +5,7 @@
 
 # File Structure 
 
+'''
 app/
 ├── (auth)/                            # Authentication pages \\
 │   ├── SignIn.tsx                     # User sign-in page \\
@@ -23,7 +24,7 @@ app/
 │   ├── EditProfile.tsx                # Page to edit your own profile
 │   ├── UserProfile.tsx                # Page to view another user's profile
 │   ├── Post.tsx                       # Page to view an individual post 
-
+'''
 
 # Design Images
 
