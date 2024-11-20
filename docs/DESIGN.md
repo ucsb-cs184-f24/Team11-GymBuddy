@@ -3,6 +3,28 @@
 <img src="https://github.com/user-attachments/assets/dcf6827c-e83b-4bbf-85ab-2ba87da3b4ac" alt="Flow 1" width="600">
 <img src="https://github.com/user-attachments/assets/7bad6719-0e85-4762-815e-f331976be203" alt="Flow 2" width="800">
 
+# File Structure 
+
+app/
+├── (auth)/                            # Authentication pages
+│   ├── SignIn.tsx                     # User sign-in page
+│   ├── Register.tsx                   # User register page
+│
+├── (app)/                             # Main app pages
+│   ├── (tabs)/                        # Tabs for navigation
+│   │   ├── Home.tsx                   # Home page (e.g., feed)
+│   │   ├── Search.tsx                 # Search users/posts
+│   │   ├── Workout.tsx                # Add new workout page
+│   │   ├── Stats.tsx                  # Stats and analytics page
+│   │   ├── Profile/
+│   │   │   ├── _layout.tsx            # Layout for profile pages
+│   │   │   ├── index.tsx              # User's profile page
+│   │   │   ├── edit.tsx      	      # User's edit profile page
+│   ├── EditProfile.tsx                # Page to edit your own profile
+│   ├── UserProfile.tsx                # Page to view another user's profile
+│   ├── Post.tsx                       # Page to view an individual post 
+
+
 # Design Images
 
 Profile and Edit Profile
