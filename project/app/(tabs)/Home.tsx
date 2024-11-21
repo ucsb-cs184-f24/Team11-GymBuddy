@@ -139,12 +139,17 @@ const Home = () => {
           <Text style={styles.moreOptionsText}>•••</Text>
         </TouchableOpacity>
       </View>
-      <Image source={{ uri: item.image }} style={styles.workoutImage} />
       <View style={styles.workoutInfo}>
-        <Text style={styles.exerciseText}>{item.workoutName}</Text>
-        <Text
-          style={styles.durationText}
-        >{`Sets: ${item.setsCount}, Reps: ${item.repsCount}`}</Text>
+      {item.exercises?.map((exercise, index) => (
+        <>
+            <Text>
+              {exercise.name} - {exercise.category}
+            </Text>
+            <Text> 
+              Sets: {exercise.sets} | Reps: {exercise.reps} | Weight: {exercise.weight}
+            </Text>
+            </>
+        ))}
         <Text style={styles.durationText}>
           {`Date: ${new Date(item.createdAt).toLocaleDateString()}, Time: ${new Date(item.createdAt)
           .toLocaleTimeString(

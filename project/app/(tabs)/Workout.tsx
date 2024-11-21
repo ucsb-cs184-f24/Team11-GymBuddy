@@ -24,7 +24,7 @@ export default function WorkoutScreen() {
   const [userData, setUserData] = useState<string | null>(null);
   const [previousWorkouts, setPreviousWorkouts] = useState<WorkoutLog[]>([]);
   const [workoutName, setWorkoutName] = useState('');
-  const [selectedWorkouts, setSelectedWorkouts] = useState<Record<string, { sets: number; reps: number }>>({});
+  const [selectedWorkouts, setSelectedWorkouts] = useState<Record<string, { sets: number; reps: number, weight: number, category: string }>>({});
   const fadeAnim = new Animated.Value(0);
 
   const categories = ['Chest', 'Back', 'Biceps', 'Triceps', 'Legs', 'Shoulders', 'Abs'];
@@ -70,7 +70,7 @@ export default function WorkoutScreen() {
         delete updated[workout];
         return updated;
       } else {
-        return { ...prev, [workout]: { sets: 0, reps: 0 } };
+        return { ...prev, [workout]: { sets: 0, reps: 0, weight: 0, category: selectedCategory || '' } };
       }
     });
   };
@@ -83,13 +83,14 @@ export default function WorkoutScreen() {
         createdAt: Date.now(),
         image: '',
         likesCount: 0,
-        muscleGroup: selectedCategory || '',
-        repsCount: Object.values(selectedWorkouts).reduce((sum, w) => sum + w.reps, 0),
-        setsCount: Object.values(selectedWorkouts).reduce((sum, w) => sum + w.sets, 0),
+        exercises: Object.keys(selectedWorkouts).map((workout) => ({
+          name: workout,
+          sets: selectedWorkouts[workout].sets,
+          reps: selectedWorkouts[workout].reps,
+          weight: selectedWorkouts[workout].weight,
+          category: selectedWorkouts[workout].category,
+        })), // Store exercises with sets/reps
         userId: userData,
-        weight: 0,
-        workoutName: Object.keys(selectedWorkouts).join(', '),
-        workoutType: '',
       };
       await createPost(workoutLog);
       const updatedWorkouts = await getWorkouts(userData);
@@ -110,23 +111,18 @@ export default function WorkoutScreen() {
 
   const renderWorkoutItem = ({ item }: { item: WorkoutLog }) => {
     // Parse exercises, sets, and reps
-    const exercises = item.workoutName.split(', '); // Assuming workoutName is comma-separated
-    const setsAndReps = Object.values(selectedWorkouts); // Assuming selectedWorkouts contains sets and reps info
-  
+    const exercises = item.exercises // Assuming workoutName is comma-separated
     return (
       <BlurView intensity={80} tint="dark" style={styles.workoutLog}>
         <Text style={styles.workoutLogDate}>
           {new Date(item.createdAt).toLocaleDateString()}
         </Text>
-        <Text style={styles.workoutLogCategory}>
-          Muscle Group: {item.muscleGroup}
-        </Text>
         <Text style={styles.workoutLogTitle}>Exercises:</Text>
         {exercises.map((exercise, index) => (
-          <View key={index} style={styles.exerciseDetails}>
-            <Text style={styles.exerciseName}>{exercise.trim()}</Text>
+          <View key={`${exercise.name}-${index}`} style={styles.exerciseDetails}>
+            <Text style={styles.exerciseName}>{exercise.name} - {exercise.category}</Text>
             <Text style={styles.exerciseInfo}>
-              Sets: {setsAndReps[index]?.sets || 0} | Reps: {setsAndReps[index]?.reps || 0}
+              Sets: {exercise.sets} | Reps: {exercise.reps} | Weight: {exercise.weight}
             </Text>
           </View>
         ))}
@@ -178,8 +174,7 @@ export default function WorkoutScreen() {
                             <View style={styles.inputGroup}>
                               <Text style={styles.inputLabel}>Sets:</Text>
                               <TextInput
-                              style={styles.setsRepsInput}
-                              
+                              style={styles.setsRepsInput}     
                               placeholder="Sets"
                               placeholderTextColor="rgba(255, 255, 255, 0.6)"
                               keyboardType="numeric"
@@ -209,6 +204,25 @@ export default function WorkoutScreen() {
                                   [workout]: {
                                     ...prev[workout],
                                     reps: parseInt(text) || 0,
+                                  },
+                                }))
+                              }
+                            />
+                          </View>
+                          <View style={styles.inputGroup}>
+                              <Text style={styles.inputLabel}>Weight:</Text>
+                            <TextInput
+                              style={styles.setsRepsInput}
+                              placeholder="Weight"
+                              placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                              keyboardType="numeric"
+                              value={selectedWorkouts[workout].weight.toString()}
+                              onChangeText={(text) =>
+                                setSelectedWorkouts((prev) => ({
+                                  ...prev,
+                                  [workout]: {
+                                    ...prev[workout],
+                                    weight: parseInt(text) || 0,
                                   },
                                 }))
                               }
@@ -247,238 +261,204 @@ export default function WorkoutScreen() {
   );
 }
 
+// Updated styles for React Native components
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#1E1E1E', // Dark background
+    paddingHorizontal: 16,
+    paddingTop: StatusBar.currentHeight || 24,
+  },
+  modalButton: {
+    backgroundColor: '#3B5998', // Blue button
+    borderRadius: 25,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignSelf: 'center',
+    marginVertical: 20,
+  },
+  modalButtonText: {
+    color: '#FFFFFF', // White text
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Semi-transparent black
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  scrollViewContent: {
+    paddingVertical: 20,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  categoryButton: {
+    backgroundColor: '#2A2A2A', // Dark grey
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  selectedCategoryButton: {
+    backgroundColor: '#FF4500', // Highlighted orange
+  },
+  categoryText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  workoutButton: {
+    backgroundColor: '#444', // Medium grey
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    marginBottom: 6,
+  },
+  workoutList: {
+    marginTop: 10,
+  },
+  selectedWorkoutButton: {
+    backgroundColor: '#FF8C00', // Highlighted orange
+  },
+  workoutText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
+  setsRepsContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 10,
+    marginTop: 10,
+    width: '100%',
+  },
+  inputGroup: {
+    flex: 1,
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  inputLabel: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  setsRepsInput: {
+    backgroundColor: '#333', // Input background
+    color: '#FFFFFF', // White text
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    textAlign: 'center',
+    fontSize: 14,
+  },
+  saveButton: {
+    backgroundColor: '#32CD32', // Green
+    borderRadius: 25,
+    paddingVertical: 12,
+    marginVertical: 20,
+    alignSelf: 'center',
+    width: '80%',
   },
   saveButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  gradient: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'blue',
-    marginBottom: 20,
     textAlign: 'center',
   },
+  closeModalButton: {
+    alignSelf: 'center',
+    marginTop: 10,
+  },
+  closeModalText: {
+    color: '#FF6347', // Tomato red
+    fontSize: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#00CED1', // Turquoise
+    textAlign: 'center',
+    marginVertical: 20,
+  },
   workoutLog: {
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 12,
+    backgroundColor: '#2F4F4F', // Dark Slate Grey
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
   },
   workoutLogTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginTop: 10,
   },
   workoutLogDate: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  workoutLogCategory: {
     fontSize: 14,
-    color: '#FFFFFF',
-    marginTop: 4,
-  },
-  workoutLogExercises: {
-    fontSize: 14,
-    color: '#FFFFFF',
-    marginTop: 8,
+    color: '#D3D3D3', // Light Grey
+    marginBottom: 4,
   },
   noWorkoutsText: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#FF6347', // Tomato red
     textAlign: 'center',
     marginTop: 20,
-  },
-  addButton: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 25,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  addButtonText: {
-    color: '#3b5998',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#000000', // Opaque background to hide underlying screen
-    padding: 20,
-    justifyContent: 'center',
-  },
-  modalContent: {
-    width: width - 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 20,
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 24,
-    color: '#FFFFFF',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    height: 50,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    marginBottom: 15,
-    fontSize: 16,
-    color: '#FFFFFF',
-  },
-  categoryList: {
-    maxHeight: 300,
-  },
-  categoryButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 8,
-  },
-  selectedCategoryButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-  },
-  categoryText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  workoutList: {
-    marginLeft: 20,
-    marginBottom: 16,
-  },
-  workoutButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 6,
-  },
-  selectedWorkoutButton: {
-    backgroundColor: 'rgba(0, 255, 255, 0.3)',
-  },
-  workoutText: {
-    fontSize: 16,
-    color: '#FFFFFF',
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  cancelButton: {
-    backgroundColor: 'rgba(255, 59, 48, 0.8)',
-    borderRadius: 25,
-    padding: 12,
-    flex: 1,
-    marginRight: 8,
-    alignItems: 'center',
-  },
-  saveButton: {
-    backgroundColor: '#28a745', // Vibrant green color
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8, 
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  setsRepsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 8,
-  },
-  setsRepsInput: {
-    width: '45%',
-    height: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    fontSize: 14,
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  scrollViewContent: { paddingBottom: 20 },
-  closeModalButton: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#FF0000',
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  closeModalText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  listContent: {
-    paddingBottom: 20,
-  },
-  modalButton: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 25,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  modalButtonText: {
-    color: '#3b5998',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  inputGroup: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  inputLabel: {
-    fontSize: 14,
-    color: '#FFFFFF',
-    marginRight: 10,
   },
   exerciseDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 8,
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#3B3B3B', // Dark grey
+    borderRadius: 8,
   },
   exerciseName: {
     fontSize: 16,
+    fontWeight: 'bold',
     color: '#FFFFFF',
-    flex: 2,
   },
   exerciseInfo: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
-    flex: 1,
-    textAlign: 'right',
+    color: '#FFFFFF',
   },
-  
+  listContent: {
+    paddingVertical: 10,
+  },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  previousWorkoutButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+    marginTop: 10,
+    alignSelf: 'flex-start',
+  },
+  previousWorkoutButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
+  addWorkoutButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 30,
+    alignItems: 'center',
+    elevation: 5, // For Android shadow
+    shadowColor: '#000', // For iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+  },
+  addWorkoutButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
 });

@@ -18,14 +18,16 @@ export interface WorkoutLog {
   createdAt: number;
   image: string;
   likesCount: number;
-  muscleGroup: string;
-  repsCount: number;
-  setsCount: number;
+  exercises: {
+    name: string;
+    sets: number;
+    reps: number;
+    weight: number;
+    category: string;
+  }[]
   userId: string;
-  weight: number;
-  workoutName: string;
-  workoutType: string;
   username?: string;
+
 }
 
 export const getUserData = async () => {
@@ -70,13 +72,8 @@ export const getAllUsersRecentWorkouts = async (): Promise<WorkoutLog[]> => {
           createdAt: data.createdAt,
           image: data.image,
           likesCount: data.likesCount,
-          muscleGroup: data.muscleGroup,
-          repsCount: data.repsCount,
-          setsCount: data.setsCount,
+          exercises: data.exercises,
           userId: data.userId,
-          weight: data.weight,
-          workoutName: data.workoutName,
-          workoutType: data.workoutType,
           username: username
         } as WorkoutLog);
       }
@@ -99,13 +96,8 @@ export const getWorkouts = async (userId: string): Promise<WorkoutLog[]> => {
       createdAt: doc.data().createdAt,
       image: doc.data().image,
       likesCount: doc.data().likesCount,
-      muscleGroup: doc.data().muscleGroup,
-      repsCount: doc.data().repsCount,
-      setsCount: doc.data().setsCount,
+      exercises: doc.data().exercises,
       userId: doc.data().userId,
-      weight: doc.data().weight,
-      workoutName: doc.data().workoutName,
-      workoutType: doc.data().workoutType
       } as WorkoutLog));
   } catch (e) {
     console.error("Error getting workouts", e);
