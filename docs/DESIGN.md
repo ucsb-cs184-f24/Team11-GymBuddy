@@ -37,3 +37,69 @@ Search Bar and Follow Screen
 
 <img src="https://github.com/user-attachments/assets/8c37384d-3fb6-460c-9430-e7f537af4c1e" alt="Search Bar" width="200">
 <img src="https://github.com/user-attachments/assets/958134e2-1e79-4a59-8f25-89768f56bfdc" alt="Follow" width="200">
+
+# Database Notes
+
+Using NoSQL Firestore Database
+Want to be able to store images
+nodes: users, posts
+
+# Database Design 
+
+```python
+users (collection)
+	- userId: uid (document)
+		- firstName: string
+		- lastName: string
+		- username: string
+		- email: string
+		- profilePicture: string
+		- followerCount: number
+		- followingCount: number
+		- height: number
+		- weight: number
+		- gender: string
+		- bio: string
+		- createdAt: timestamp
+		- isPrivate: bool
+		- following (collection)
+			- userId: uid (document)
+				- username: string
+				- profilePicture: string
+		- followers (collection)
+			- userId: uid (document)
+				- username: string
+				- profilePicture: string
+		- followingRequests (collection)
+			- userId: uid (document)
+				- username: string
+				- profilePicture: string
+		- followerRequests (collection)
+			- userId: uid (document)
+				- username: string
+				- profilePicture: string
+```
+
+```python
+posts (collection)
+- postId (document)
+	- userId: string
+	- caption: string
+	- image: string
+	- setsCount: number
+	- repsCount: number
+	- weight: number
+	- workoutType: string
+	- workoutName: string
+	- muscleGroup: string
+	- likesCount: number
+	- commentsCount: number
+	- createdAt: timestamp
+	- comments (collection)
+		- userId: uid (document)
+			- username: string
+			- profilePicture: string
+			- text: string
+			- createdAt: timestamp
+			- likes: number
+```

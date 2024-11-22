@@ -19,10 +19,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import {
   getAllUsersRecentWorkouts,
-  uidToUsername,
   WorkoutLog,
-} from "@/serviceFiles/databaseService";
-
+} from "@/serviceFiles/postsDatabaseService";
+import { v4 as uuid } from "uuid";
 const { width, height } = Dimensions.get("window");
 
 const getResponsiveFontSize = (size: number) => {
@@ -141,7 +140,7 @@ const Home = () => {
                   //onPress: () => deletePost(item.id),
                   style: "destructive",
                 },
-              ],
+              ]
             );
           }}
         >
@@ -149,19 +148,21 @@ const Home = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.workoutInfo}>
-      {item.exercises?.map((exercise, index) => (
-        <>
+      {item.exercises?.map((exercise) => (
+        <React.Fragment key={exercise.name}>
             <Text style = {styles.setsText}>
-              {exercise.name} - {exercise.category}
+            {exercise.name} - {exercise.category}
             </Text>
             <Text style = {styles.setsText}>
               Sets: {exercise.sets} | Reps: {exercise.reps} | Weight: {exercise.weight}
             </Text>
-            </>
+        </React.Fragment>
         ))}
         <Text style={styles.durationText}>
-          {`Date: ${new Date(item.createdAt).toLocaleDateString()}, Time: ${new Date(
-            item.createdAt,
+          {`Date: ${new Date(
+            item.createdAt
+          ).toLocaleDateString()}, Time: ${new Date(
+            item.createdAt
           ).toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
@@ -183,7 +184,7 @@ const Home = () => {
         <FlatList
           data={posts}
           renderItem={renderPost}
-          keyExtractor={(item) => item.userId}
+          keyExtractor={(item) => uuid()}
           style={[styles.workoutList, { paddingTop: 10 }]}
         />
         <Modal

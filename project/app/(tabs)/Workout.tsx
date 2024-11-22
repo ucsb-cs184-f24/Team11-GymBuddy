@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
+  createPost,
+  getWorkouts,
+  WorkoutLog,
+} from "@/serviceFiles/postsDatabaseService";
+import { getUserId } from "@/serviceFiles/usersDatabaseService";
+import { workoutsByCategory } from "@/utils/Workout/workoutCatagory";
+import { BlurView } from "expo-blur";
+import React, { useEffect, useState } from "react";
+import {
+  Animated,
+  Dimensions,
+  FlatList,
   Modal,
   ScrollView,
-  FlatList,
-  Dimensions,
   StatusBar,
+  StyleSheet,
+  Text,
   TextInput,
-  Animated,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { BlurView } from 'expo-blur';
-import { getUserId, createPost, getWorkouts, WorkoutLog } from '@/serviceFiles/databaseService';
-import { workoutsByCategory } from '@/utils/Workout/workoutCatagory';
 
 const { width } = Dimensions.get("window");
 
@@ -48,7 +53,9 @@ export default function WorkoutScreen() {
       if (userData) {
         const workouts = await getWorkouts(userData);
         if (workouts) {
-          const workoutArray: WorkoutLog[] = Object.values(workouts as WorkoutLog[]);
+          const workoutArray: WorkoutLog[] = Object.values(
+            workouts as WorkoutLog[]
+          );
           workoutArray.sort((a, b) => b.createdAt - a.createdAt);
           setPreviousWorkouts(workoutArray);
         } else {
@@ -95,7 +102,9 @@ export default function WorkoutScreen() {
       await createPost(workoutLog);
       const updatedWorkouts = await getWorkouts(userData);
       if (updatedWorkouts) {
-        const workoutArray: WorkoutLog[] = Object.values(updatedWorkouts as unknown as Record<string, WorkoutLog>);
+        const workoutArray: WorkoutLog[] = Object.values(
+          updatedWorkouts as unknown as Record<string, WorkoutLog>
+        );
         workoutArray.sort((a, b) => b.createdAt - a.createdAt);
         setPreviousWorkouts(workoutArray);
       }
@@ -118,7 +127,7 @@ export default function WorkoutScreen() {
           {new Date(item.createdAt).toLocaleDateString()}
         </Text>
         <Text style={styles.workoutLogTitle}>Exercises:</Text>
-        {exercises.map((exercise, index) => (
+        {exercises?.map((exercise, index) => (
           <View key={`${exercise.name}-${index}`} style={styles.exerciseDetails}>
             <Text style={styles.exerciseName}>{exercise.name} - {exercise.category}</Text>
             <Text style={styles.exerciseInfo}>
