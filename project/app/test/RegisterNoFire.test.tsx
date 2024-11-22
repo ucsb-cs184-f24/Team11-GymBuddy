@@ -1,7 +1,7 @@
 // RegisterNoFire.test.tsx
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import Register from './RegisterNoFire'; // Adjust the import path as necessary
+import Register from '../(auth)/RegisterNoFire'; // Adjust the import path as necessary
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Alert } from 'react-native';

@@ -1,7 +1,7 @@
 // SignInNoFire.test.tsx
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import Login from './SignInNoFire';
+import Login from '../(auth)/SignInNoFire';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
