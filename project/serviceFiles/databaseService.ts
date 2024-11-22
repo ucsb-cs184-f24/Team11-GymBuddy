@@ -7,6 +7,7 @@ import {
   getDoc,
   getDocs,
   setDoc,
+  QuerySnapshot,
 } from "firebase/firestore";
 import { app } from "./firebaseConfig";
 
@@ -34,6 +35,35 @@ export const getUserData = async () => {
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
     console.error("Error retrieving user data", e);
+  }
+};
+export interface UserBasic {
+  userId: string;
+  firstName: string;
+  lastName: string;
+}
+
+export const getAllUsernames = async (): Promise<UserBasic[]> => {
+  try {
+    const usersRef = collection(database, "users");
+    const querySnapshot: QuerySnapshot = await getDocs(usersRef);
+    const users: UserBasic[] = [];
+
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      const user: UserBasic = {
+        userId: data.userId || docSnap.id,
+        firstName: data.firstName || "",
+        lastName: data.lastName || "",
+      };
+      users.push(user);
+    });
+
+    console.log(`Fetched users count: ${users.length}`); // Debugging
+    return users;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return [];
   }
 };
 

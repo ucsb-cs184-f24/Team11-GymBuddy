@@ -1,3 +1,4 @@
+// Search.tsx
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -8,13 +9,17 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { getUserProfile, getUserId, uidToUsername, getAllUsersRecentWorkouts } from "@/serviceFiles/databaseService";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import {
+  getUserProfile, // Function to fetch user profile by userId
+  getAllUsernames,    // Newly implemented function
+} from "@/serviceFiles/databaseService";
 
 interface User {
   userId: string;
   username: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   profilePic: string;
 }
 
@@ -27,83 +32,80 @@ const Search = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const workouts = await getAllUsersRecentWorkouts(); // Retrieves recent workouts, including usernames
-        const uniqueUsers = new Map<string, User>();
-
-        // Extract user details from workout logs
-        for (const workout of workouts) {
-          if (!uniqueUsers.has(workout.userId)) {
-            // Use uidToUsername and getUserProfile to fetch user details
-            const username = await uidToUsername(workout.userId);
-            const profile = await getUserProfile(workout.userId);
-            if (profile) {
-              uniqueUsers.set(workout.userId, {
-                userId: workout.userId,
-                username: username || "unknown user", // Fallback to "unknown user" if no username found
-                fullName: `${profile.firstName} ${profile.lastName}`,
-                profilePic: profile.profilePicture || "https://via.placeholder.com/50", // Fallback for profile pictures
-              });
-            }
+        const userIds = await getAllUsernames(); // Includes firstName and lastName
+        console.log(`Fetched user IDs count: ${userIds.length}`); // Debugging
+  
+        const userProfiles: User[] = [];
+  
+        const profilePromises = userIds.map(async (userBasic) => {
+          const profile = await getUserProfile(userBasic.userId);
+          if (profile) {
+            userProfiles.push({
+              userId: profile.userId || userBasic.userId, 
+              username: profile.username || "Unknown",
+              firstName: userBasic.firstName || "",
+              lastName: userBasic.lastName || "",
+              profilePic: profile.profilePic || "",
+            } as User);
           }
-        }
-
-        setUsers(Array.from(uniqueUsers.values())); // Convert map back to an array
-        setFilteredData(Array.from(uniqueUsers.values())); // Initialize filtered data
+        });
+  
+        await Promise.all(profilePromises);
+  
+        console.log(`Fetched user profiles count: ${userProfiles.length}`); // Debugging
+        setUsers(userProfiles);
+        setFilteredData(userProfiles.slice(0, 10));
       } catch (error) {
         console.error("Error fetching users:", error);
       }
     };
-
+  
     fetchUsers();
   }, []);
-
-  // Filter users based on search query
-  useEffect(() => {
-    const lowerCaseQuery = searchQuery.toLowerCase();
-    const filtered = users.filter(
-      (user) =>
-        user.username.toLowerCase().includes(lowerCaseQuery) ||
-        user.fullName.toLowerCase().includes(lowerCaseQuery)
-    );
-    setFilteredData(filtered);
-  }, [searchQuery, users]);
-
+  
   const handleSearch = (text: string) => {
     setSearchQuery(text);
+    if (text.trim() === "") {
+      setFilteredData(users.slice(0, 10));
+    } else {
+      const lowercasedText = text.toLowerCase();
+      const filtered = users.filter((user) =>
+        (user.username?.toLowerCase() || "").includes(lowercasedText) ||
+        (user.firstName?.toLowerCase() || "").includes(lowercasedText) ||
+        (user.lastName?.toLowerCase() || "").includes(lowercasedText) ||
+        (user.userId?.toLowerCase() || "").includes(lowercasedText)
+      );
+      setFilteredData(filtered.slice(0, 10));
+    }
   };
 
-  const renderItem = ({ item }: { item: User }) => (
-    <TouchableOpacity style={styles.itemContainer}>
-      <Image source={{ uri: item.profilePic }} style={styles.profilePic} />
-      <View style={styles.textContainer}>
-        <Text style={styles.username}>{item.username}</Text>
-        <Text style={styles.fullName}>{item.fullName}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+const renderItem = ({ item }: { item: User }) => (
+  <TouchableOpacity style={styles.itemContainer}>
+    <Image source={{ uri: item.profilePic }} style={styles.profilePic} />
+    <View style={styles.textContainer}>
+      <Text style={styles.username}>{item.username}</Text>
+      <Text style={styles.fullName}>
+        {item.firstName} {item.lastName}
+      </Text>
+    </View>
+  </TouchableOpacity>
+);
+
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchBar}>
-        <Ionicons name="search" size={20} color="gray" />
-        <TextInput
-          style={styles.input}
-          placeholder="Search users..."
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-      </View>
-      <FlatList
-        data={filteredData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.userId}
-        ListEmptyComponent={
-          searchQuery.length > 0 ? (
-            <Text style={styles.noResultsText}>No users found.</Text>
-          ) : null
-        }
+    <TextInput
+      style={styles.input}
+      placeholder="Search"
+      value={searchQuery}
+      onChangeText={handleSearch}
+    />
+    <FlatList
+      data={filteredData}
+      renderItem={renderItem}
+      keyExtractor={(item, index) => item.userId ? item.userId : `unknown-${index}`}
       />
-    </View>
+  </View>
   );
 };
 
@@ -121,9 +123,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   input: {
-    flex: 1,
-    height: 40,
-    marginLeft: 8,
+    height: 40, // Fixed height
+    borderColor: '#ccc',
+    borderWidth: 1,
+    paddingHorizontal: 8,
+    marginBottom: 16,
+    borderRadius: 4,
+    textAlignVertical: 'center',
   },
   itemContainer: {
     flexDirection: "row",
@@ -147,6 +153,10 @@ const styles = StyleSheet.create({
   fullName: {
     fontSize: 14,
     color: "#555",
+  },
+  userId: {
+    fontSize: 12,
+    color: "#888",
   },
   noResultsText: {
     textAlign: "center",
