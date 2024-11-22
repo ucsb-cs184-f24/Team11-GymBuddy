@@ -151,7 +151,7 @@ export default function Profile() {
           </Text>
           <View style={styles.profileInfo}>
             <Image
-              source={require('../../assets/logo.png')}
+              source={require('../../../assets/logo.png')}
               style={styles.profileImage}
             />
             <View style={styles.postText}>
@@ -185,7 +185,7 @@ export default function Profile() {
           <Text style={styles.bio}>
             Hi my name is John Smith. I go to UCSB and I love to workout.
           </Text>
-          <Pressable style={styles.button}>
+          <Pressable style={styles.button} onPress={() => router.push('/Profile/edit')}>
             <Text style={styles.editProfileText}>Edit Profile</Text>
           </Pressable>
           <View style={styles.viewPostsButton}>
