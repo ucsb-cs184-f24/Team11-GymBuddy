@@ -20,7 +20,7 @@ import {
   getAllUsersRecentWorkouts,
   WorkoutLog,
 } from "@/serviceFiles/postsDatabaseService";
-
+import { v4 as uuid } from "uuid";
 const { width } = Dimensions.get("window");
 
 interface NavbarProps {
@@ -142,15 +142,15 @@ const Home = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.workoutInfo}>
-      {item.exercises?.map((exercise, index) => (
-        <>
+      {item.exercises?.map((exercise) => (
+        <React.Fragment key={exercise.name}>
             <Text>
               {exercise.name} - {exercise.category}
             </Text>
             <Text> 
               Sets: {exercise.sets} | Reps: {exercise.reps} | Weight: {exercise.weight}
             </Text>
-            </>
+        </React.Fragment>
         ))}
         <Text style={styles.durationText}>
           {`Date: ${new Date(
@@ -178,7 +178,7 @@ const Home = () => {
         <FlatList
           data={posts}
           renderItem={renderPost}
-          keyExtractor={(item) => item.userId}
+          keyExtractor={(item) => uuid()}
           style={[styles.workoutList, { paddingTop: 10 }]}
         />
         <Modal

@@ -127,7 +127,7 @@ export default function WorkoutScreen() {
           {new Date(item.createdAt).toLocaleDateString()}
         </Text>
         <Text style={styles.workoutLogTitle}>Exercises:</Text>
-        {exercises.map((exercise, index) => (
+        {exercises?.map((exercise, index) => (
           <View key={`${exercise.name}-${index}`} style={styles.exerciseDetails}>
             <Text style={styles.exerciseName}>{exercise.name} - {exercise.category}</Text>
             <Text style={styles.exerciseInfo}>
