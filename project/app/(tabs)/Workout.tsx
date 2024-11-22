@@ -12,9 +12,16 @@ import {
   TextInput,
   Animated,
 } from 'react-native';
-import { BlurView } from 'expo-blur';
-import { getUserId, createPost, getWorkouts, WorkoutLog } from '@/serviceFiles/databaseService';
-import { workoutsByCategory } from '@/utils/Workout/workoutCatagory';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
+import {
+  createPost,
+  getWorkouts,
+  WorkoutLog,
+} from "@/serviceFiles/databaseService";
+import { getUserId } from "@/serviceFiles/usersDatabaseService";
+import { workoutsByCategory } from "@/utils/Workout/workoutCatagory";
 
 const { width } = Dimensions.get("window");
 
