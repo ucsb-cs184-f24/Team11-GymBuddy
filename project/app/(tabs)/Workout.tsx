@@ -19,7 +19,7 @@ import {
   createPost,
   getWorkouts,
   WorkoutLog,
-} from "@/serviceFiles/databaseService";
+} from "@/serviceFiles/postsDatabaseService";
 import { getUserId } from "@/serviceFiles/usersDatabaseService";
 import { workoutsByCategory } from "@/utils/Workout/workoutCatagory";
 
@@ -64,7 +64,7 @@ export default function WorkoutScreen() {
         const workouts = await getWorkouts(userData);
         if (workouts) {
           const workoutArray: WorkoutLog[] = Object.values(
-            workouts as WorkoutLog[],
+            workouts as WorkoutLog[]
           );
           workoutArray.sort((a, b) => b.createdAt - a.createdAt);
           setPreviousWorkouts(workoutArray);
@@ -84,7 +84,7 @@ export default function WorkoutScreen() {
     setSelectedWorkouts((prev) =>
       prev.includes(workout)
         ? prev.filter((w) => w !== workout)
-        : [...prev, workout],
+        : [...prev, workout]
     );
   };
 
@@ -108,7 +108,7 @@ export default function WorkoutScreen() {
       const updatedWorkouts = await getWorkouts(userData);
       if (updatedWorkouts) {
         const workoutArray: WorkoutLog[] = Object.values(
-          updatedWorkouts as unknown as Record<string, WorkoutLog>,
+          updatedWorkouts as unknown as Record<string, WorkoutLog>
         );
         workoutArray.sort((a, b) => b.createdAt - a.createdAt);
         setPreviousWorkouts(workoutArray);

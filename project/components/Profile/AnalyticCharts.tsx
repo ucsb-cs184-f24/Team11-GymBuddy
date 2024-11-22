@@ -17,7 +17,7 @@ import {
 } from "@/utils/Profile/dataProcessHelpers";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { SymbolView } from "expo-symbols";
-import { getWorkouts, getUserId } from "@/serviceFiles/databaseService";
+import { getWorkouts, getUserId } from "@/serviceFiles/postsDatabaseService";
 
 type WorkoutEntry = {
   name: string;
@@ -33,7 +33,7 @@ const AnalyticCharts = () => {
   const [currentEndDate, setCurrentEndDate] = useState<Date>(new Date());
   const [chartKey, setChartKey] = useState<number>(0);
   const [chartCategory, setChartCategory] = useState<ChartCategory>(
-    ChartCategory.Workouts,
+    ChartCategory.Workouts
   );
 
   const periodOptions = Object.values(Period);
@@ -43,7 +43,7 @@ const AnalyticCharts = () => {
     const fetchData = async () => {
       const { startDate, endDate } = getRangeForPeriod(
         chartPeriod,
-        currentDate,
+        currentDate
       );
       const userId = await getUserId();
       const workoutData = (await getWorkouts(userId)) || {};
@@ -52,7 +52,7 @@ const AnalyticCharts = () => {
         data,
         chartCategory,
         chartPeriod,
-        currentDate,
+        currentDate
       );
 
       setCurrentEndDate(new Date(startDate));
@@ -65,7 +65,7 @@ const AnalyticCharts = () => {
   const filterData = async (
     startDate: number,
     endDate: number,
-    workoutData: { [key: string]: WorkoutEntry },
+    workoutData: { [key: string]: WorkoutEntry }
   ) => {
     const result: WorkoutDayResults = {};
 
@@ -114,7 +114,7 @@ const AnalyticCharts = () => {
       setCurrentDate(new Date(currentDate.setDate(0)));
     } else if (chartPeriod === Period.Year) {
       setCurrentDate(
-        new Date(currentDate.setFullYear(currentDate.getFullYear() - 1)),
+        new Date(currentDate.setFullYear(currentDate.getFullYear() - 1))
       );
     }
   };
@@ -161,7 +161,7 @@ const AnalyticCharts = () => {
         return;
       }
       setCurrentDate(
-        new Date(currentDate.setFullYear(currentDate.getFullYear() + 1)),
+        new Date(currentDate.setFullYear(currentDate.getFullYear() + 1))
       );
     }
   };
