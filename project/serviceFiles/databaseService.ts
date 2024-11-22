@@ -1,14 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { 
-  getFirestore, 
-  addDoc, 
-  collection, 
-  doc, 
-  getDoc, 
-  getDocs, 
-  setDoc 
-} from 'firebase/firestore';
-import { app } from './firebaseConfig';
+import {
+  getFirestore,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+} from "firebase/firestore";
+import { app } from "./firebaseConfig";
 
 export const database = getFirestore(app);
 
@@ -46,7 +46,7 @@ export const getUserId = async () => {
   } catch (e) {
     console.error("Error getting user ID", e);
   }
-}
+};
 
 export const uidToUsername = async (userId: string) => {
   try {
@@ -56,7 +56,7 @@ export const uidToUsername = async (userId: string) => {
   } catch (e) {
     console.error("Error getting user name", e);
   }
-}
+};
 
 export const getAllUsersRecentWorkouts = async (): Promise<WorkoutLog[]> => {
   try {
@@ -81,12 +81,12 @@ export const getAllUsersRecentWorkouts = async (): Promise<WorkoutLog[]> => {
     } catch (e) {
       console.error("Error getting workouts", e);
     }
-    return [];
+  return [];
 };
 
 export const getWorkouts = async (userId: string): Promise<WorkoutLog[]> => {
   try {
-  const workoutsRef = collection(database, `posts`);
+    const workoutsRef = collection(database, `posts`);
     const snapshot = await getDocs(workoutsRef);
     return snapshot.docs
       .filter(doc => doc.data().userId === userId)
@@ -113,7 +113,7 @@ export const createUserProfile = async (
   email: string,
   profilePicture: string,
   bio: string,
-  isPrivate: boolean
+  isPrivate: boolean,
 ) => {
   try {
     const userProfile = {
@@ -155,9 +155,7 @@ export const updateUserProfile = async (userId: string, profile: any) => {
   }
 };
 
-export const createPost = async (
-  post: WorkoutLog,
-) => {
+export const createPost = async (post: WorkoutLog) => {
   try {
     const postsRef = collection(database, "posts");
     await addDoc(postsRef, post);

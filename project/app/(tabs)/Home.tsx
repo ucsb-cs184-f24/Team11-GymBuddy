@@ -16,7 +16,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
-import { getAllUsersRecentWorkouts, uidToUsername, WorkoutLog } from "@/serviceFiles/databaseService";
+import {
+  getAllUsersRecentWorkouts,
+  uidToUsername,
+  WorkoutLog,
+} from "@/serviceFiles/databaseService";
 
 const { width } = Dimensions.get("window");
 
@@ -36,7 +40,7 @@ const Home = () => {
     const loadPosts = async () => {
       try {
         const recentWorkouts = await getAllUsersRecentWorkouts();
-        const postsArray = Object.values(recentWorkouts as WorkoutLog[])
+        const postsArray = Object.values(recentWorkouts as WorkoutLog[]);
         postsArray.sort((a, b) => b.createdAt - a.createdAt);
         setPosts(postsArray);
       } catch (error) {
@@ -70,7 +74,6 @@ const Home = () => {
     //     time: new Date().toLocaleTimeString(),
     //     image: "https://example.com/placeholder.jpg",
     //   };
-
     //   const updatedPosts = [newPostItem, ...posts];
     //   setPosts(updatedPosts);
     //   try {
@@ -84,13 +87,13 @@ const Home = () => {
   };
 
   const deletePost = async (id: string) => {
-  //   const updatedPosts = posts.filter((post) => post.id !== id);
-  //   setPosts(updatedPosts);
-  //   try {
-  //     await AsyncStorage.setItem("posts", JSON.stringify(updatedPosts));
-  //   } catch (error) {
-  //     Alert.alert("Error", "Failed to delete post");
-  //   }
+    //   const updatedPosts = posts.filter((post) => post.id !== id);
+    //   setPosts(updatedPosts);
+    //   try {
+    //     await AsyncStorage.setItem("posts", JSON.stringify(updatedPosts));
+    //   } catch (error) {
+    //     Alert.alert("Error", "Failed to delete post");
+    //   }
   };
 
   const Navbar = ({ setModalVisible }: NavbarProps) => {
@@ -132,7 +135,7 @@ const Home = () => {
                   //onPress: () => deletePost(item.id),
                   style: "destructive",
                 },
-              ]
+              ],
             );
           }}
         >
@@ -151,11 +154,13 @@ const Home = () => {
             </>
         ))}
         <Text style={styles.durationText}>
-          {`Date: ${new Date(item.createdAt).toLocaleDateString()}, Time: ${new Date(item.createdAt)
-          .toLocaleTimeString(
-            'en-US',
-            { hour: '2-digit', minute: '2-digit', hour12: true }
-          )}`}
+          {`Date: ${new Date(item.createdAt).toLocaleDateString()}, Time: ${new Date(
+            item.createdAt,
+          ).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          })}`}
         </Text>
       </View>
     </BlurView>

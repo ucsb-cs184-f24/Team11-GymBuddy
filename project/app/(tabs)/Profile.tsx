@@ -51,9 +51,10 @@ export default function Profile() {
     const fetchData = async () => {
       const profile = await getUserProfile(await getUserId());
       setUserData({
-        Name: profile?.Name || 'loading',
-        Email: profile?.email || 'loading',
-        joined: new Date(Number(profile?.joined)).toLocaleDateString() || 'loading',
+        Name: profile?.Name || "loading",
+        Email: profile?.email || "loading",
+        joined:
+          new Date(Number(profile?.joined)).toLocaleDateString() || "loading",
       });
 
       const savedImage = await AsyncStorage.getItem("@profile_image");

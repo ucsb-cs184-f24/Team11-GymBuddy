@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -16,7 +16,7 @@ import { BlurView } from 'expo-blur';
 import { getUserId, createPost, getWorkouts, WorkoutLog } from '@/serviceFiles/databaseService';
 import { workoutsByCategory } from '@/utils/Workout/workoutCatagory';
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 export default function WorkoutScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -81,7 +81,7 @@ export default function WorkoutScreen() {
         caption: workoutName,
         commentsCount: 0,
         createdAt: Date.now(),
-        image: '',
+        image: "",
         likesCount: 0,
         exercises: Object.keys(selectedWorkouts).map((workout) => ({
           name: workout,
