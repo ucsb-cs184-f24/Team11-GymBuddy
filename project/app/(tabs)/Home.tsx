@@ -18,9 +18,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import {
   getAllUsersRecentWorkouts,
-  uidToUsername,
   WorkoutLog,
-} from "@/serviceFiles/databaseService";
+} from "@/serviceFiles/postsDatabaseService";
 
 const { width } = Dimensions.get("window");
 
@@ -135,7 +134,7 @@ const Home = () => {
                   //onPress: () => deletePost(item.id),
                   style: "destructive",
                 },
-              ],
+              ]
             );
           }}
         >
@@ -149,8 +148,10 @@ const Home = () => {
           style={styles.durationText}
         >{`Sets: ${item.setsCount}, Reps: ${item.repsCount}`}</Text>
         <Text style={styles.durationText}>
-          {`Date: ${new Date(item.createdAt).toLocaleDateString()}, Time: ${new Date(
-            item.createdAt,
+          {`Date: ${new Date(
+            item.createdAt
+          ).toLocaleDateString()}, Time: ${new Date(
+            item.createdAt
           ).toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",

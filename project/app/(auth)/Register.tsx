@@ -1,6 +1,8 @@
-import { createUserProfile } from "@/serviceFiles/databaseService";
+import {
+  createUserProfile,
+  updateUserProfile,
+} from "@/serviceFiles/usersDatabaseService";
 import { auth } from "@/serviceFiles/authService";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -54,26 +56,20 @@ const Register = () => {
         displayName: name,
       });
 
-      await AsyncStorage.setItem(
-        "@user",
-        JSON.stringify({
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-        }),
-      );
       Alert.alert("User Created");
 
-      await createUserProfile(
-        user.uid,
-        name,
-        "LastName",
-        "username",
-        email,
-        "imageUrl",
-        "bio",
-        false,
-      );
+      const nameParts = name.trim().split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      await createUserProfile(user.uid);
+      await updateUserProfile(user.uid, {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        profilePicture:
+          "https://crederia.com/images/avatars/default.jpg?v=1709931174", // default profile image
+      });
 
       router.replace("/(tabs)/Home");
     } catch (e: any) {
