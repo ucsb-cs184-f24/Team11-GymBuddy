@@ -21,22 +21,47 @@ import { useFocusEffect } from "@react-navigation/native";
 import ImagePickerComponent from "@/components/Profile/pickImage";
 import UserInfoEditor from "@/components/Profile/ProfileData";
 import AnalyticCharts from "@/components/Profile/AnalyticCharts";
-import { getUserProfile, getUserId } from "@/serviceFiles/databaseService";
+import { getUserProfile, getUserId } from "@/serviceFiles/usersDatabaseService";
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { getWorkouts } from "@/serviceFiles/postsDatabaseService";
 
 
 const { width } = Dimensions.get("window");
 
 interface UserData {
-  Name: string;
-  Email: string;
-  joined: string;
+  bio: string;
+  createdAt: number;
+  email: string;
+  firstName: string;
+  followerCount: number;
+  followingCount: number;
+  isPrivate: boolean;
+  lastName: string;
+  profilePicture: string;
+  username: string;
+}
+
+interface WorkoutLog {
+  caption: string;
+  commentsCount: number;
+  createdAt: number;
+  image: string;
+  likesCount: number;
+  muscleGroup: string;
+  repsCount: number;
+  setsCount: number;
+  userId: string;
+  weight: number;
+  workoutName: string;
+  workoutType: string;
+  username?: string;
 }
 
 export default function Profile() {
   const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [userPosts, setUserPosts] = useState<WorkoutLog[] | null>(null);
   const [analyticsKey, setAnalyticsKey] = useState(0);
   const auth = getAuth();
 
@@ -86,28 +111,21 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const profile = await getUserProfile(await getUserId());
-      setUserData({
-        Name: profile?.Name || "loading",
-        Email: profile?.email || "loading",
-        joined:
-          new Date(Number(profile?.joined)).toLocaleDateString() || "loading",
-      });
-
-      const savedImage = await AsyncStorage.getItem("@profile_image");
-      if (savedImage) {
-        setProfileImage(savedImage);
+      const profile = await getUserProfile(await getUserId()) as UserData;
+      if (profile) {
+        setUserData(profile);
+      } else {
+        console.error("Profile data is undefined");
+      }
+      const posts = await getWorkouts(await getUserId()) as WorkoutLog[];
+      if (posts) {
+        setUserPosts(posts);
+      } else {
+        console.error("Profile posts are undefined");
       }
     };
-
     fetchData();
   }, []);
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     setAnalyticsKey((prevKey) => prevKey + 1);
-  //   }, [])
-  // );
 
   const handleImageSelected = async (uri: string) => {
     setProfileImage(uri);
@@ -147,16 +165,16 @@ export default function Profile() {
             </TouchableOpacity>
           </BlurView> */}
           <Text style={styles.username}>
-            john.smith
+            {userData?.username || "loading"}
           </Text>
           <View style={styles.profileInfo}>
             <Image
-              source={require('../../../assets/logo.png')}
+              source={{uri: userData?.profilePicture}}
               style={styles.profileImage}
             />
             <View style={styles.postText}>
               <Text style={styles.numberCenter}>
-                10
+                {userPosts?.length || 0}
               </Text>
               <Text style={styles.textCenter}>
                 Posts
@@ -164,7 +182,7 @@ export default function Profile() {
             </View>
             <View style={styles.followerText}>
               <Text style={styles.numberCenter}>
-                500
+                {userData?.followerCount || 0}
               </Text>
               <Text style={styles.textCenter}>
                 Followers
@@ -172,7 +190,7 @@ export default function Profile() {
             </View>
             <View style={styles.followText}>
               <Text style={styles.numberCenter}>
-                500
+                {userData?.followingCount || 0}
               </Text>
               <Text style={styles.textCenter}>
                 Following
@@ -180,13 +198,16 @@ export default function Profile() {
             </View>
           </View>
           <Text style={styles.name}>
-            John Smith
+            {userData?.firstName || 'loading'} {userData?.lastName || 'loading'}
           </Text>
           <Text style={styles.bio}>
-            Hi my name is John Smith. I go to UCSB and I love to workout.
+            {userData?.bio || 'loading'}
           </Text>
           <Pressable style={styles.button} onPress={() => router.push('/Profile/edit')}>
             <Text style={styles.editProfileText}>Edit Profile</Text>
+          </Pressable>
+          <Pressable style={styles.button} onPress={logout}>
+            <Text style={styles.editProfileText}>Logout</Text>
           </Pressable>
           <View style={styles.viewPostsButton}>
             <MaterialCommunityIcons name="grid" size={30} color="#000"/>

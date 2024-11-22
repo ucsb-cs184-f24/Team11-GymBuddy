@@ -13,14 +13,14 @@ import {
   StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import {
   getAllUsersRecentWorkouts,
-  uidToUsername,
   WorkoutLog,
-} from "@/serviceFiles/databaseService";
+} from "@/serviceFiles/postsDatabaseService";
 
 const { width } = Dimensions.get("window");
 
@@ -135,7 +135,7 @@ const Home = () => {
                   //onPress: () => deletePost(item.id),
                   style: "destructive",
                 },
-              ],
+              ]
             );
           }}
         >
@@ -149,8 +149,10 @@ const Home = () => {
           style={styles.durationText}
         >{`Sets: ${item.setsCount}, Reps: ${item.repsCount}`}</Text>
         <Text style={styles.durationText}>
-          {`Date: ${new Date(item.createdAt).toLocaleDateString()}, Time: ${new Date(
-            item.createdAt,
+          {`Date: ${new Date(
+            item.createdAt
+          ).toLocaleDateString()}, Time: ${new Date(
+            item.createdAt
           ).toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
@@ -169,12 +171,19 @@ const Home = () => {
       <SafeAreaView style={styles.safeArea} edges={["bottom", "left", "right"]}>
         <Navbar setModalVisible={setModalVisible} />
         <View style={styles.spacer} />
-        <FlatList
-          data={posts}
-          renderItem={renderPost}
-          keyExtractor={(item) => item.userId}
-          style={[styles.workoutList, { paddingTop: 10 }]}
-        />
+        {posts.length >0 ? (
+          <FlatList
+            data={posts}
+            renderItem={renderPost}
+            keyExtractor={(item) => item.userId}
+            style={[styles.workoutList, { paddingTop: 10 }]}
+          />
+        ) : (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>Loading...</Text>
+            <ActivityIndicator size="large" color="#FFFFFF" />
+          </View>
+        )}
         <Modal
           animationType="slide"
           transparent={true}
@@ -352,6 +361,15 @@ const styles = StyleSheet.create({
   },
   spacer: {
     height: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    color: "#FFFFFF",
+    fontSize: 30,
   },
 });
 
