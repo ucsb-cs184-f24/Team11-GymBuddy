@@ -1,13 +1,18 @@
 // Search.tsx
 import React from "react";
-import { View, TextInput, StyleSheet, Text } from "react-native";
+import { View, TextInput, StyleSheet, Text, Keyboard, TouchableWithoutFeedback,} from "react-native";
 
 const Search = () => {
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
   return (
-    <View style={styles.container}>
-      <TextInput style={styles.searchBar} placeholder="Search..." />
-      <Text>Coming Soon</Text>
-    </View>
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <View style={styles.container}>
+        <TextInput style={styles.searchBar} placeholder="Search..." />
+        <Text>Coming Soon</Text>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

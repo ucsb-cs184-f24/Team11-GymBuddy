@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import * as Haptics from 'expo-haptics';
 import {
   Text,
   View,
@@ -13,6 +14,8 @@ import {
   Animated,
   Dimensions,
   StatusBar,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "expo-router";
@@ -50,6 +53,7 @@ const Login = () => {
     } catch (e: any) {
       Alert.alert("Sign in failed", e.message);
     }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const handleCreateAccount = async () => {
@@ -58,81 +62,91 @@ const Login = () => {
     } catch (e: any) {
       Alert.alert("Navigation failed", e.message);
     }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const handleForgotPassword = async () => {
     Alert.alert("Forgot Password", "This feature is not implemented yet.");
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  };
+
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <LinearGradient
-        colors={["#4c669f", "#3b5998", "#192f6a"]}
-        style={styles.gradient}
-      >
-        <BlurView intensity={10} tint="dark" style={styles.header}></BlurView>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.keyboardAvoidingView}
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={["#4c669f", "#3b5998", "#192f6a"]}
+          style={styles.gradient}
         >
-          <Animated.View style={[styles.content, { opacity: 100 }]}>
-            <BlurView intensity={100} style={styles.blurContainer}>
-              <Image
-                source={require("../../assets/logo.png")}
-                style={styles.logo}
-              />
-              <Text style={styles.title}>Welcome Back</Text>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="Email"
-                  style={styles.input}
-                  value={email}
-                  autoCapitalize="none"
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  placeholderTextColor="#FFFFFFFF"
+          <BlurView intensity={10} tint="dark" style={styles.header}></BlurView>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.keyboardAvoidingView}
+          >
+            <Animated.View style={[styles.content, { opacity: 100 }]}>
+              <BlurView intensity={100} style={styles.blurContainer}>
+                <Image
+                  source={require("../../assets/logo.png")}
+                  style={styles.logo}
                 />
-                <TextInput
-                  placeholder="Password"
-                  style={styles.input}
-                  value={password}
-                  autoCapitalize="none"
-                  onChangeText={setPassword}
-                  secureTextEntry
-                  placeholderTextColor="#FFFFFFFF"
-                />
-              </View>
-              <TouchableOpacity
-                onPress={handleForgotPassword}
-                style={styles.forgotPasswordButton}
-              >
-                <Text style={styles.forgotPasswordText}>Forgot password?</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.signInButton}
-                onPress={handleSignIn}
-              >
-                <Text style={styles.signInButtonText}>Sign In</Text>
-              </TouchableOpacity>
-              <View style={styles.orContainer}>
-                <View style={styles.line} />
-                <Text style={styles.orText}>or</Text>
-                <View style={styles.line} />
-              </View>
-              <TouchableOpacity
-                style={styles.createAccountButton}
-                onPress={handleCreateAccount}
-              >
-                <Text style={styles.createAccountButtonText}>
-                  Create an account
-                </Text>
-              </TouchableOpacity>
-            </BlurView>
-          </Animated.View>
-        </KeyboardAvoidingView>
-      </LinearGradient>
-    </View>
+                <Text style={styles.title}>Welcome Back</Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    placeholder="Email"
+                    style={styles.input}
+                    value={email}
+                    autoCapitalize="none"
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    placeholderTextColor="#FFFFFFFF"
+                  />
+                  <TextInput
+                    placeholder="Password"
+                    style={styles.input}
+                    value={password}
+                    autoCapitalize="none"
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    placeholderTextColor="#FFFFFFFF"
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={handleForgotPassword}
+                  style={styles.forgotPasswordButton}
+                >
+                  <Text style={styles.forgotPasswordText}>
+                    Forgot password?
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.signInButton}
+                  onPress={handleSignIn}
+                >
+                  <Text style={styles.signInButtonText}>Sign In</Text>
+                </TouchableOpacity>
+                <View style={styles.orContainer}>
+                  <View style={styles.line} />
+                  <Text style={styles.orText}>or</Text>
+                  <View style={styles.line} />
+                </View>
+                <TouchableOpacity
+                  style={styles.createAccountButton}
+                  onPress={handleCreateAccount}
+                >
+                  <Text style={styles.createAccountButtonText}>
+                    Create an account
+                  </Text>
+                </TouchableOpacity>
+              </BlurView>
+            </Animated.View>
+          </KeyboardAvoidingView>
+        </LinearGradient>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import * as Haptics from 'expo-haptics';
 import {
   View,
   StyleSheet,
@@ -42,6 +43,7 @@ export default function Profile() {
       await AsyncStorage.removeItem("@user");
       router.replace("/(auth)/SignIn");
       Alert.alert("Logged Out");
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     } catch (error) {
       Alert.alert("Error logging out");
     }

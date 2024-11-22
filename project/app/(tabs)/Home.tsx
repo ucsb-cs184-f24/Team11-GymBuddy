@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import * as Haptics from 'expo-haptics';
 import {
   View,
   Text,
@@ -137,6 +138,7 @@ const Home = () => {
                 },
               ],
             );
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           }}
         >
           <Text style={styles.moreOptionsText}>•••</Text>
@@ -207,7 +209,10 @@ const Home = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.cancelButton}
-                onPress={() => setModalVisible(false)}
+                onPress={() => {
+                  setModalVisible(false);
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }}
               >
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>

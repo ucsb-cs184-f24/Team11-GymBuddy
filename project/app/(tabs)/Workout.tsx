@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import * as Haptics from 'expo-haptics';
 import {
   View,
   Text,
@@ -11,6 +12,8 @@ import {
   StatusBar,
   TextInput,
   Animated,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -78,6 +81,7 @@ export default function WorkoutScreen() {
 
   const handleSelectCategory = (category: string) => {
     setSelectedCategory(category === selectedCategory ? null : category);
+    //Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const handleSelectWorkout = (workout: string) => {
@@ -86,6 +90,7 @@ export default function WorkoutScreen() {
         ? prev.filter((w) => w !== workout)
         : [...prev, workout],
     );
+    //Haptics.selectionAsync();
   };
 
   const handleSaveWorkout = async () => {
@@ -113,6 +118,7 @@ export default function WorkoutScreen() {
         workoutArray.sort((a, b) => b.createdAt - a.createdAt);
         setPreviousWorkouts(workoutArray);
       }
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setSelectedCategory(null);
       setSelectedWorkouts([]);
       setWorkoutName("");
@@ -130,101 +136,119 @@ export default function WorkoutScreen() {
     </BlurView>
   );
 
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <LinearGradient
-        colors={["#4c669f", "#3b5998", "#192f6a"]}
-        style={styles.gradient}
-      >
-        <SafeAreaView style={styles.safeArea}>
-          <Animated.View style={[styles.content, { opacity: 100 }]}>
-            <Text style={styles.title}>Workout Tracker</Text>
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={["#4c669f", "#3b5998", "#192f6a"]}
+          style={styles.gradient}
+        >
+          <SafeAreaView style={styles.safeArea}>
+            <Animated.View style={[styles.content, { opacity: 100 }]}>
+              <Text style={styles.title}>Workout Tracker</Text>
 
-            <FlatList
-              data={previousWorkouts}
-              renderItem={renderWorkoutItem}
-              keyExtractor={(item, index) => index.toString()}
-              ListEmptyComponent={
-                <Text style={styles.noWorkoutsText}>
-                  No previous workouts found.
-                </Text>
-              }
-              contentContainerStyle={styles.workoutList}
-            />
+              <FlatList
+                data={previousWorkouts}
+                renderItem={renderWorkoutItem}
+                keyExtractor={(item, index) => index.toString()}
+                ListEmptyComponent={
+                  <Text style={styles.noWorkoutsText}>
+                    No previous workouts found.
+                  </Text>
+                }
+                contentContainerStyle={styles.workoutList}
+              />
 
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => setModalVisible(true)}
-            >
-              <Text style={styles.addButtonText}>Add Workout</Text>
-            </TouchableOpacity>
-          </Animated.View>
-        </SafeAreaView>
-      </LinearGradient>
-
-      <Modal visible={modalVisible} animationType="slide" transparent>
-        <BlurView intensity={100} tint="dark" style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Add New Workout</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Workout Name"
-              placeholderTextColor="rgba(255, 255, 255, 0.6)"
-              value={workoutName}
-              onChangeText={setWorkoutName}
-            />
-            <ScrollView style={styles.categoryList}>
-              {categories.map((category) => (
-                <View key={category}>
-                  <TouchableOpacity
-                    onPress={() => handleSelectCategory(category)}
-                    style={[
-                      styles.categoryButton,
-                      selectedCategory === category &&
-                        styles.selectedCategoryButton,
-                    ]}
-                  >
-                    <Text style={styles.categoryText}>{category}</Text>
-                  </TouchableOpacity>
-                  {selectedCategory === category && (
-                    <View style={styles.workoutList}>
-                      {workoutsByCategory[category].map((workout) => (
-                        <TouchableOpacity
-                          key={workout}
-                          onPress={() => handleSelectWorkout(workout)}
-                          style={[
-                            styles.workoutButton,
-                            selectedWorkouts.includes(workout) &&
-                              styles.selectedWorkoutButton,
-                          ]}
-                        >
-                          <Text style={styles.workoutText}>{workout}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  )}
-                </View>
-              ))}
-            </ScrollView>
-            <View style={styles.modalButtons}>
               <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => setModalVisible(false)}
+                style={styles.addButton}
+                onPress={() => {
+                  setModalVisible(true);
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                }}
               >
-                <Text style={styles.buttonText}>Cancel</Text>
+                <Text style={styles.addButtonText}>Add Workout</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.saveButton}
-                onPress={handleSaveWorkout}
-              >
-                <Text style={styles.buttonText}>Save Workout</Text>
-              </TouchableOpacity>
+            </Animated.View>
+          </SafeAreaView>
+        </LinearGradient>
+      
+      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <Modal visible={modalVisible} animationType="slide" transparent>
+          <BlurView intensity={100} tint="dark" style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Add New Workout</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Workout Name"
+                placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                value={workoutName}
+                onChangeText={setWorkoutName}
+              />
+              <ScrollView style={styles.categoryList}>
+                {categories.map((category) => (
+                  <View key={category}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        handleSelectCategory(category);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      }}
+                      style={[
+                        styles.categoryButton,
+                        selectedCategory === category &&
+                          styles.selectedCategoryButton,
+                      ]}
+                    >
+                      <Text style={styles.categoryText}>{category}</Text>
+                    </TouchableOpacity>
+                    {selectedCategory === category && (
+                      <View style={styles.workoutList}>
+                        {workoutsByCategory[category].map((workout) => (
+                          <TouchableOpacity
+                            key={workout}
+                            onPress={() => {
+                              handleSelectWorkout(workout);
+                              Haptics.selectionAsync();
+                            }}
+                            style={[
+                              styles.workoutButton,
+                              selectedWorkouts.includes(workout) &&
+                                styles.selectedWorkoutButton,
+                            ]}
+                          >
+                            <Text style={styles.workoutText}>{workout}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </ScrollView>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => {
+                    setModalVisible(false);
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}
+                >
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.saveButton}
+                  onPress={handleSaveWorkout}
+                >
+                  <Text style={styles.buttonText}>Save Workout</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </BlurView>
-      </Modal>
-    </View>
+          </BlurView>
+        </Modal>
+       </TouchableWithoutFeedback>
+      </View>
   );
 }
 

@@ -6,6 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import React, { useEffect, useState } from "react";
+import * as Haptics from 'expo-haptics';
 import {
   Alert,
   Animated,
@@ -18,6 +19,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 const { width } = Dimensions.get("window");
 
@@ -79,77 +82,85 @@ const Register = () => {
     } catch (e: any) {
       Alert.alert("Registration Failed", e.message);
     }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
   const handleBackToLogin = () => {
     router.replace("/(auth)/SignIn");
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  };
+
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <LinearGradient
-        colors={["#4c669f", "#3b5998", "#192f6a"]}
-        style={styles.gradient}
-      >
-        <BlurView intensity={10} tint="dark" style={styles.header}></BlurView>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.keyboardAvoidingView}
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={["#4c669f", "#3b5998", "#192f6a"]}
+          style={styles.gradient}
         >
-          <Animated.View style={[styles.content, { opacity: 100 }]}>
-            <BlurView intensity={100} style={styles.blurContainer}>
-              <Text style={styles.title}>Create Account</Text>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="Name"
-                  style={styles.input}
-                  value={name}
-                  autoCapitalize="words"
-                  onChangeText={setName}
-                  placeholderTextColor="#FFFFFFFF"
-                />
-                <TextInput
-                  placeholder="Email"
-                  style={styles.input}
-                  value={email}
-                  autoCapitalize="none"
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  placeholderTextColor="#FFFFFFFF"
-                />
-                <TextInput
-                  placeholder="Password"
-                  style={styles.input}
-                  value={password}
-                  autoCapitalize="none"
-                  onChangeText={setPassword}
-                  secureTextEntry
-                  placeholderTextColor="#FFFFFFFF"
-                />
-              </View>
-              <TouchableOpacity
-                style={styles.signUpButton}
-                onPress={handleSignUp}
-              >
-                <Text style={styles.signUpButtonText}>Sign Up</Text>
-              </TouchableOpacity>
-              <View style={styles.orContainer}>
-                <View style={styles.line} />
-                <Text style={styles.orText}>or</Text>
-                <View style={styles.line} />
-              </View>
-              <TouchableOpacity
-                style={styles.backToLoginButton}
-                onPress={handleBackToLogin}
-              >
-                <Text style={styles.backToLoginButtonText}>Back to Login</Text>
-              </TouchableOpacity>
-            </BlurView>
-          </Animated.View>
-        </KeyboardAvoidingView>
-      </LinearGradient>
-    </View>
+          <BlurView intensity={10} tint="dark" style={styles.header}></BlurView>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.keyboardAvoidingView}
+          >
+            <Animated.View style={[styles.content, { opacity: 100 }]}>
+              <BlurView intensity={100} style={styles.blurContainer}>
+                <Text style={styles.title}>Create Account</Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    placeholder="Name"
+                    style={styles.input}
+                    value={name}
+                    autoCapitalize="words"
+                    onChangeText={setName}
+                    placeholderTextColor="#FFFFFFFF"
+                  />
+                  <TextInput
+                    placeholder="Email"
+                    style={styles.input}
+                    value={email}
+                    autoCapitalize="none"
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    placeholderTextColor="#FFFFFFFF"
+                  />
+                  <TextInput
+                    placeholder="Password"
+                    style={styles.input}
+                    value={password}
+                    autoCapitalize="none"
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    placeholderTextColor="#FFFFFFFF"
+                  />
+                </View>
+                <TouchableOpacity
+                  style={styles.signUpButton}
+                  onPress={handleSignUp}
+                >
+                  <Text style={styles.signUpButtonText}>Sign Up</Text>
+                </TouchableOpacity>
+                <View style={styles.orContainer}>
+                  <View style={styles.line} />
+                  <Text style={styles.orText}>or</Text>
+                  <View style={styles.line} />
+                </View>
+                <TouchableOpacity
+                  style={styles.backToLoginButton}
+                  onPress={handleBackToLogin}
+                >
+                  <Text style={styles.backToLoginButtonText}>Back to Login</Text>
+                </TouchableOpacity>
+              </BlurView>
+            </Animated.View>
+          </KeyboardAvoidingView>
+        </LinearGradient>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
