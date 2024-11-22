@@ -19,7 +19,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import ImagePickerComponent from "@/components/Profile/pickImage";
 import UserInfoEditor from "@/components/Profile/ProfileData";
 import AnalyticCharts from "@/components/Profile/AnalyticCharts";
-import { getUserProfile, getUserId } from "@/serviceFiles/databaseService";
+import { getUserId, getUserProfile } from "@/serviceFiles/usersDatabaseService";
 
 const { width } = Dimensions.get("window");
 
@@ -49,12 +49,12 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const profile = await getUserProfile(await getUserId());
+      const uid = await getUserId();
+      const profile = await getUserProfile(uid);
       setUserData({
-        Name: profile?.Name || "loading",
+        Name: `${profile?.firstName} ${profile?.lastName}` || "loading",
         Email: profile?.email || "loading",
-        joined:
-          new Date(Number(profile?.joined)).toLocaleDateString() || "loading",
+        joined: new Date(profile?.createdAt).toLocaleDateString() || "loading",
       });
 
       const savedImage = await AsyncStorage.getItem("@profile_image");

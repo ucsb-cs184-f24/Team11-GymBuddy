@@ -18,7 +18,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import {
   getAllUsersRecentWorkouts,
-  uidToUsername,
   WorkoutLog,
 } from "@/serviceFiles/databaseService";
 
