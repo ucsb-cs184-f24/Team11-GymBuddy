@@ -37,3 +37,9 @@ Search Bar and Follow Screen
 
 <img src="https://github.com/user-attachments/assets/8c37384d-3fb6-460c-9430-e7f537af4c1e" alt="Search Bar" width="200">
 <img src="https://github.com/user-attachments/assets/958134e2-1e79-4a59-8f25-89768f56bfdc" alt="Follow" width="200">
+
+#Database Notes
+
+Using NoSQL Firestore Database
+Want to be able to store images
+nodes: users, posts
