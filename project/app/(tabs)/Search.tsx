@@ -13,7 +13,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import {
   getUserProfile, // Function to fetch user profile by userId
   getAllUsernames,    // Newly implemented function
-} from "@/serviceFiles/databaseService";
+} from "@/serviceFiles/usersDatabaseService";
 
 interface User {
   userId: string;
