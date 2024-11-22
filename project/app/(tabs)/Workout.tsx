@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  ScrollView,
-  FlatList,
-  Dimensions,
-  StatusBar,
-  TextInput,
-  Animated,
-} from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
 import {
   createPost,
   getWorkouts,
   WorkoutLog,
-} from "@/serviceFiles/databaseService";
+} from "@/serviceFiles/postsDatabaseService";
 import { getUserId } from "@/serviceFiles/usersDatabaseService";
 import { workoutsByCategory } from "@/utils/Workout/workoutCatagory";
+import { BlurView } from "expo-blur";
+import React, { useEffect, useState } from "react";
+import {
+  Animated,
+  Dimensions,
+  FlatList,
+  Modal,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const { width } = Dimensions.get("window");
 
@@ -55,7 +53,9 @@ export default function WorkoutScreen() {
       if (userData) {
         const workouts = await getWorkouts(userData);
         if (workouts) {
-          const workoutArray: WorkoutLog[] = Object.values(workouts as WorkoutLog[]);
+          const workoutArray: WorkoutLog[] = Object.values(
+            workouts as WorkoutLog[]
+          );
           workoutArray.sort((a, b) => b.createdAt - a.createdAt);
           setPreviousWorkouts(workoutArray);
         } else {
@@ -102,7 +102,9 @@ export default function WorkoutScreen() {
       await createPost(workoutLog);
       const updatedWorkouts = await getWorkouts(userData);
       if (updatedWorkouts) {
-        const workoutArray: WorkoutLog[] = Object.values(updatedWorkouts as unknown as Record<string, WorkoutLog>);
+        const workoutArray: WorkoutLog[] = Object.values(
+          updatedWorkouts as unknown as Record<string, WorkoutLog>
+        );
         workoutArray.sort((a, b) => b.createdAt - a.createdAt);
         setPreviousWorkouts(workoutArray);
       }

@@ -19,7 +19,7 @@ import { BlurView } from "expo-blur";
 import {
   getAllUsersRecentWorkouts,
   WorkoutLog,
-} from "@/serviceFiles/databaseService";
+} from "@/serviceFiles/postsDatabaseService";
 
 const { width } = Dimensions.get("window");
 
@@ -134,7 +134,7 @@ const Home = () => {
                   //onPress: () => deletePost(item.id),
                   style: "destructive",
                 },
-              ],
+              ]
             );
           }}
         >
@@ -153,8 +153,10 @@ const Home = () => {
             </>
         ))}
         <Text style={styles.durationText}>
-          {`Date: ${new Date(item.createdAt).toLocaleDateString()}, Time: ${new Date(
-            item.createdAt,
+          {`Date: ${new Date(
+            item.createdAt
+          ).toLocaleDateString()}, Time: ${new Date(
+            item.createdAt
           ).toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
