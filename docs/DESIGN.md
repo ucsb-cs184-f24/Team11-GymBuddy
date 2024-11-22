@@ -79,3 +79,27 @@ users (collection)
 				- username: string
 				- profilePicture: string
 ```
+
+```python
+posts (collection)
+- postId (document)
+	- userId: string
+	- caption: string
+	- image: string
+	- setsCount: number
+	- repsCount: number
+	- weight: number
+	- workoutType: string
+	- workoutName: string
+	- muscleGroup: string
+	- likesCount: number
+	- commentsCount: number
+	- createdAt: timestamp
+	- comments (collection)
+		- userId: uid (document)
+			- username: string
+			- profilePicture: string
+			- text: string
+			- createdAt: timestamp
+			- likes: number
+```
