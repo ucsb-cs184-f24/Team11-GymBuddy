@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import {
   View,
   Text,
@@ -21,9 +22,14 @@ import {
   getAllUsersRecentWorkouts,
   WorkoutLog,
 } from "@/serviceFiles/postsDatabaseService";
+import { v4 as uuid } from "uuid";
+const { width, height } = Dimensions.get("window");
 
-const { width } = Dimensions.get("window");
-
+const getResponsiveFontSize = (size: number) => {
+  const scale = width / 375; // 375 is a base width for scaling
+  const newSize = size * scale * .5;
+  return Math.round(newSize);
+};
 interface NavbarProps {
   setModalVisible: (visible: boolean) => void;
 }
@@ -98,17 +104,17 @@ const Home = () => {
 
   const Navbar = ({ setModalVisible }: NavbarProps) => {
     return (
-      <BlurView intensity={100} tint="dark" style={styles.navbar}>
+      <View style={styles.navbar}>
         <Text style={styles.navbarTitle}>Workouts</Text>
         <View style={styles.navbarIcons}>
-          <TouchableOpacity style={styles.navbarIcon}>
+          <TouchableOpacity style={styles.navbarIcons}>
             <Image
               source={{ uri: "https://example.com/profile-pic.jpg" }}
               style={styles.profilePic}
             />
           </TouchableOpacity>
         </View>
-      </BlurView>
+      </View>
     );
   };
 
@@ -142,12 +148,17 @@ const Home = () => {
           <Text style={styles.moreOptionsText}>•••</Text>
         </TouchableOpacity>
       </View>
-      <Image source={{ uri: item.image }} style={styles.workoutImage} />
       <View style={styles.workoutInfo}>
-        <Text style={styles.exerciseText}>{item.workoutName}</Text>
-        <Text
-          style={styles.durationText}
-        >{`Sets: ${item.setsCount}, Reps: ${item.repsCount}`}</Text>
+      {item.exercises?.map((exercise) => (
+        <React.Fragment key={exercise.name}>
+            <Text style = {styles.setsText}>
+            {exercise.name} - {exercise.category}
+            </Text>
+            <Text style = {styles.setsText}>
+              Sets: {exercise.sets} | Reps: {exercise.reps} | Weight: {exercise.weight}
+            </Text>
+        </React.Fragment>
+        ))}
         <Text style={styles.durationText}>
           {`Date: ${new Date(
             item.createdAt
@@ -240,55 +251,55 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: getResponsiveFontSize(15),
   },
   navbarTitle: {
-    fontSize: 20,
+    fontSize: getResponsiveFontSize(20),
     fontWeight: "bold",
     color: "#FFFFFF",
   },
+  navbarIcons: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  profilePic: {
+    width: getResponsiveFontSize(40),
+    height: getResponsiveFontSize(40),
+    borderRadius: getResponsiveFontSize(20),
+  },
   workoutCard: {
-    marginBottom: 10,
+    marginBottom: getResponsiveFontSize(10),
     borderRadius: 10,
     overflow: "hidden",
+    padding: getResponsiveFontSize(10),
   },
   username: {
     fontWeight: "bold",
     flex: 1,
+    fontSize: getResponsiveFontSize(16),
     color: "#FFFFFF",
   },
   moreOptionsText: {
-    fontSize: 16,
+    fontSize: getResponsiveFontSize(16),
     fontWeight: "bold",
     color: "#FFFFFF",
-  },
-  postWorkoutButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  postWorkoutButtonText: {
-    fontSize: 24,
-    color: "#FFFFFF",
-    fontWeight: "bold",
-  },
-  workoutImage: {
-    width: "100%",
-    height: 300,
   },
   workoutInfo: {
-    padding: 10,
+    padding: getResponsiveFontSize(10),
   },
   exerciseText: {
     fontWeight: "bold",
-    marginBottom: 5,
+    fontSize: getResponsiveFontSize(14),
+    marginBottom: getResponsiveFontSize(5),
     color: "#FFFFFF",
+  },
+  setsRepsText: {
+    fontSize: getResponsiveFontSize(14),
+    color: "white",
   },
   durationText: {
     color: "rgba(255, 255, 255, 0.7)",
+    fontSize: getResponsiveFontSize(12),
   },
   modalContainer: {
     flex: 1,
@@ -299,51 +310,39 @@ const styles = StyleSheet.create({
     width: "90%",
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 20,
-    padding: 35,
+    padding: getResponsiveFontSize(35),
     alignItems: "center",
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: getResponsiveFontSize(20),
     fontWeight: "bold",
-    marginBottom: 15,
+    marginBottom: getResponsiveFontSize(15),
     color: "#FFFFFF",
   },
   input: {
-    height: 40,
+    height: getResponsiveFontSize(40),
     width: "100%",
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 5,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    marginBottom: getResponsiveFontSize(10),
+    paddingHorizontal: getResponsiveFontSize(10),
     color: "#FFFFFF",
   },
   addButton: {
     backgroundColor: "#FFFFFF",
-    padding: 10,
+    padding: getResponsiveFontSize(10),
     borderRadius: 5,
-    marginTop: 10,
+    marginTop: getResponsiveFontSize(10),
   },
   addButtonText: {
     color: "#3b5998",
     fontWeight: "bold",
   },
   cancelButton: {
-    marginTop: 15,
+    marginTop: getResponsiveFontSize(15),
   },
   cancelButtonText: {
     color: "#FFFFFF",
-  },
-  navbarIcons: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  navbarIcon: {
-    marginLeft: 15,
-  },
-  profilePic: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
   },
   workoutList: {
     flex: 1,
@@ -351,16 +350,22 @@ const styles = StyleSheet.create({
   workoutHeader: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
+    padding: getResponsiveFontSize(10),
   },
   workoutProfilePic: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
+    width: getResponsiveFontSize(40),
+    height: getResponsiveFontSize(40),
+    borderRadius: getResponsiveFontSize(20),
+    marginRight: getResponsiveFontSize(10),
   },
   spacer: {
-    height: 20,
+    height: getResponsiveFontSize(20),
+  },
+  setsText: {
+    color: 'white', // Set text color to white
+    fontSize: 16,    // Adjust font size as needed
+    fontWeight: '500', // Optional: Add font weight for better visibility
+    marginTop: 4,    // Optional: Add margin for spacing
   },
   loadingContainer: {
     flex: 1,
@@ -372,5 +377,4 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
 });
-
 export default Home;
