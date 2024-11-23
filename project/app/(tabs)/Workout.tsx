@@ -1,48 +1,38 @@
-import React, { useState, useEffect } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  ScrollView,
-  FlatList,
-  Dimensions,
-  StatusBar,
-  TextInput,
-  Animated,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
-import {
-  getUserId,
   createPost,
   getWorkouts,
   WorkoutLog,
-} from "@/serviceFiles/databaseService";
+} from "@/serviceFiles/postsDatabaseService";
+import { getUserId } from "@/serviceFiles/usersDatabaseService";
 import { workoutsByCategory } from "@/utils/Workout/workoutCatagory";
+import { BlurView } from "expo-blur";
+import React, { useEffect, useState } from "react";
+import {
+  Animated,
+  Dimensions,
+  FlatList,
+  Modal,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const { width } = Dimensions.get("window");
 
 export default function WorkoutScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedWorkouts, setSelectedWorkouts] = useState<string[]>([]);
   const [userData, setUserData] = useState<string | null>(null);
   const [previousWorkouts, setPreviousWorkouts] = useState<WorkoutLog[]>([]);
-  const [workoutName, setWorkoutName] = useState("");
+  const [workoutName, setWorkoutName] = useState('');
+  const [selectedWorkouts, setSelectedWorkouts] = useState<Record<string, { sets: number; reps: number, weight: number, category: string }>>({});
   const fadeAnim = new Animated.Value(0);
 
-  const categories = [
-    "Chest",
-    "Back",
-    "Biceps",
-    "Triceps",
-    "Legs",
-    "Shoulders",
-    "Abs",
-  ];
+  const categories = ['Chest', 'Back', 'Biceps', 'Triceps', 'Legs', 'Shoulders', 'Abs'];
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -64,7 +54,7 @@ export default function WorkoutScreen() {
         const workouts = await getWorkouts(userData);
         if (workouts) {
           const workoutArray: WorkoutLog[] = Object.values(
-            workouts as WorkoutLog[],
+            workouts as WorkoutLog[]
           );
           workoutArray.sort((a, b) => b.createdAt - a.createdAt);
           setPreviousWorkouts(workoutArray);
@@ -81,299 +71,403 @@ export default function WorkoutScreen() {
   };
 
   const handleSelectWorkout = (workout: string) => {
-    setSelectedWorkouts((prev) =>
-      prev.includes(workout)
-        ? prev.filter((w) => w !== workout)
-        : [...prev, workout],
-    );
+    setSelectedWorkouts((prev) => {
+      if (prev[workout]) {
+        const updated = { ...prev };
+        delete updated[workout];
+        return updated;
+      } else {
+        return { ...prev, [workout]: { sets: 0, reps: 0, weight: 0, category: selectedCategory || '' } };
+      }
+    });
   };
 
   const handleSaveWorkout = async () => {
-    if (userData && selectedWorkouts.length > 0) {
+    if (userData && Object.keys(selectedWorkouts).length > 0) {
       const workoutLog: WorkoutLog = {
         caption: workoutName,
         commentsCount: 0,
         createdAt: Date.now(),
         image: "",
         likesCount: 0,
-        muscleGroup: selectedCategory || "",
-        repsCount: 0,
-        setsCount: 0,
+        exercises: Object.keys(selectedWorkouts).map((workout) => ({
+          name: workout,
+          sets: selectedWorkouts[workout].sets,
+          reps: selectedWorkouts[workout].reps,
+          weight: selectedWorkouts[workout].weight,
+          category: selectedWorkouts[workout].category,
+        })), // Store exercises with sets/reps
         userId: userData,
-        weight: 0,
-        workoutName: selectedWorkouts.join(", "),
-        workoutType: "",
       };
       await createPost(workoutLog);
       const updatedWorkouts = await getWorkouts(userData);
       if (updatedWorkouts) {
         const workoutArray: WorkoutLog[] = Object.values(
-          updatedWorkouts as unknown as Record<string, WorkoutLog>,
+          updatedWorkouts as unknown as Record<string, WorkoutLog>
         );
         workoutArray.sort((a, b) => b.createdAt - a.createdAt);
         setPreviousWorkouts(workoutArray);
       }
       setSelectedCategory(null);
-      setSelectedWorkouts([]);
-      setWorkoutName("");
+      setSelectedWorkouts({});
+      setWorkoutName('');
       setModalVisible(false);
     }
   };
 
-  const renderWorkoutItem = ({ item }: { item: WorkoutLog }) => (
-    <BlurView intensity={80} tint="dark" style={styles.workoutLog}>
-      <Text style={styles.workoutLogDate}>
-        {new Date(item.createdAt).toLocaleDateString()}
-      </Text>
-      <Text style={styles.workoutLogCategory}>{item.muscleGroup}</Text>
-      <Text style={styles.workoutLogExercises}>{item.workoutName}</Text>
-    </BlurView>
-  );
+  const openModal = () => setModalVisible(true);
+  const closeModal = () => setModalVisible(false);
+
+  const renderWorkoutItem = ({ item }: { item: WorkoutLog }) => {
+    // Parse exercises, sets, and reps
+    const exercises = item.exercises // Assuming workoutName is comma-separated
+    return (
+      <BlurView intensity={80} tint="dark" style={styles.workoutLog}>
+        <Text style={styles.workoutLogDate}>
+          {new Date(item.createdAt).toLocaleDateString()}
+        </Text>
+        <Text style={styles.workoutLogTitle}>Exercises:</Text>
+        {exercises?.map((exercise, index) => (
+          <View key={`${exercise.name}-${index}`} style={styles.exerciseDetails}>
+            <Text style={styles.exerciseName}>{exercise.name} - {exercise.category}</Text>
+            <Text style={styles.exerciseInfo}>
+              Sets: {exercise.sets} | Reps: {exercise.reps} | Weight: {exercise.weight}
+            </Text>
+          </View>
+        ))}
+      </BlurView>
+    );
+  };
+  
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <LinearGradient
-        colors={["#4c669f", "#3b5998", "#192f6a"]}
-        style={styles.gradient}
-      >
-        <SafeAreaView style={styles.safeArea}>
-          <Animated.View style={[styles.content, { opacity: 100 }]}>
-            <Text style={styles.title}>Workout Tracker</Text>
+      <TouchableOpacity onPress={openModal} style={styles.modalButton}>
+        <Text style={styles.modalButtonText}>Add Workout</Text>
+      </TouchableOpacity>
 
-            <FlatList
-              data={previousWorkouts}
-              renderItem={renderWorkoutItem}
-              keyExtractor={(item, index) => index.toString()}
-              ListEmptyComponent={
-                <Text style={styles.noWorkoutsText}>
-                  No previous workouts found.
-                </Text>
-              }
-              contentContainerStyle={styles.workoutList}
-            />
-
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => setModalVisible(true)}
-            >
-              <Text style={styles.addButtonText}>Add Workout</Text>
-            </TouchableOpacity>
-          </Animated.View>
-        </SafeAreaView>
-      </LinearGradient>
-
-      <Modal visible={modalVisible} animationType="slide" transparent>
-        <BlurView intensity={100} tint="dark" style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Add New Workout</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Workout Name"
-              placeholderTextColor="rgba(255, 255, 255, 0.6)"
-              value={workoutName}
-              onChangeText={setWorkoutName}
-            />
-            <ScrollView style={styles.categoryList}>
-              {categories.map((category) => (
-                <View key={category}>
-                  <TouchableOpacity
-                    onPress={() => handleSelectCategory(category)}
-                    style={[
-                      styles.categoryButton,
-                      selectedCategory === category &&
-                        styles.selectedCategoryButton,
-                    ]}
-                  >
-                    <Text style={styles.categoryText}>{category}</Text>
-                  </TouchableOpacity>
-                  {selectedCategory === category && (
-                    <View style={styles.workoutList}>
-                      {workoutsByCategory[category].map((workout) => (
+      <Modal 
+      visible={modalVisible}
+       animationType="slide"
+        transparent={true}
+        onRequestClose={closeModal}>
+        <View style={styles.modalContainer}>
+          <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <Text style={styles.modalTitle}>Select Muscle Groups</Text>
+            {categories.map((category) => (
+              <View key={category}>
+                <TouchableOpacity
+                  onPress={() => handleSelectCategory(category)}
+                  style={[
+                    styles.categoryButton,
+                    selectedCategory === category && styles.selectedCategoryButton,
+                  ]}
+                >
+                  <Text style={styles.categoryText}>{category}</Text>
+                </TouchableOpacity>
+                {selectedCategory === category && (
+                  <View style={styles.workoutList}>
+                    {workoutsByCategory[category].map((workout) => (
+                      <View key={workout}>
                         <TouchableOpacity
-                          key={workout}
                           onPress={() => handleSelectWorkout(workout)}
                           style={[
                             styles.workoutButton,
-                            selectedWorkouts.includes(workout) &&
-                              styles.selectedWorkoutButton,
+                            selectedWorkouts[workout] && styles.selectedWorkoutButton,
                           ]}
                         >
                           <Text style={styles.workoutText}>{workout}</Text>
                         </TouchableOpacity>
-                      ))}
-                    </View>
-                  )}
-                </View>
-              ))}
-            </ScrollView>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.buttonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.saveButton}
-                onPress={handleSaveWorkout}
-              >
-                <Text style={styles.buttonText}>Save Workout</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </BlurView>
+                        {selectedWorkouts[workout] && (
+                          <View style={styles.setsRepsContainer}>
+                            <View style={styles.inputGroup}>
+                              <Text style={styles.inputLabel}>Sets:</Text>
+                              <TextInput
+                              style={styles.setsRepsInput}     
+                              placeholder="Sets"
+                              placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                              keyboardType="numeric"
+                              value={selectedWorkouts[workout].sets.toString()}
+                              onChangeText={(text) =>
+                                setSelectedWorkouts((prev) => ({
+                                  ...prev,
+                                  [workout]: {
+                                    ...prev[workout],
+                                    sets: parseInt(text) || 0,
+                                  },
+                                }))
+                              }
+                            />
+                              </View>
+                              <View style={styles.inputGroup}>
+                              <Text style={styles.inputLabel}>Reps:</Text>
+                            <TextInput
+                              style={styles.setsRepsInput}
+                              placeholder="Reps"
+                              placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                              keyboardType="numeric"
+                              value={selectedWorkouts[workout].reps.toString()}
+                              onChangeText={(text) =>
+                                setSelectedWorkouts((prev) => ({
+                                  ...prev,
+                                  [workout]: {
+                                    ...prev[workout],
+                                    reps: parseInt(text) || 0,
+                                  },
+                                }))
+                              }
+                            />
+                          </View>
+                          <View style={styles.inputGroup}>
+                              <Text style={styles.inputLabel}>Weight:</Text>
+                            <TextInput
+                              style={styles.setsRepsInput}
+                              placeholder="Weight"
+                              placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                              keyboardType="numeric"
+                              value={selectedWorkouts[workout].weight.toString()}
+                              onChangeText={(text) =>
+                                setSelectedWorkouts((prev) => ({
+                                  ...prev,
+                                  [workout]: {
+                                    ...prev[workout],
+                                    weight: parseInt(text) || 0,
+                                  },
+                                }))
+                              }
+                            />
+                          </View>
+                        </View>
+                        )}
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </View>
+            ))}
+          </ScrollView>
+          <TouchableOpacity onPress={handleSaveWorkout} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Save Workout</Text>
+           </TouchableOpacity>
+          <TouchableOpacity onPress={closeModal} style={styles.closeModalButton}>
+            <Text style={styles.closeModalText}>Close</Text>
+          </TouchableOpacity>
+        </View>
       </Modal>
+            {/* Display Previous Workouts */}
+            <Text style={styles.title}>Previous Workouts</Text>
+      {previousWorkouts.length > 0 ? (
+        <FlatList
+          data={previousWorkouts}
+          renderItem={renderWorkoutItem} // Use the render function
+          keyExtractor={(item) => item.createdAt.toString()}
+          contentContainerStyle={styles.listContent}
+        />
+      ) : (
+        <Text style={styles.noWorkoutsText}>No previous workouts found.</Text>
+      )}
     </View>
   );
 }
 
+// Updated styles for React Native components
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#1E1E1E', // Dark background
+    paddingHorizontal: 16,
+    paddingTop: StatusBar.currentHeight || 24,
   },
-  gradient: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  workoutLog: {
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 12,
-  },
-  workoutLogDate: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-  },
-  workoutLogCategory: {
-    fontSize: 14,
-    color: "rgba(255, 255, 255, 0.8)",
-    marginTop: 4,
-  },
-  workoutLogExercises: {
-    fontSize: 14,
-    color: "#FFFFFF",
-    marginTop: 8,
-  },
-  noWorkoutsText: {
-    fontSize: 16,
-    color: "rgba(255, 255, 255, 0.6)",
-    textAlign: "center",
-    marginTop: 20,
-  },
-  addButton: {
-    backgroundColor: "#FFFFFF",
+  modalButton: {
+    backgroundColor: '#3B5998', // Blue button
     borderRadius: 25,
-    padding: 16,
-    alignItems: "center",
-    marginTop: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignSelf: 'center',
+    marginVertical: 20,
   },
-  addButtonText: {
-    color: "#3b5998",
+  modalButtonText: {
+    color: '#FFFFFF', // White text
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Semi-transparent black
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
-  modalContent: {
-    width: width - 40,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 20,
-    padding: 20,
+  scrollViewContent: {
+    paddingVertical: 20,
   },
   modalTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'center',
     marginBottom: 20,
-    textAlign: "center",
-  },
-  input: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    marginBottom: 15,
-    fontSize: 16,
-    color: "#FFFFFF",
-  },
-  categoryList: {
-    maxHeight: 300,
   },
   categoryButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: '#2A2A2A', // Dark grey
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderRadius: 10,
-    padding: 12,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   selectedCategoryButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.4)",
+    backgroundColor: '#FF4500', // Highlighted orange
   },
   categoryText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-    textAlign: "center",
-  },
-  workoutList: {
-    marginLeft: 20,
-    marginBottom: 16,
+    color: '#FFFFFF',
+    fontSize: 16,
+    textAlign: 'center',
   },
   workoutButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: '#444', // Medium grey
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderRadius: 8,
-    padding: 10,
     marginBottom: 6,
   },
+  workoutList: {
+    marginTop: 10,
+  },
   selectedWorkoutButton: {
-    backgroundColor: "rgba(0, 255, 255, 0.3)",
+    backgroundColor: '#FF8C00', // Highlighted orange
   },
   workoutText: {
-    fontSize: 16,
-    color: "#FFFFFF",
+    color: '#FFFFFF',
+    fontSize: 14,
   },
-  modalButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
+  setsRepsContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 10,
+    marginTop: 10,
+    width: '100%',
   },
-  cancelButton: {
-    backgroundColor: "rgba(255, 59, 48, 0.8)",
-    borderRadius: 25,
-    padding: 12,
+  inputGroup: {
     flex: 1,
-    marginRight: 8,
-    alignItems: "center",
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  inputLabel: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  setsRepsInput: {
+    backgroundColor: '#333', // Input background
+    color: '#FFFFFF', // White text
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    textAlign: 'center',
+    fontSize: 14,
   },
   saveButton: {
-    backgroundColor: "rgba(52, 199, 89, 0.8)",
+    backgroundColor: '#32CD32', // Green
     borderRadius: 25,
-    padding: 12,
-    flex: 1,
-    marginLeft: 8,
-    alignItems: "center",
+    paddingVertical: 12,
+    marginVertical: 20,
+    alignSelf: 'center',
+    width: '80%',
   },
-  buttonText: {
-    color: "#FFFFFF",
+  saveButtonText: {
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  closeModalButton: {
+    alignSelf: 'center',
+    marginTop: 10,
+  },
+  closeModalText: {
+    color: '#FF6347', // Tomato red
+    fontSize: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#00CED1', // Turquoise
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  workoutLog: {
+    backgroundColor: '#2F4F4F', // Dark Slate Grey
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
+  },
+  workoutLogTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  workoutLogDate: {
+    fontSize: 14,
+    color: '#D3D3D3', // Light Grey
+    marginBottom: 4,
+  },
+  noWorkoutsText: {
+    fontSize: 16,
+    color: '#FF6347', // Tomato red
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  exerciseDetails: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#3B3B3B', // Dark grey
+    borderRadius: 8,
+  },
+  exerciseName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  exerciseInfo: {
+    color: '#FFFFFF',
+  },
+  listContent: {
+    paddingVertical: 10,
+  },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  previousWorkoutButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+    marginTop: 10,
+    alignSelf: 'flex-start',
+  },
+  previousWorkoutButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
+  addWorkoutButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 30,
+    alignItems: 'center',
+    elevation: 5, // For Android shadow
+    shadowColor: '#000', // For iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+  },
+  addWorkoutButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
   },
 });

@@ -1,0 +1,1 @@
+For Hw4 I developed the database structure and part of the implementation. I also worked on integrating the database with the application, ensuring that data could be stored and retrieved efficiently. Additionally, I implemented some of the backend logic to handle user requests and process data. These changes can be found under the project/serviceFiles folder.
