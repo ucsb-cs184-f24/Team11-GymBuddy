@@ -1,1 +1,1 @@
-
+postStructure.png is an image of the current post structure in our app. excercise.png represents the excercise option for posting, where each post is an individual excercise of a defined number of reps and sets. workout.png is meant to model a complete workout, thus a list of multiple different excercises each with its own rep and sets counts. These were the two different approaches we were deciding between for our post structure.
