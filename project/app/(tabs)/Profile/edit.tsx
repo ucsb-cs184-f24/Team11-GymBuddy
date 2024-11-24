@@ -9,7 +9,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import HeightPickerModal from '@/components/heightPicker';
 import WeightPickerModal from '@/components/weightPicker'; 
 import GenderPickerModal from '@/components/genderPicker';
-import ImageSelector from '@/components/imagePicker';
 import ImagePickerExample from '@/components/imagePicker';
 
 interface UserData {
@@ -27,7 +26,7 @@ interface UserData {
    username: string;
    weight: number | null; 
  }
-
+ 
 export default function EditProfile() {
 
    const [userData, setUserData] = useState<UserData | null>(null);
