@@ -6,6 +6,7 @@ import {
   getDoc,
   getDocs,
   setDoc,
+  QuerySnapshot,
 } from "firebase/firestore";
 import { app } from "./firebaseConfig";
 import { uidToUsername } from "./usersDatabaseService";
@@ -55,7 +56,6 @@ export const getAllUsersRecentWorkouts = async (): Promise<WorkoutLog[]> => {
     }
   return [];
 };
-
 export const getWorkouts = async (userId: string): Promise<WorkoutLog[]> => {
   try {
     const workoutsRef = collection(database, `posts`);
