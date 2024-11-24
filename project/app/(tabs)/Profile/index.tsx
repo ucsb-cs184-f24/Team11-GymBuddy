@@ -5,26 +5,14 @@ import {
   Image,
   Pressable,
   ScrollView,
-  Alert,
-  TouchableOpacity,
   Text,
   Dimensions,
-  Button,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { getAuth } from "firebase/auth";
-import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
-import { useFocusEffect } from "@react-navigation/native";
-import ImagePickerComponent from "@/components/Profile/pickImage";
-import UserInfoEditor from "@/components/Profile/ProfileData";
-import AnalyticCharts from "@/components/Profile/AnalyticCharts";
 import { getUserProfile, getUserId } from "@/serviceFiles/usersDatabaseService";
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { getWorkouts } from "@/serviceFiles/postsDatabaseService";
-
 
 const { width } = Dimensions.get("window");
 
@@ -35,10 +23,13 @@ interface UserData {
   firstName: string;
   followerCount: number;
   followingCount: number;
+  gender: string;
+  height: number | null;
   isPrivate: boolean;
   lastName: string;
   profilePicture: string;
   username: string;
+  weight: number | null; 
 }
 
 interface WorkoutLog {
@@ -63,7 +54,6 @@ export default function Profile() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userPosts, setUserPosts] = useState<WorkoutLog[] | null>(null);
   const [analyticsKey, setAnalyticsKey] = useState(0);
-  const auth = getAuth();
 
   const imageUrls = [
     'https://via.placeholder.com/300',
@@ -98,17 +88,6 @@ export default function Profile() {
     'https://via.placeholder.com/300',
   ];
 
-  const logout = async () => {
-    try {
-      await auth.signOut();
-      await AsyncStorage.removeItem("@user");
-      router.replace("/(auth)/SignIn");
-      Alert.alert("Logged Out");
-    } catch (error) {
-      Alert.alert("Error logging out");
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       const profile = await getUserProfile(await getUserId()) as UserData;
@@ -127,14 +106,14 @@ export default function Profile() {
     fetchData();
   }, []);
 
-  const handleImageSelected = async (uri: string) => {
-    setProfileImage(uri);
-    try {
-      await AsyncStorage.setItem("@profile_image", uri);
-    } catch (error) {
-      console.error("Error saving image:", error);
-    }
-  };
+  // const handleImageSelected = async (uri: string) => {
+  //   setProfileImage(uri);
+  //   try {
+  //     await AsyncStorage.setItem("@profile_image", uri);
+  //   } catch (error) {
+  //     console.error("Error saving image:", error);
+  //   }
+  // };
 
   return (
     // <LinearGradient
@@ -206,9 +185,6 @@ export default function Profile() {
           <Pressable style={styles.button} onPress={() => router.push('/Profile/edit')}>
             <Text style={styles.editProfileText}>Edit Profile</Text>
           </Pressable>
-          <Pressable style={styles.button} onPress={logout}>
-            <Text style={styles.editProfileText}>Logout</Text>
-          </Pressable>
           <View style={styles.viewPostsButton}>
             <MaterialCommunityIcons name="grid" size={30} color="#000"/>
           </View>
@@ -261,16 +237,12 @@ const styles = StyleSheet.create({
   followText: {
     flex: 1,
     flexDirection: "column",
-    // borderWidth: 1,
-    // borderColor: "black",
     top: 30,
     maxHeight: 50
   },
   followerText: {
     flex: 1,
     flexDirection: "column",
-    // borderWidth: 1,
-    // borderColor: "black",
     top: 30,
     maxHeight: 50
   },
@@ -297,8 +269,6 @@ const styles = StyleSheet.create({
     width: "90%",
     fontSize: 20,
     fontWeight: "600",
-    // borderWidth: 1,
-    // borderColor: "black",
   },
   bio: {
     top: 35,
@@ -306,11 +276,9 @@ const styles = StyleSheet.create({
     width: "90%",
     fontSize: 16,
     fontWeight: "300",
-    // borderWidth: 1,
-    // borderColor: "black",
   },
   button: {
-    top: 40, 
+    top: 45, 
     alignSelf: "center",
     width: "40%",
     height: 25,
@@ -337,7 +305,7 @@ const styles = StyleSheet.create({
     top: 40,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between', // Spread out images evenly across the row
+    justifyContent: 'space-between',
     width: '100%',
   },
   postImage: {
