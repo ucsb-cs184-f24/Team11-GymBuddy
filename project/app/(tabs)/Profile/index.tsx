@@ -7,12 +7,15 @@ import {
   ScrollView,
   Text,
   Dimensions,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { getUserProfile, getUserId } from "@/serviceFiles/usersDatabaseService";
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { getWorkouts } from "@/serviceFiles/postsDatabaseService";
+import { auth } from "@/serviceFiles/authService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 
@@ -196,7 +199,7 @@ export default function Profile() {
           <Pressable style={styles.button} onPress={() => router.push('/Profile/edit')}>
             <Text style={styles.editProfileText}>Edit Profile</Text>
           </Pressable>
-          <Pressable style={styles.button} onPress={logout}>
+          <Pressable style={styles.signOutButton} onPress={logout}>
             <Text style={styles.editProfileText}>Sign Out</Text>
           </Pressable>
           <View style={styles.viewPostsButton}>
@@ -301,6 +304,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 5,
   },
+  signOutButton: {
+    top: 45, 
+    alignSelf: "center",
+    width: "40%",
+    height: 25,
+    backgroundColor: "#e0e0e0",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+  },
   viewPostsButton: {
     top: 45,
     alignSelf: "center",
@@ -311,6 +324,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   editProfileText: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "500"
+  },
+  signOutText: {
     textAlign: "center",
     fontSize: 18,
     fontWeight: "500"
