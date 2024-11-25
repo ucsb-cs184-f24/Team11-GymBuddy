@@ -35,20 +35,22 @@ interface UserData {
   weight: number | null; 
 }
 
-interface WorkoutLog {
+export interface WorkoutLog {
   caption: string;
   commentsCount: number;
   createdAt: number;
   image: string;
   likesCount: number;
-  muscleGroup: string;
-  repsCount: number;
-  setsCount: number;
+  exercises: {
+    name: string;
+    sets: number;
+    reps: number;
+    weight: number;
+    category: string;
+  }[]
   userId: string;
-  weight: number;
-  workoutName: string;
-  workoutType: string;
   username?: string;
+
 }
 
 export default function Profile() {
