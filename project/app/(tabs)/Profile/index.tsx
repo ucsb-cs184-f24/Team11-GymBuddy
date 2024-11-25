@@ -159,10 +159,10 @@ export default function Profile() {
             </View>
           </View>
           <Text style={styles.name}>
-            {userData?.firstName || 'loading'} {userData?.lastName || 'loading'}
+            {userData?.firstName || '_'} {userData?.lastName || '_'}
           </Text>
           <Text style={styles.bio}>
-            {userData?.bio || 'loading'}
+            {userData?.bio || 'Bio'}
           </Text>
           <Pressable style={styles.button} onPress={() => router.push('/Profile/edit')}>
             <Text style={styles.editProfileText}>Edit Profile</Text>
