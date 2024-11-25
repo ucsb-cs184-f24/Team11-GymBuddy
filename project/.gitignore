@@ -27,7 +27,7 @@ web-build/
 .project/android/
 .project/dist/
 .project/build/
-
+.project/.expo/types/router.d.ts
 # macOS
 .DS_Store
 
