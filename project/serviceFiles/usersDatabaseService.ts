@@ -14,7 +14,7 @@ import { getAuth } from "firebase/auth";
 
 export const database = getFirestore(app);
 
-interface UserData {
+export interface UserData {
   firstName: string;
   lastName: string;
   username: string;
