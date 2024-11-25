@@ -106,6 +106,17 @@ export default function Profile() {
     fetchData();
   }, []);
 
+  const logout = async () => {
+    try {
+       await auth.signOut();
+       await AsyncStorage.removeItem("@user");
+       router.replace("/(auth)/SignIn");
+       Alert.alert("Logged Out");
+    } catch (error) {
+       Alert.alert("Error logging out");
+    }
+    };
+
   // const handleImageSelected = async (uri: string) => {
   //   setProfileImage(uri);
   //   try {
@@ -184,6 +195,9 @@ export default function Profile() {
           </Text>
           <Pressable style={styles.button} onPress={() => router.push('/Profile/edit')}>
             <Text style={styles.editProfileText}>Edit Profile</Text>
+          </Pressable>
+          <Pressable style={styles.button} onPress={logout}>
+            <Text style={styles.editProfileText}>Sign Out</Text>
           </Pressable>
           <View style={styles.viewPostsButton}>
             <MaterialCommunityIcons name="grid" size={30} color="#000"/>
