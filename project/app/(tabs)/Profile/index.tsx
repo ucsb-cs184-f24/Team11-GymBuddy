@@ -7,12 +7,15 @@ import {
   ScrollView,
   Text,
   Dimensions,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { getUserProfile, getUserId, UserData } from "@/serviceFiles/usersDatabaseService";
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { getWorkouts, WorkoutLog } from "@/serviceFiles/postsDatabaseService";
+import { auth } from "@/serviceFiles/authService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 
@@ -73,6 +76,17 @@ export default function Profile() {
     };
     fetchData();
   }, []);
+
+  const logout = async () => {
+    try {
+       await auth.signOut();
+       await AsyncStorage.removeItem("@user");
+       router.replace("/(auth)/SignIn");
+       Alert.alert("Logged Out");
+    } catch (error) {
+       Alert.alert("Error logging out");
+    }
+    };
 
   // const handleImageSelected = async (uri: string) => {
   //   setProfileImage(uri);
@@ -152,6 +166,9 @@ export default function Profile() {
           </Text>
           <Pressable style={styles.button} onPress={() => router.push('/Profile/edit')}>
             <Text style={styles.editProfileText}>Edit Profile</Text>
+          </Pressable>
+          <Pressable style={styles.signOutButton} onPress={logout}>
+            <Text style={styles.editProfileText}>Sign Out</Text>
           </Pressable>
           <View style={styles.viewPostsButton}>
             <MaterialCommunityIcons name="grid" size={30} color="#000"/>
@@ -255,6 +272,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 5,
   },
+  signOutButton: {
+    top: 45, 
+    alignSelf: "center",
+    width: "40%",
+    height: 25,
+    backgroundColor: "#e0e0e0",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+  },
   viewPostsButton: {
     top: 45,
     alignSelf: "center",
@@ -265,6 +292,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   editProfileText: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "500"
+  },
+  signOutText: {
     textAlign: "center",
     fontSize: 18,
     fontWeight: "500"
