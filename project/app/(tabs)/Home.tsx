@@ -56,40 +56,52 @@ const Home = () => {
     loadPosts();
   }, []);
 
-  useEffect(() => {
-    const savePosts = async () => {
-      try {
-        await AsyncStorage.setItem("posts", JSON.stringify(posts));
-      } catch (error) {
-        console.error("Failed to save posts to AsyncStorage", error);
-      }
-    };
-    savePosts();
-  }, [posts]);
-
   const addPost = async () => {
-    // if (newPost.exercise && newPost.duration) {
-    //   const newPostItem: WorkoutLog = {
-    //     id: Date.now().toString(),
-    //     uName: "current_user",
-    //     area: "N/A",
-    //     exercise: newPost.exercise,
-    //     sets: 0,
-    //     reps: 0,
-    //     date: new Date().toLocaleDateString(),
-    //     time: new Date().toLocaleTimeString(),
-    //     image: "https://example.com/placeholder.jpg",
-    //   };
-    //   const updatedPosts = [newPostItem, ...posts];
-    //   setPosts(updatedPosts);
-    //   try {
-    //     await AsyncStorage.setItem("posts", JSON.stringify(updatedPosts));
-    //   } catch (error) {
-    //     Alert.alert("Error", "Failed to save post");
-    //   }
-    //   setNewPost({ exercise: "", duration: "" });
-    //   setModalVisible(false);
-    //}
+    if (newPost.exercise && newPost.duration) {
+      const newPostItem: WorkoutLog = {
+        caption: `${newPost.exercise} for ${newPost.duration}`, // Caption derived from inputs
+        commentsCount: 0,
+        createdAt: Date.now(), // Current timestamp
+        image: "https://example.com/placeholder.jpg", // Placeholder image
+        likesCount: 0,
+        exercises: [
+          {
+            name: newPost.exercise,
+            sets: 0, // Replace with actual values if available
+            reps: 0, // Replace with actual values if available
+            weight: 0, // Replace with actual values if available
+            category: "N/A", // Replace with appropriate category if available
+          },
+        ],
+        userId: uuid(), // Generate unique user ID for this workout
+        username: "current_user", // Replace with actual username
+      };
+  
+      try {
+        // Save the new post to the database
+        await saveNewPostToDatabase(newPostItem);
+        
+        // Re-fetch the updated list of posts
+        const recentWorkouts = await getAllUsersRecentWorkouts();
+        const postsArray = Object.values(recentWorkouts as WorkoutLog[]);
+        postsArray.sort((a, b) => b.createdAt - a.createdAt);
+        setPosts(postsArray);
+  
+        // Clear the input fields and close the modal
+        setNewPost({ exercise: "", duration: "" });
+        setModalVisible(false);
+      } catch (error) {
+        Alert.alert("Error", "Failed to add post");
+        console.error(error);
+      }
+    } else {
+      Alert.alert("Invalid Input", "Please fill in both exercise and duration");
+    }
+  };
+  
+  const saveNewPostToDatabase = async (post: WorkoutLog) => {
+    console.log("Saving new post to database:", post);
+    // Implement actual save logic here
   };
 
   const deletePost = async (id: string) => {
