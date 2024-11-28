@@ -17,7 +17,8 @@ import {
 } from "@/utils/Profile/dataProcessHelpers";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { SymbolView } from "expo-symbols";
-import { getWorkouts, getUserId } from "@/serviceFiles/postsDatabaseService";
+import { getUserId} from "@/serviceFiles/usersDatabaseService";
+import { getWorkouts } from "@/serviceFiles/postsDatabaseService";
 
 type WorkoutEntry = {
   name: string;

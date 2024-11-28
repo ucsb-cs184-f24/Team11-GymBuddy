@@ -7,6 +7,7 @@ import {
   ScrollView,
   Text,
   Dimensions,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -151,6 +152,9 @@ export default function Profile() {
           >
             <Text style={styles.editProfileText}>Edit Profile</Text>
           </Pressable>
+          <Pressable style={styles.signOutButton} onPress={logout}>
+            <Text style={styles.editProfileText}>Sign Out</Text>
+          </Pressable>
           <View style={styles.viewPostsButton}>
             <MaterialCommunityIcons name="grid" size={30} color="#000" />
           </View>
@@ -252,6 +256,11 @@ const styles = StyleSheet.create({
   },
   viewPostsButton: {
     borderRadius: 5,
+  },
+  signOutText: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "500"
   },
   postGrid: {
     flexDirection: "row",
