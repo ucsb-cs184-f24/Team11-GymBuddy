@@ -20,6 +20,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 const { width } = Dimensions.get("window");
 
@@ -27,6 +28,12 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [bio, setBio] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [profilePicture, setProfilePicture] = useState("");
+  const [username, setUsername] = useState("");
   const router = useRouter();
   const fadeAnim = new Animated.Value(0);
 
@@ -48,6 +55,12 @@ const Register = () => {
         auth,
         email,
         password,
+        bio,
+        Number(height),
+        Number(weight),
+        Boolean(isPrivate),
+        profilePicture,
+        username
       );
       const user = userCredential.user;
 
@@ -88,6 +101,7 @@ const Register = () => {
         colors={["#4c669f", "#3b5998", "#192f6a"]}
         style={styles.gradient}
       >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
         <BlurView intensity={10} tint="dark" style={styles.header}></BlurView>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -106,6 +120,39 @@ const Register = () => {
                   placeholderTextColor="#FFFFFFFF"
                 />
                 <TextInput
+                  placeholder="Username"
+                  style={styles.input}
+                  value={username}
+                  autoCapitalize="none"
+                  onChangeText={setUsername}
+                  placeholderTextColor="#FFFFFFFF"
+                  />
+                <TextInput
+                  placeholder="Bio"
+                  style={styles.input}
+                  value={bio}
+                  autoCapitalize="sentences"
+                  onChangeText={setBio}
+                  placeholderTextColor="#FFFFFFFF"
+                  />
+                <TextInput
+                  placeholder="Height"
+                  style={styles.input}
+                  value={height}
+                  autoCapitalize="none"
+                  onChangeText={setHeight}
+                  keyboardType="numeric"
+                  placeholderTextColor="#FFFFFFFF"
+                  />
+                <TextInput
+                  placeholder="Weight"
+                  style={styles.input}
+                  value={weight}
+                  autoCapitalize="none"
+                  onChangeText={setWeight}
+                  placeholderTextColor="#FFFFFFFF"
+                  />
+                <TextInput
                   placeholder="Email"
                   style={styles.input}
                   value={email}
@@ -123,6 +170,7 @@ const Register = () => {
                   secureTextEntry
                   placeholderTextColor="#FFFFFFFF"
                 />
+                
               </View>
               <TouchableOpacity
                 style={styles.signUpButton}
@@ -144,6 +192,7 @@ const Register = () => {
             </BlurView>
           </Animated.View>
         </KeyboardAvoidingView>
+        </ScrollView>
       </LinearGradient>
     </View>
   );
@@ -246,6 +295,11 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
