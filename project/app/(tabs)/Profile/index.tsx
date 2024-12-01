@@ -152,9 +152,7 @@ export default function Profile() {
           >
             <Text style={styles.editProfileText}>Edit Profile</Text>
           </Pressable>
-          <Pressable style={styles.signOutButton} onPress={logout}>
-            <Text style={styles.editProfileText}>Sign Out</Text>
-          </Pressable>
+
           <View style={styles.viewPostsButton}>
             <MaterialCommunityIcons name="grid" size={30} color="#000" />
           </View>
