@@ -38,6 +38,7 @@
     "react-native-screens": "^4.0.0",
     "react-native-web": "~0.19.13",
     "uuid": "^11.0.3",
+    "react-native-get-random-values": "~1.11.0"
     "expo-haptics": "~14.0.0"
   },
   "devDependencies": {

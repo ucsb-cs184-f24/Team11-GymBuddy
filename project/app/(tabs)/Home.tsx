@@ -22,6 +22,7 @@ import {
   getAllUsersRecentWorkouts,
   WorkoutLog,
 } from "@/serviceFiles/postsDatabaseService";
+import 'react-native-get-random-values';
 import { v4 as uuid } from "uuid";
 const { width, height } = Dimensions.get("window");
 
@@ -151,7 +152,7 @@ const Home = () => {
       </View>
       <View style={styles.workoutInfo}>
       {item.exercises?.map((exercise) => (
-        <React.Fragment key={exercise.name}>
+        <React.Fragment key={uuid()}>
             <Text style = {styles.setsText}>
             {exercise.name} - {exercise.category}
             </Text>
@@ -187,7 +188,7 @@ const Home = () => {
           <FlatList
             data={posts}
             renderItem={renderPost}
-            keyExtractor={(item) => item.userId}
+            keyExtractor={(item) => uuid()}
             style={[styles.workoutList, { paddingTop: 10 }]}
           />
         ) : (

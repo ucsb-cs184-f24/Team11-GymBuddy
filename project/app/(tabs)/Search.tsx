@@ -13,7 +13,13 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import {
   getUserProfile, // Function to fetch user profile by userId
   getAllUsernames,    // Newly implemented function
+  addFollowerRequest,
+  addFollowingRequest,
+  getUserId,
+  getAllFollowingRequests,
+  getAllFollowing,
 } from "@/serviceFiles/usersDatabaseService";
+import { v4 as uuid } from "uuid";
 
 interface User {
   userId: string;
@@ -21,6 +27,8 @@ interface User {
   firstName: string;
   lastName: string;
   profilePic: string;
+  isFollowing?: boolean;
+  isFollowingRequest?: boolean;
 }
 
 const Search = () => {
@@ -34,7 +42,10 @@ const Search = () => {
       try {
         const userIds = await getAllUsernames(); // Includes firstName and lastName
         console.log(`Fetched user IDs count: ${userIds.length}`); // Debugging
-  
+        
+        const currentUserId = await getUserId();
+        const allFollowingRequests = await getAllFollowingRequests(currentUserId)
+        const allFollowing = await getAllFollowing(currentUserId)
         const userProfiles: User[] = [];
   
         const profilePromises = userIds.map(async (userBasic) => {
@@ -46,6 +57,8 @@ const Search = () => {
               firstName: userBasic.firstName || "",
               lastName: userBasic.lastName || "",
               profilePic: profile.profilePic || "",
+              isFollowingRequest: allFollowingRequests.some(request => request.id === userBasic.userId),
+              isFollowing: allFollowing.some(following => following.id === userBasic.userId),
             } as User);
           }
         });
@@ -63,6 +76,17 @@ const Search = () => {
     fetchUsers();
   }, []);
   
+  const handleAddFriend = async (userId: string) => {
+    const currentUserId = await getUserId()
+    await addFollowerRequest(userId, currentUserId);
+    await addFollowingRequest(currentUserId, userId);
+    setFilteredData((prevData) =>
+      prevData.map((user) =>
+      user.userId === userId ? { ...user, isFollowingRequest: true } : user
+      )
+    );
+  }
+
   const handleSearch = (text: string) => {
     setSearchQuery(text);
     if (text.trim() === "") {
@@ -88,6 +112,12 @@ const renderItem = ({ item }: { item: User }) => (
         {item.firstName} {item.lastName}
       </Text>
     </View>
+    {item.isFollowingRequest ? <Ionicons name="checkmark-outline" size={20} color="black" /> :
+      item.isFollowing ? <Ionicons name="checkmark-done-outline" size={20} color="black" /> :
+        <Ionicons name="add-circle-outline" size={20} color="black"
+          onPress={() => handleAddFriend(item.userId)}
+        />
+    }
   </TouchableOpacity>
 );
 
@@ -103,7 +133,7 @@ const renderItem = ({ item }: { item: User }) => (
     <FlatList
       data={filteredData}
       renderItem={renderItem}
-      keyExtractor={(item, index) => item.userId ? item.userId : `unknown-${index}`}
+      keyExtractor={(item, index) => uuid()}
       />
   </View>
   );
