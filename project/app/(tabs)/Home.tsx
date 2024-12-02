@@ -150,7 +150,7 @@ const Home = () => {
       </View>
       <View style={styles.workoutInfo}>
       {item.exercises?.map((exercise) => (
-        <React.Fragment key={exercise.name}>
+        <React.Fragment key={uuid()}>
             <Text style = {styles.setsText}>
             {exercise.name} - {exercise.category}
             </Text>
@@ -186,7 +186,7 @@ const Home = () => {
           <FlatList
             data={posts}
             renderItem={renderPost}
-            keyExtractor={(item) => item.userId}
+            keyExtractor={(item) => uuid()}
             style={[styles.workoutList, { paddingTop: 10 }]}
           />
         ) : (

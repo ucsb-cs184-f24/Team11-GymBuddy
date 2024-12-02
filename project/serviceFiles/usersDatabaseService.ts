@@ -297,6 +297,7 @@ export const uidToUsername = async (userId: string) => {
       return userSnap.data().username;
     } else {
       console.error("User does not exist");
+      return null;
     }
   } catch (e) {
     console.error("Error getting user name", e);
