@@ -22,6 +22,7 @@ import {
   getAllUsersRecentWorkouts,
   WorkoutLog,
 } from "@/serviceFiles/postsDatabaseService";
+import 'react-native-get-random-values';
 import { v4 as uuid } from "uuid";
 const { width, height } = Dimensions.get("window");
 
