@@ -60,7 +60,8 @@ export const getWorkouts = async (userId: string): Promise<WorkoutLog[]> => {
   try {
     const workoutsRef = collection(database, `posts`);
     const snapshot = await getDocs(workoutsRef);
-    return snapshot.docs
+    const workouts = snapshot.docs    //delete later
+    //return snapshot.docs  //uncomment later
       .filter(doc => doc.data().userId === userId)
       .map(doc => ({
       caption: doc.data().caption,
@@ -68,9 +69,17 @@ export const getWorkouts = async (userId: string): Promise<WorkoutLog[]> => {
       createdAt: doc.data().createdAt,
       image: doc.data().image,
       likesCount: doc.data().likesCount,
-      exercises: doc.data().exercises,
+      exercises: (doc.data().exercises || []).map((exercise: any) => ({
+        name: exercise.name || "Unnamed Exercise",
+        sets: exercise.sets || 0,
+        reps: exercise.reps || 0,
+        weight: exercise.weight || 0,
+        category: exercise.category || "Uncategorized",
+      })), // Ensures exercises are mapped correctly
       userId: doc.data().userId,
       } as WorkoutLog));
+    console.log("Fetched workouts:", JSON.stringify(workouts, null, 2)); // Debug log delete later
+    return workouts; //delete later
   } catch (e) {
     console.error("Error getting workouts", e);
   }
