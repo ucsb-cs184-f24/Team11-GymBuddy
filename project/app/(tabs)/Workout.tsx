@@ -7,6 +7,7 @@ import { getUserId } from "@/serviceFiles/usersDatabaseService";
 import { workoutsByCategory } from "@/utils/Workout/workoutCatagory";
 import { BlurView } from "expo-blur";
 import React, { useEffect, useState } from "react";
+import * as Haptics from 'expo-haptics';
 import {
   Animated,
   Dimensions,
@@ -67,10 +68,12 @@ export default function WorkoutScreen() {
   }, [userData]);
 
   const handleSelectCategory = (category: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setSelectedCategory(category === selectedCategory ? null : category);
   };
 
   const handleSelectWorkout = (workout: string) => {
+    Haptics.selectionAsync();
     setSelectedWorkouts((prev) => {
       if (prev[workout]) {
         const updated = { ...prev };
@@ -83,6 +86,7 @@ export default function WorkoutScreen() {
   };
 
   const handleSaveWorkout = async () => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     if (userData && Object.keys(selectedWorkouts).length > 0) {
       const workoutLog: WorkoutLog = {
         caption: workoutName,
@@ -142,7 +146,13 @@ export default function WorkoutScreen() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={openModal} style={styles.modalButton}>
+      <TouchableOpacity
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          openModal();
+        }}
+        style={styles.modalButton}
+      >
         <Text style={styles.modalButtonText}>Add Workout</Text>
       </TouchableOpacity>
 
@@ -249,9 +259,15 @@ export default function WorkoutScreen() {
           <TouchableOpacity onPress={handleSaveWorkout} style={styles.saveButton}>
             <Text style={styles.saveButtonText}>Save Workout</Text>
            </TouchableOpacity>
-          <TouchableOpacity onPress={closeModal} style={styles.closeModalButton}>
+            <TouchableOpacity
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              closeModal();
+            }}
+            style={styles.closeModalButton}
+            >
             <Text style={styles.closeModalText}>Close</Text>
-          </TouchableOpacity>
+            </TouchableOpacity>
         </View>
       </Modal>
             {/* Display Previous Workouts */}

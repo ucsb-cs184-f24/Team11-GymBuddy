@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import * as Haptics from 'expo-haptics';
 import {
   Text,
   View,
@@ -38,6 +39,7 @@ const Login = () => {
   }, []);
 
   const handleSignIn = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -58,9 +60,11 @@ const Login = () => {
     } catch (e: any) {
       Alert.alert("Navigation failed", e.message);
     }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
   const handleForgotPassword = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     Alert.alert("Forgot Password", "This feature is not implemented yet.");
   };
 

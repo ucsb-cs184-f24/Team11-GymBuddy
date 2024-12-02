@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as Haptics from 'expo-haptics';
 import {
   View,
   Text,
@@ -53,9 +54,7 @@ const AnalyticCharts = () => {
         date: workout.createdAt, // Map 'createdAt' to 'date'
         workouts: workout.exercises || [], // Map 'exercises' to 'workouts'
       })) || [];
-      console.log("Workout Data Before Filtering:", JSON.stringify(workoutData, null, 2));
       const data = await filterData(startDate, endDate, workoutData);
-      console.log("Filtered Data:", JSON.stringify(data, null, 2));
       const processedData = processChartData(
         data,
         chartCategory,
