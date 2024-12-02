@@ -12,7 +12,7 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {
   getUserProfile, // Function to fetch user profile by userId
-  getAllUsernames,    // Newly implemented function
+  getAllUsernames, // Newly implemented function
 } from "@/serviceFiles/usersDatabaseService";
 
 interface User {
@@ -34,14 +34,14 @@ const Search = () => {
       try {
         const userIds = await getAllUsernames(); // Includes firstName and lastName
         console.log(`Fetched user IDs count: ${userIds.length}`); // Debugging
-  
+
         const userProfiles: User[] = [];
-  
+
         const profilePromises = userIds.map(async (userBasic) => {
           const profile = await getUserProfile(userBasic.userId);
           if (profile) {
             userProfiles.push({
-              userId: profile.userId || userBasic.userId, 
+              userId: profile.userId || userBasic.userId,
               username: profile.username || "Unknown",
               firstName: userBasic.firstName || "",
               lastName: userBasic.lastName || "",
@@ -49,9 +49,9 @@ const Search = () => {
             } as User);
           }
         });
-  
+
         await Promise.all(profilePromises);
-  
+
         console.log(`Fetched user profiles count: ${userProfiles.length}`); // Debugging
         setUsers(userProfiles);
         setFilteredData(userProfiles.slice(0, 10));
@@ -59,53 +59,63 @@ const Search = () => {
         console.error("Error fetching users:", error);
       }
     };
-  
+
     fetchUsers();
   }, []);
-  
+
   const handleSearch = (text: string) => {
     setSearchQuery(text);
     if (text.trim() === "") {
       setFilteredData(users.slice(0, 10));
     } else {
       const lowercasedText = text.toLowerCase();
-      const filtered = users.filter((user) =>
-        (user.username?.toLowerCase() || "").includes(lowercasedText) ||
-        (user.firstName?.toLowerCase() || "").includes(lowercasedText) ||
-        (user.lastName?.toLowerCase() || "").includes(lowercasedText) ||
-        (user.userId?.toLowerCase() || "").includes(lowercasedText)
+      const filtered = users.filter(
+        (user) =>
+          (user.username?.toLowerCase() || "").includes(lowercasedText) ||
+          (user.firstName?.toLowerCase() || "").includes(lowercasedText) ||
+          (user.lastName?.toLowerCase() || "").includes(lowercasedText) ||
+          (user.userId?.toLowerCase() || "").includes(lowercasedText)
       );
       setFilteredData(filtered.slice(0, 10));
     }
   };
 
-const renderItem = ({ item }: { item: User }) => (
-  <TouchableOpacity style={styles.itemContainer}>
-    <Image source={{ uri: item.profilePic }} style={styles.profilePic} />
-    <View style={styles.textContainer}>
-      <Text style={styles.username}>{item.username}</Text>
-      <Text style={styles.fullName}>
-        {item.firstName} {item.lastName}
-      </Text>
-    </View>
-  </TouchableOpacity>
-);
-
+  const renderItem = ({ item }: { item: User }) => (
+    <TouchableOpacity style={styles.itemContainer}>
+      <Image
+        source={{
+          uri:
+            item.profilePic === ""
+              ? "https://i.sstatic.net/l60Hf.png"
+              : item.profilePic,
+        }}
+        style={styles.profilePic}
+      />
+      <View style={styles.textContainer}>
+        <Text style={styles.username}>{item.username}</Text>
+        <Text style={styles.fullName}>
+          {item.firstName} {item.lastName}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
-    <TextInput
-      style={styles.input}
-      placeholder="Search"
-      value={searchQuery}
-      onChangeText={handleSearch}
-    />
-    <FlatList
-      data={filteredData}
-      renderItem={renderItem}
-      keyExtractor={(item, index) => item.userId ? item.userId : `unknown-${index}`}
+      <TextInput
+        style={styles.input}
+        placeholder="Search"
+        value={searchQuery}
+        onChangeText={handleSearch}
       />
-  </View>
+      <FlatList
+        data={filteredData}
+        renderItem={renderItem}
+        keyExtractor={(item, index) =>
+          item.userId ? item.userId : `unknown-${index}`
+        }
+      />
+    </View>
   );
 };
 
@@ -114,22 +124,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#f0f0f0",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 16,
-  },
   input: {
     height: 40, // Fixed height
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     paddingHorizontal: 8,
     marginBottom: 16,
     borderRadius: 4,
-    textAlignVertical: 'center',
+    textAlignVertical: "center",
   },
   itemContainer: {
     flexDirection: "row",
@@ -153,16 +155,6 @@ const styles = StyleSheet.create({
   fullName: {
     fontSize: 14,
     color: "#555",
-  },
-  userId: {
-    fontSize: 12,
-    color: "#888",
-  },
-  noResultsText: {
-    textAlign: "center",
-    marginTop: 20,
-    color: "gray",
-    fontSize: 16,
   },
 });
 
