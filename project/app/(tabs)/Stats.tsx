@@ -1,24 +1,19 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet, Text, SafeAreaView } from "react-native";
+import AnalyticCharts from "@/components/Stats/AnalyticCharts";
 
 const Stats = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Stats Coming Soon</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <AnalyticCharts />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
+    backgroundColor: "#ECECEC",
   },
 });
 

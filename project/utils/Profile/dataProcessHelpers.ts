@@ -69,7 +69,7 @@ const processBodyData = (data: WorkoutDayResults) => {
   Object.entries(data).forEach(([_, summary]) => {
     Object.entries(summary.bodyAreas).forEach(([bodyArea, count]) => {
       const indexOfBodyArea = barData.findIndex(
-        (bar) => bar.label === bodyArea,
+        (bar) => bar.label === bodyArea
       );
       barData[indexOfBodyArea].value += count;
     });
@@ -86,7 +86,7 @@ const processBodyData = (data: WorkoutDayResults) => {
 
 const processWeeklyWorkoutData = (
   data: WorkoutDayResults,
-  currentDate: Date,
+  currentDate: Date
 ) => {
   let labels: string[] = [];
   const { startDate, endDate } = getRangeForPeriod(Period.Week, currentDate);
@@ -117,7 +117,7 @@ const processWeeklyWorkoutData = (
     const { year, zeroIndexedMonth, day } = parseDateString(item.label);
     const dayString = new Date(year, zeroIndexedMonth, day).toLocaleDateString(
       "en-US",
-      { weekday: "short" },
+      { weekday: "short" }
     );
     return {
       ...item,
@@ -130,7 +130,7 @@ const processWeeklyWorkoutData = (
 
 const processMonthlyWorkoutData = (
   data: WorkoutDayResults,
-  currentDate: Date,
+  currentDate: Date
 ) => {
   let labels: string[] = [];
   const { startDate, endDate } = getRangeForPeriod(Period.Month, currentDate);
@@ -170,7 +170,7 @@ const processMonthlyWorkoutData = (
 
 const processYearlyWorkoutData = (
   data: WorkoutDayResults,
-  currentDate: Date,
+  currentDate: Date
 ) => {
   let labels: string[] = [];
   const { startDate, endDate } = getRangeForPeriod(Period.Year, currentDate);
@@ -192,7 +192,7 @@ const processYearlyWorkoutData = (
   Object.entries(data).forEach(([date, summary]) => {
     const { zeroIndexedMonth } = parseDateString(date);
     const indexOfMonth = barData.findIndex(
-      (bar) => bar.label === zeroIndexedMonth.toString(),
+      (bar) => bar.label === zeroIndexedMonth.toString()
     );
     const isActive = summary.totalWorkout >= 1;
     barData[indexOfMonth].value += summary.totalWorkout;
@@ -228,7 +228,7 @@ export const processChartData = (
   data: WorkoutDayResults,
   category: ChartCategory,
   period: Period,
-  currentDate: Date,
+  currentDate: Date
 ) => {
   if (category === ChartCategory.Body) {
     return processBodyData(data);
