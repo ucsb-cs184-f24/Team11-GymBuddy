@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import * as Haptics from 'expo-haptics';
 import {
   View,
   Text,
@@ -129,6 +129,7 @@ const Home = () => {
         <Text style={styles.username}>{item.username}</Text>
         <TouchableOpacity
           onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             Alert.alert(
               "Delete Workout",
               "Are you sure you want to delete this workout?",

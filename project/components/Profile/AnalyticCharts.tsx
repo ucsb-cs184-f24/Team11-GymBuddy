@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as Haptics from 'expo-haptics';
 import {
   View,
   Text,
@@ -17,12 +18,13 @@ import {
 } from "@/utils/Profile/dataProcessHelpers";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { SymbolView } from "expo-symbols";
-import { getWorkouts, getUserId } from "@/serviceFiles/postsDatabaseService";
+import { getUserId} from "@/serviceFiles/usersDatabaseService";
+import { getWorkouts } from "@/serviceFiles/postsDatabaseService";
 
 type WorkoutEntry = {
   name: string;
   date: number;
-  workouts: string[];
+  workouts: { name: string; sets: number; reps: number; weight: number; category: string }[];
 };
 
 const AnalyticCharts = () => {
@@ -36,6 +38,7 @@ const AnalyticCharts = () => {
     ChartCategory.Workouts
   );
 
+  const [workoutUpdate, setWorkoutUpdate] = useState<number>(0);
   const periodOptions = Object.values(Period);
   const chartCategoryOptions = Object.values(ChartCategory);
 
@@ -46,7 +49,11 @@ const AnalyticCharts = () => {
         currentDate
       );
       const userId = await getUserId();
-      const workoutData = (await getWorkouts(userId)) || {};
+      const workoutData: WorkoutEntry[] = (await getWorkouts(userId)).map((workout: any) => ({
+        name: workout.caption || "Unnamed Workout", // Map 'caption' to 'name'
+        date: workout.createdAt, // Map 'createdAt' to 'date'
+        workouts: workout.exercises || [], // Map 'exercises' to 'workouts'
+      })) || [];
       const data = await filterData(startDate, endDate, workoutData);
       const processedData = processChartData(
         data,
@@ -60,18 +67,18 @@ const AnalyticCharts = () => {
       setChartKey((prev) => prev + 1);
     };
     fetchData();
-  }, [currentDate, chartCategory, chartPeriod]);
+  }, [currentDate, chartCategory, chartPeriod, workoutUpdate]);
 
   const filterData = async (
     startDate: number,
     endDate: number,
-    workoutData: { [key: string]: WorkoutEntry }
+    workoutData: WorkoutEntry[]
   ) => {
     const result: WorkoutDayResults = {};
 
     // If workoutData is null, we set it to an empty object
     if (!workoutData) {
-      workoutData = {};
+      workoutData = [];
     }
 
     Object.entries(workoutData).forEach(([_, workout]) => {
@@ -89,17 +96,21 @@ const AnalyticCharts = () => {
           };
         }
 
-        const name = workout.name;
-        const numWorkouts = workout.workouts.length;
-
         // Increment totalWorkout for the date
-        result[formattedDate].totalWorkout += numWorkouts;
+        result[formattedDate].totalWorkout += workout.workouts.length;
+
+      // Loop through workouts to count body areas
+      workout.workouts.forEach((exercise) => {
+        const bodyPart = exercise.category || "Uncategorized"; // Extract the category (body part)
 
         // Initialize the body area count if it doesn't exist
-        if (!result[formattedDate].bodyAreas[name]) {
-          result[formattedDate].bodyAreas[name] = 0;
+        if (!result[formattedDate].bodyAreas[bodyPart]) {
+          result[formattedDate].bodyAreas[bodyPart] = 0;
         }
-        result[formattedDate].bodyAreas[name] += numWorkouts;
+
+        // Increment the count for this body part
+        result[formattedDate].bodyAreas[bodyPart] += 1;
+      });
       }
     });
 
@@ -164,6 +175,10 @@ const AnalyticCharts = () => {
         new Date(currentDate.setFullYear(currentDate.getFullYear() + 1))
       );
     }
+  };
+
+  const handleNewWorkoutPosted = () => {
+    setWorkoutUpdate((prev) => prev + 1);
   };
 
   return (
@@ -240,6 +255,12 @@ const AnalyticCharts = () => {
             <Text style={styles.navigationText}>next</Text>
           </TouchableOpacity>
         </View>
+        {/* <TouchableOpacity 
+          onPress={handleNewWorkoutPosted} 
+          style={{ backgroundColor: "blue", padding: 10, borderRadius: 5, marginTop: 20 }}
+        >
+          <Text style={{ color: "white", textAlign: "center" }}>Simulate Adding Workout</Text>
+        </TouchableOpacity> */}
       </View>
     </SafeAreaView>
   );

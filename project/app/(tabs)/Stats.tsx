@@ -1,10 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import UserInfoEditor from "@/components/Profile/ProfileData";
+import AnalyticCharts from "@/components/Profile/AnalyticCharts";
 
 const Stats = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Stats Coming Soon</Text>
+      <AnalyticCharts />
     </View>
   );
 };
