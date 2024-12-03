@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -7,7 +7,7 @@ import {
   ScrollView,
   Text,
   Dimensions,
-  Alert,
+  RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -53,57 +53,43 @@ export default function Profile() {
   const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userPosts, setUserPosts] = useState<WorkoutLog[] | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const imageUrls = [
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-    "https://via.placeholder.com/300",
-  ];
+  const imageUrls = Array(30).fill("https://via.placeholder.com/300");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const profile = (await getUserProfile(await getUserId())) as UserData;
+  const fetchUserData = useCallback(async () => {
+    try {
+      const userId = await getUserId();
+      const profile = await getUserProfile(userId) as UserData;
       if (profile) {
         setUserData(profile);
       } else {
         console.error("Profile data is undefined");
       }
-      const posts = (await getWorkouts(await getUserId())) as WorkoutLog[];
+      const posts = await getWorkouts(userId) as WorkoutLog[];
       if (posts) {
         setUserPosts(posts);
       } else {
         console.error("Profile posts are undefined");
       }
-    };
-    fetchData();
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchUserData();
+
+    const intervalId = setInterval(fetchUserData, 5000); // Update every 5 seconds
+
+    return () => clearInterval(intervalId);
+  }, [fetchUserData]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchUserData();
+    setRefreshing(false);
+  }, [fetchUserData]);
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
@@ -116,7 +102,11 @@ export default function Profile() {
         </Text>
       </View>
 
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View style={styles.statsContainer}>
           <Image
             source={{ uri: userData?.profilePicture }}
@@ -126,25 +116,34 @@ export default function Profile() {
             <Text style={styles.numberCenter}>{userPosts?.length || 0}</Text>
             <Text style={styles.textCenter}>posts</Text>
           </View>
-          <View style={styles.stat}>
+          <Pressable style={styles.stat} onPress={() => router.push("/Profile/followers")}>
             <Text style={styles.numberCenter}>
               {userData?.followerCount || 0}
             </Text>
             <Text style={styles.textCenter}>followers</Text>
-          </View>
-          <View style={styles.stat}>
+          </Pressable>
+          <Pressable style={styles.stat} onPress={() => router.push("/Profile/following")}>
             <Text style={styles.numberCenter}>
               {userData?.followingCount || 0}
             </Text>
             <Text style={styles.textCenter}>following</Text>
-          </View>
+          </Pressable>
         </View>
         <View style={styles.nameAndBioContainer}>
-          <Text style={styles.name}>
-            {userData?.firstName || "loading"} {userData?.lastName || "loading"}
-          </Text>
+          <View style={styles.nameAndRequestsContainer}>
+            <Text style={styles.name}>
+              {userData?.firstName || "loading"} {userData?.lastName || "loading"}
+            </Text>
+            <Pressable
+              style={styles.followReqsButton}
+              onPress={() => router.push("/Profile/requests")}
+            >
+              <Text style={styles.followReqsText}>Follow Requests</Text>
+            </Pressable>
+          </View>
           <Text style={styles.bio}>{userData?.bio || "loading"}</Text>
         </View>
+        
         <View style={styles.buttonAndIconContainer}>
           <Pressable
             style={styles.editProfileButton}
@@ -153,9 +152,7 @@ export default function Profile() {
             <Text style={styles.editProfileText}>Edit Profile</Text>
           </Pressable>
 
-          <View style={styles.viewPostsButton}>
-            <MaterialCommunityIcons name="grid" size={30} color="#000" />
-          </View>
+          <MaterialCommunityIcons name="grid" size={30} color="#000" />
         </View>
         <View style={styles.postGrid}>
           {imageUrls.map((url, index) => (
@@ -217,31 +214,33 @@ const styles = StyleSheet.create({
   },
   nameAndBioContainer: {
     backgroundColor: "white",
-    display: "flex",
-    flexDirection: "column",
-    gap: 5,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  nameAndRequestsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 5,
   },
   name: {
-    paddingHorizontal: 20,
     fontSize: 21,
     fontWeight: "600",
   },
   bio: {
-    paddingHorizontal: 20,
     fontSize: 16,
     fontWeight: "400",
   },
   buttonAndIconContainer: {
     backgroundColor: "white",
-    display: "flex",
-    justifyContent: "center",
+    flexDirection: "column",
     alignItems: "center",
-    paddingTop: 17,
-    paddingBottom: 5,
-    gap: 15,
+    justifyContent: "center",
+    paddingVertical: 15,
+    gap: 10,
   },
   editProfileButton: {
-    width: "33%",
+    width: 150,
     height: 33,
     backgroundColor: "#e0e0e0",
     justifyContent: "center",
@@ -249,16 +248,18 @@ const styles = StyleSheet.create({
     borderRadius: 9,
   },
   editProfileText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "500",
   },
-  viewPostsButton: {
-    borderRadius: 5,
+  followReqsButton: {
+    backgroundColor: "#e0e0e0",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 9,
   },
-  signOutText: {
-    textAlign: "center",
-    fontSize: 18,
-    fontWeight: "500"
+  followReqsText: {
+    fontSize: 14,
+    fontWeight: "500",
   },
   postGrid: {
     flexDirection: "row",
