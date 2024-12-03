@@ -8,6 +8,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import React, { useEffect, useState } from "react";
+import * as Haptics from 'expo-haptics';
 import {
   Alert,
   Animated,
@@ -94,6 +95,7 @@ const Register = () => {
 
   const handleBackToLogin = () => {
     router.replace("/(auth)/SignIn");
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
   return (

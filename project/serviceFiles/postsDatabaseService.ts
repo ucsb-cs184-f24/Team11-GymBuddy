@@ -7,6 +7,7 @@ import {
   getDocs,
   setDoc,
   QuerySnapshot,
+  deleteDoc,
 } from "firebase/firestore";
 import { app } from "./firebaseConfig";
 import { uidToUsername } from "./usersDatabaseService";
@@ -38,7 +39,12 @@ export const getAllUsersRecentWorkouts = async (): Promise<WorkoutLog[]> => {
       const workoutLogs: WorkoutLog[] = [];
       for (const doc of snapshot.docs) {
         const data = doc.data();
-        const username = await uidToUsername(data.userId);
+        let username = "";
+          username = await uidToUsername(data.userId);
+        if (username == null) {
+            console.error("Error getting username - removing associated post");
+            await deleteDoc(doc.ref);
+        }
         workoutLogs.push({
           caption: data.caption,
           commentsCount: data.commentsCount,
