@@ -24,8 +24,10 @@ import {
 const { width } = Dimensions.get("window");
 
 const Register = () => {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
   const fadeAnim = new Animated.Value(0);
@@ -39,8 +41,24 @@ const Register = () => {
   }, []);
 
   const handleSignUp = async () => {
-    if (!name.trim()) {
-      Alert.alert("Validation Error", "Please enter your name.");
+    if (!firstName.trim()) {
+      Alert.alert("Validation Error", "Please enter your first name.");
+      return;
+    }
+    if (!lastName.trim()) {
+      Alert.alert("Validation Error", "Please enter your last name.");
+      return;
+    }
+    if (!userName.trim()) {
+      Alert.alert("Validation Error", "Please enter a username.");
+      return;
+    }
+    if (!email.trim()) {
+      Alert.alert("Validation Error", "Please enter your email.");
+      return;
+    }
+    if (!password) {
+      Alert.alert("Validation Error", "Please enter your password.");
       return;
     }
     try {
@@ -53,22 +71,19 @@ const Register = () => {
 
       // Update user profile with display name
       await updateProfile(user, {
-        displayName: name,
+        displayName: `${firstName.trim()} ${lastName.trim()}`,
       });
 
       Alert.alert("User Created");
-
-      const nameParts = name.trim().split(" ");
-      const firstName = nameParts[0] || "";
-      const lastName = nameParts.slice(1).join(" ") || "";
 
       await createUserProfile(user.uid);
       await updateUserProfile(user.uid, {
         firstName: firstName,
         lastName: lastName,
+        username: userName,
         email: email,
         profilePicture:
-          "https://crederia.com/images/avatars/default.jpg?v=1709931174", // default profile image
+          "https://i.sstatic.net/l60Hf.png",
       });
 
       router.replace("/(tabs)/Home");
@@ -97,12 +112,30 @@ const Register = () => {
             <BlurView intensity={100} style={styles.blurContainer}>
               <Text style={styles.title}>Create Account</Text>
               <View style={styles.inputContainer}>
+              <View style={styles.nameContainer}>
+                  <TextInput
+                    placeholder="First Name"
+                    style={[styles.input, styles.nameInput]}
+                    value={firstName}
+                    autoCapitalize="words"
+                    onChangeText={setFirstName}
+                    placeholderTextColor="#FFFFFFFF"
+                  />
+                  <TextInput
+                    placeholder="Last Name"
+                    style={[styles.input, styles.nameInput]}
+                    value={lastName}
+                    autoCapitalize="words"
+                    onChangeText={setLastName}
+                    placeholderTextColor="#FFFFFFFF"
+                  />
+                </View>
                 <TextInput
-                  placeholder="Name"
+                  placeholder="Username"
                   style={styles.input}
-                  value={name}
+                  value={userName}
                   autoCapitalize="words"
-                  onChangeText={setName}
+                  onChangeText={setUserName}
                   placeholderTextColor="#FFFFFFFF"
                 />
                 <TextInput
@@ -177,11 +210,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
   },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
   title: {
     fontSize: 28,
     fontWeight: "bold",
@@ -191,6 +219,14 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: "100%",
     marginBottom: 20,
+  },
+  nameContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
+  nameInput: {
+    width: "48%",
   },
   input: {
     width: "100%",
