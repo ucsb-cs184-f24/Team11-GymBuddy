@@ -19,6 +19,7 @@ import { auth } from "@/serviceFiles/authService";
 import HeightPickerModal from "@/components/heightPicker";
 import WeightPickerModal from "@/components/weightPicker";
 import GenderPickerModal from "@/components/genderPicker";
+import { LinearGradient } from "expo-linear-gradient";
 
 const UserInfo = () => {
   const router = useRouter();
@@ -38,11 +39,11 @@ const UserInfo = () => {
       Alert.alert("Validation Error", "Please enter your bio.");
       return;
     }
-    if (height === null) {
+    if (height === null || height === 0) {
       Alert.alert("Validation Error", "Please select your height.");
       return;
     }
-    if (weight === null) {
+    if (weight === null || weight === 0) {
       Alert.alert("Validation Error", "Please select your weight.");
       return;
     }
@@ -76,90 +77,95 @@ const UserInfo = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
+    <LinearGradient
+      colors={["#4c669f", "#3b5998", "#192f6a"]}
+      style={styles.gradient}
     >
-      <ScrollView contentContainerStyle={styles.innerContainer}>
-        <Text style={styles.title}>Enter Your Personal Info</Text>
-        {/* Bio */}
-        <TextInput
-          placeholder="Bio"
-          style={styles.input}
-          value={bio}
-          onChangeText={setBio}
-          placeholderTextColor="#666"
-          multiline
-        />
-
-        {/* Height */}
-        <TouchableOpacity
-          style={styles.pickerButton}
-          onPress={() => setIsHeightModalVisible(true)}
-        >
-          <Text style={styles.pickerButtonText}>
-            {height ? `${height} cm` : "Select Height"}
-          </Text>
-        </TouchableOpacity>
-        <HeightPickerModal
-          isVisible={isHeightModalVisible}
-          onClose={() => setIsHeightModalVisible(false)}
-          height={height}
-          onHeightChange={setHeight}
-        />
-
-        {/* Weight */}
-        <TouchableOpacity
-          style={styles.pickerButton}
-          onPress={() => setIsWeightModalVisible(true)}
-        >
-          <Text style={styles.pickerButtonText}>
-            {weight ? `${weight} kg` : "Select Weight"}
-          </Text>
-        </TouchableOpacity>
-        <WeightPickerModal
-          isVisible={isWeightModalVisible}
-          onClose={() => setIsWeightModalVisible(false)}
-          weight={weight}
-          onWeightChange={setWeight}
-        />
-
-        {/* Gender */}
-        <TouchableOpacity
-          style={styles.pickerButton}
-          onPress={() => setIsGenderModalVisible(true)}
-        >
-          <Text style={styles.pickerButtonText}>
-            {gender ? capitalizeFirstLetter(gender) : "Select Gender"}
-          </Text>
-        </TouchableOpacity>
-        <GenderPickerModal
-          isVisible={isGenderModalVisible}
-          onClose={() => setIsGenderModalVisible(false)}
-          gender={gender}
-          onGenderChange={setGender}
-        />
-
-        {/* Privacy Switch */}
-        <View style={styles.switchContainer}>
-          <Text style={styles.switchLabel}>Private Profile</Text>
-          <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={isPrivate ? "#f5dd4b" : "#f4f3f4"}
-            onValueChange={toggleSwitch}
-            value={isPrivate}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardAvoidingView}
+      >
+        <ScrollView contentContainerStyle={styles.innerContainer}>
+          <Text style={styles.title}>Enter Your Personal Info</Text>
+          {/* Bio */}
+          <TextInput
+            placeholder="Bio"
+            style={styles.input}
+            value={bio}
+            onChangeText={setBio}
+            placeholderTextColor="#666"
+            multiline
           />
-        </View>
 
-        {/* Continue Button */}
-        <TouchableOpacity
-          style={styles.continueButton}
-          onPress={handleContinue}
-        >
-          <Text style={styles.continueButtonText}>Continue</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          {/* Height */}
+          <TouchableOpacity
+            style={styles.pickerButton}
+            onPress={() => setIsHeightModalVisible(true)}
+          >
+            <Text style={styles.pickerButtonText}>
+              {height !== 0 ? `${height} cm` : "Select Height"}
+            </Text>
+          </TouchableOpacity>
+          <HeightPickerModal
+            isVisible={isHeightModalVisible}
+            onClose={() => setIsHeightModalVisible(false)}
+            height={height}
+            onHeightChange={setHeight}
+          />
+
+          {/* Weight */}
+          <TouchableOpacity
+            style={styles.pickerButton}
+            onPress={() => setIsWeightModalVisible(true)}
+          >
+            <Text style={styles.pickerButtonText}>
+              {weight !== 0 ? `${weight} kg` : "Select Weight"}
+            </Text>
+          </TouchableOpacity>
+          <WeightPickerModal
+            isVisible={isWeightModalVisible}
+            onClose={() => setIsWeightModalVisible(false)}
+            weight={weight}
+            onWeightChange={setWeight}
+          />
+
+          {/* Gender */}
+          <TouchableOpacity
+            style={styles.pickerButton}
+            onPress={() => setIsGenderModalVisible(true)}
+          >
+            <Text style={styles.pickerButtonText}>
+              {gender ? capitalizeFirstLetter(gender) : "Select Gender"}
+            </Text>
+          </TouchableOpacity>
+          <GenderPickerModal
+            isVisible={isGenderModalVisible}
+            onClose={() => setIsGenderModalVisible(false)}
+            gender={gender}
+            onGenderChange={setGender}
+          />
+
+          {/* Privacy Switch */}
+          <View style={styles.switchContainer}>
+            <Text style={styles.switchLabel}>Private Profile</Text>
+            <Switch
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              thumbColor={isPrivate ? "#f5dd4b" : "#f4f3f4"}
+              onValueChange={toggleSwitch}
+              value={isPrivate}
+            />
+          </View>
+
+          {/* Continue Button */}
+          <TouchableOpacity
+            style={styles.continueButton}
+            onPress={handleContinue}
+          >
+            <Text style={styles.continueButtonText}>Continue</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 };
 
@@ -170,9 +176,11 @@ const capitalizeFirstLetter = (str: string) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  gradient: {
     flex: 1,
-    backgroundColor: "#fff",
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
   innerContainer: {
     flexGrow: 1,
@@ -183,14 +191,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginBottom: 30,
-    color: "#333",
+    color: "#fff", // Changed to white for better contrast on gradient
     fontWeight: "bold",
     textAlign: "center",
   },
   input: {
     width: "100%",
     height: 100,
-    borderColor: "#ccc",
+    borderColor: "#3b5998",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 15,
@@ -199,17 +207,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
     textAlignVertical: "top",
+    backgroundColor: "rgba(255, 255, 255, 0.7)", // Semi-transparent background for better readability
   },
   pickerButton: {
     width: "100%",
     height: 50,
     borderColor: "#3b5998",
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 25,
     justifyContent: "center",
     paddingHorizontal: 15,
     marginBottom: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255, 255, 255, 0.7)", // Semi-transparent background
   },
   pickerButtonText: {
     fontSize: 16,
@@ -225,7 +234,7 @@ const styles = StyleSheet.create({
   },
   switchLabel: {
     fontSize: 18,
-    color: "#333",
+    color: "#fff", // Changed to white for better contrast on gradient
   },
   continueButton: {
     width: "100%",
