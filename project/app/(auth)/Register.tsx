@@ -74,7 +74,7 @@ const Register = () => {
         displayName: `${firstName.trim()} ${lastName.trim()}`,
       });
 
-      Alert.alert("User Created");
+      // Alert.alert("User Created");
 
       await createUserProfile(user.uid);
       await updateUserProfile(user.uid, {
@@ -85,8 +85,8 @@ const Register = () => {
         profilePicture:
           "https://i.sstatic.net/l60Hf.png",
       });
-
-      router.replace("/(tabs)/Home");
+      router.replace("./UserInfo");
+      // router.replace("/(tabs)/Home");
     } catch (e: any) {
       Alert.alert("Registration Failed", e.message);
     }
