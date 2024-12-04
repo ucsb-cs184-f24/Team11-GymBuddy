@@ -10,4 +10,4 @@ I added a loading animation for the home screen
 
 I created the frontend (and backend) for adding friends through the search page.
 
-I added a refresh function for the home and workout page by swiping down on the list.
+I added a refresh function for the home page by swiping down on the list.
