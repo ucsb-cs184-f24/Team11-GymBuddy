@@ -145,6 +145,11 @@ export const addFollowerRequest = async (userId: string, requestId: string) => {
     );
 
     const requestProfileData = await getUserProfile(requestId);
+
+    if(requestId == userId){
+      throw new Error("User cannot follow themselves."); // Explicit error
+    }
+    
     const requestData = {
       username: requestProfileData?.username,
       profilePicture: requestProfileData?.profilePicture,
@@ -167,6 +172,10 @@ export const addFollowingRequest = async (
     );
 
     const requestProfileData = await getUserProfile(requestId);
+
+    if(requestId == userId){
+      throw new Error("User cannot follow themselves."); // Explicit error
+    }
     const requestData = {
       username: requestProfileData?.username,
       profilePicture: requestProfileData?.profilePicture,
