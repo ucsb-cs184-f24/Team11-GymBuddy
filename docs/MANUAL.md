@@ -12,6 +12,8 @@ The app provides a platform to track progress, share workout details, and motiva
 
 # How to make an Account
 
+When you first launch the app you are prompted by a sign in page. From here, select the "Create Account" button which will direct you to a page where you can create an account. Input the necessary info such as your first and last name, desired username, email, and password, and select the "Sign Up" button. This will bring you to a new page where you can input your personal info such as height, weight, gender, bio, etc. After completing all the fields, hit continue and your account will be finalized.
+
 # How to Login
 
 # How to edit your profile
