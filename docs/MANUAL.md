@@ -16,7 +16,7 @@ When you first launch the app you are prompted by a sign in page. From here, sel
 
 # How to Login
 
-
+When Launching the App you should be presented with your 
 
 # How to edit your profile
 
