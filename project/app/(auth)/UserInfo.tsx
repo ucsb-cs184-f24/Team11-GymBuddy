@@ -119,7 +119,7 @@ const UserInfo = () => {
             onPress={() => setIsWeightModalVisible(true)}
           >
             <Text style={styles.pickerButtonText}>
-              {weight !== 0 ? `${weight} kg` : "Select Weight"}
+              {weight !== 0 ? `${weight} lbs` : "Select Weight"}
             </Text>
           </TouchableOpacity>
           <WeightPickerModal
