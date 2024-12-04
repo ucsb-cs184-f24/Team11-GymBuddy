@@ -12,6 +12,7 @@ import {
   Modal,
   Dimensions,
   StatusBar,
+  RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ActivityIndicator } from "react-native";
@@ -37,6 +38,7 @@ interface NavbarProps {
 
 const Home = () => {
   const [posts, setPosts] = useState<WorkoutLog[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
   const [newPost, setNewPost] = useState({
     exercise: "",
     duration: "",
@@ -44,7 +46,9 @@ const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    const loadPosts = async () => {
+      loadPosts();
+  }, []);
+  const loadPosts = async () => {
       try {
         const recentWorkouts = await getAllUsersRecentWorkouts();
         const postsArray = Object.values(recentWorkouts as WorkoutLog[]);
@@ -54,8 +58,13 @@ const Home = () => {
         console.error("Failed to load posts", error);
       }
     };
-    loadPosts();
-  }, []);
+
+  const handleRefresh = async () => {
+    setRefreshing(true); // Start the refreshing animation
+
+    await loadPosts()
+      setRefreshing(false); // Stop the refreshing animation
+  };
 
   useEffect(() => {
     const savePosts = async () => {
@@ -190,6 +199,14 @@ const Home = () => {
             renderItem={renderPost}
             keyExtractor={(item) => uuid()}
             style={[styles.workoutList, { paddingTop: 10 }]}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                colors={["#ffd33d"]} // Customize spinner color (Android)
+                tintColor="#ffd33d" // Customize spinner color (iOS)
+              />
+            }
           />
         ) : (
           <View style={styles.loadingContainer}>

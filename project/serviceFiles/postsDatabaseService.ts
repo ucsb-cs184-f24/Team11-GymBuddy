@@ -84,7 +84,6 @@ export const getWorkouts = async (userId: string): Promise<WorkoutLog[]> => {
       })), // Ensures exercises are mapped correctly
       userId: doc.data().userId,
       } as WorkoutLog));
-    console.log("Fetched workouts:", JSON.stringify(workouts, null, 2)); // Debug log delete later
     return workouts; //delete later
   } catch (e) {
     console.error("Error getting workouts", e);
