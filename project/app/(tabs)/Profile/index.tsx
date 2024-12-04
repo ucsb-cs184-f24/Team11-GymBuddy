@@ -148,7 +148,7 @@ export default function Profile() {
               <Text style={styles.followReqsText}>Follow Requests</Text>
             </Pressable>
           </View>
-          <Text style={styles.bio}>{userData?.bio || "loading"}</Text>
+          <Text style={styles.bio}>{userData?.bio}</Text>
         </View>
 
         <View style={styles.buttonAndIconContainer}>
