@@ -136,7 +136,6 @@ const Register = () => {
                   placeholder="Username"
                   style={styles.input}
                   value={userName}
-                  autoCapitalize="words"
                   onChangeText={setUserName}
                   placeholderTextColor="#FFFFFFFF"
                 />
