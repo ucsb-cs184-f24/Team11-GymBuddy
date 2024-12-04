@@ -16,6 +16,8 @@ When you first launch the app you are prompted by a sign in page. From here, sel
 
 # How to Login
 
+
+
 # How to edit your profile
 
 # How to search and follow other users
