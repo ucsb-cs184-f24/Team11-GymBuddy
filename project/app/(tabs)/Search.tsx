@@ -8,6 +8,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {
@@ -35,46 +36,50 @@ const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState<User[]>([]);
   const [filteredData, setFilteredData] = useState<User[]>([]);
-
+  const [refreshing, setRefreshing] = useState(false);
   // Fetch all users from the database using databaseService
+  const fetchUsers = async () => {
+    try {
+      const userIds = await getAllUsernames(); // Includes firstName and lastName
+      console.log(`Fetched user IDs count: ${userIds.length}`); // Debugging
+      
+      const currentUserId = await getUserId();
+      const allFollowingRequests = await getAllFollowingRequests(currentUserId)
+      const allFollowing = await getAllFollowing(currentUserId)
+      const userProfiles: User[] = [];
+
+      const profilePromises = userIds.map(async (userBasic) => {
+        const profile = await getUserProfile(userBasic.userId);
+        if (profile) {
+          userProfiles.push({
+            userId: profile.userId || userBasic.userId, 
+            username: profile.username || "Unknown",
+            firstName: userBasic.firstName || "",
+            lastName: userBasic.lastName || "",
+            profilePic: profile.profilePic || "",
+            isFollowingRequest: allFollowingRequests.some(request => request.id === userBasic.userId),
+            isFollowing: allFollowing.some(following => following.id === userBasic.userId),
+          } as User);
+        }
+      });
+
+      await Promise.all(profilePromises);
+
+      console.log(`Fetched user profiles count: ${userProfiles.length}`); // Debugging
+      setUsers(userProfiles);
+      setFilteredData(userProfiles.slice(0, 10));
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const userIds = await getAllUsernames(); // Includes firstName and lastName
-        console.log(`Fetched user IDs count: ${userIds.length}`); // Debugging
-        
-        const currentUserId = await getUserId();
-        const allFollowingRequests = await getAllFollowingRequests(currentUserId)
-        const allFollowing = await getAllFollowing(currentUserId)
-        const userProfiles: User[] = [];
-  
-        const profilePromises = userIds.map(async (userBasic) => {
-          const profile = await getUserProfile(userBasic.userId);
-          if (profile) {
-            userProfiles.push({
-              userId: profile.userId || userBasic.userId, 
-              username: profile.username || "Unknown",
-              firstName: userBasic.firstName || "",
-              lastName: userBasic.lastName || "",
-              profilePic: profile.profilePic || "",
-              isFollowingRequest: allFollowingRequests.some(request => request.id === userBasic.userId),
-              isFollowing: allFollowing.some(following => following.id === userBasic.userId),
-            } as User);
-          }
-        });
-  
-        await Promise.all(profilePromises);
-  
-        console.log(`Fetched user profiles count: ${userProfiles.length}`); // Debugging
-        setUsers(userProfiles);
-        setFilteredData(userProfiles.slice(0, 10));
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-  
     fetchUsers();
   }, []);
+  const handleRefresh = async () => {
+    setRefreshing(true); // Start the refreshing animation
+    await fetchUsers()
+    setRefreshing(false); // Stop the refreshing animation
+  };
   
   const handleAddFriend = async (userId: string) => {
     const currentUserId = await getUserId()
@@ -134,6 +139,14 @@ const renderItem = ({ item }: { item: User }) => (
       data={filteredData}
       renderItem={renderItem}
       keyExtractor={(item, index) => uuid()}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          colors={["#ffd33d"]} // Customize spinner color (Android)
+          tintColor="#ffd33d" // Customize spinner color (iOS)
+        />
+      }
       />
   </View>
   );
