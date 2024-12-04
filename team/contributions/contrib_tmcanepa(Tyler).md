@@ -1,0 +1,7 @@
+I spent a lot of my time working on different sections of the app but a majority of it was dealing with the overall UI and working on the authentication pages like the Registration as well as working on trying to set up the framework of the original Home page.
+
+I set up the Registration pages in the early stages to take in a name, email, and password, which would then call our database and update each individual user with corresponding information. Currently, I am working on furthering the information that gets passed in for each user, creating a new page that ties to the registration that also gets a user's gender, height, weight, and bio, which will be displayed on their profile.
+
+I also set up the framework for how the home page originally looked. Since then, there have been many changes, but originally I implemented a design that mimicked Instagram in the sense that you could see the username, an image, and then the workout they did. It was very barebones at the time for the MVP considering we didn’t have a lot of other workout information implemented at the time, which is now displayed.
+
+For the MVP, I worked a lot on the UI and making sure we had a consistent theme across all of our pages as well as any last-minute minor error-catching that could easily and quickly be fixed before presenting. I worked on recording the MVP video with Sawyer and Aaron and edited the video myself. I also ran the first retro and worked on getting everything situated for the MVP, including the tagging and putting any finishing touches.
