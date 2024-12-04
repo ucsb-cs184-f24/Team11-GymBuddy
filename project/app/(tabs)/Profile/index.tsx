@@ -60,13 +60,13 @@ export default function Profile() {
   const fetchUserData = useCallback(async () => {
     try {
       const userId = await getUserId();
-      const profile = await getUserProfile(userId) as UserData;
+      const profile = (await getUserProfile(userId)) as UserData;
       if (profile) {
         setUserData(profile);
       } else {
         console.error("Profile data is undefined");
       }
-      const posts = await getWorkouts(userId) as WorkoutLog[];
+      const posts = (await getWorkouts(userId)) as WorkoutLog[];
       if (posts) {
         setUserPosts(posts);
       } else {
@@ -116,13 +116,19 @@ export default function Profile() {
             <Text style={styles.numberCenter}>{userPosts?.length || 0}</Text>
             <Text style={styles.textCenter}>posts</Text>
           </View>
-          <Pressable style={styles.stat} onPress={() => router.push("/Profile/followers")}>
+          <Pressable
+            style={styles.stat}
+            onPress={() => router.push("/Profile/followers")}
+          >
             <Text style={styles.numberCenter}>
               {userData?.followerCount || 0}
             </Text>
             <Text style={styles.textCenter}>followers</Text>
           </Pressable>
-          <Pressable style={styles.stat} onPress={() => router.push("/Profile/following")}>
+          <Pressable
+            style={styles.stat}
+            onPress={() => router.push("/Profile/following")}
+          >
             <Text style={styles.numberCenter}>
               {userData?.followingCount || 0}
             </Text>
@@ -132,7 +138,8 @@ export default function Profile() {
         <View style={styles.nameAndBioContainer}>
           <View style={styles.nameAndRequestsContainer}>
             <Text style={styles.name}>
-              {userData?.firstName || "loading"} {userData?.lastName || "loading"}
+              {userData?.firstName || "loading"}{" "}
+              {userData?.lastName || "loading"}
             </Text>
             <Pressable
               style={styles.followReqsButton}
@@ -143,7 +150,7 @@ export default function Profile() {
           </View>
           <Text style={styles.bio}>{userData?.bio || "loading"}</Text>
         </View>
-        
+
         <View style={styles.buttonAndIconContainer}>
           <Pressable
             style={styles.editProfileButton}
@@ -185,20 +192,20 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     width: "100%",
-    padding: 20,
-    height: 140,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 0.25 * width,
+    height: 0.25 * width,
+    borderRadius: "50%",
     borderWidth: 2,
     borderColor: "blue",
   },
   stat: {
     flex: 1,
-    margin: 10,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -209,13 +216,13 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   textCenter: {
-    fontSize: 15,
+    fontSize: (13 * width) / 375,
     fontWeight: "400",
   },
   nameAndBioContainer: {
     backgroundColor: "white",
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   nameAndRequestsContainer: {
     flexDirection: "row",
