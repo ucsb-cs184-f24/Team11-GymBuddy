@@ -35,10 +35,10 @@ const UserInfo = () => {
 
   const handleContinue = async () => {
     // Validate inputs
-    if (!bio.trim()) {
-      Alert.alert("Validation Error", "Please enter your bio.");
-      return;
-    }
+    // if (!bio.trim()) {
+    //   Alert.alert("Validation Error", "Please enter your bio.");
+    //   return;
+    // }
     if (height === null || height === 0) {
       Alert.alert("Validation Error", "Please select your height.");
       return;
@@ -62,7 +62,7 @@ const UserInfo = () => {
           gender,
           isPrivate,
         });
-        Alert.alert("Success", "Profile information updated.");
+        // Alert.alert("Success", "Profile information updated.");
         router.replace("/(tabs)/Home");
       } else {
         Alert.alert("Error", "No authenticated user found.");
@@ -89,7 +89,7 @@ const UserInfo = () => {
           <Text style={styles.title}>Enter Your Personal Info</Text>
           {/* Bio */}
           <TextInput
-            placeholder="Bio"
+            placeholder="Bio (Optional)"
             style={styles.input}
             value={bio}
             onChangeText={setBio}
