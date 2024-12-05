@@ -41,7 +41,6 @@ const Search = () => {
   const fetchUsers = async () => {
     try {
       const userIds = await getAllUsernames();
-      
       const currentUserId = await getUserId();
       const allFollowingRequests = await getAllFollowingRequests(currentUserId)
       const allFollowing = await getAllFollowing(currentUserId)
@@ -51,6 +50,7 @@ const Search = () => {
         const profile = await getUserProfile(userBasic.userId);
         if (profile) {
           userProfiles.push({
+            userId: userBasic.userId, 
             username: profile.username || "Unknown",
             firstName: userBasic.firstName || "",
             lastName: userBasic.lastName || "",
