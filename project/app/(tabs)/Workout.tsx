@@ -36,9 +36,14 @@ export default function WorkoutScreen() {
     >
   >({});
   const fadeAnim = new Animated.Value(0);
-
+  interface NavbarProps {
+    setModalVisible: (visible: boolean) => void;
+  }
   const categories = Object.keys(workoutsByCategory);
+  const { width, height } = Dimensions.get("window");
 
+
+  
   useEffect(() => {
     const fetchUserData = async () => {
       const data = await getUserId();
@@ -320,16 +325,17 @@ export default function WorkoutScreen() {
   );
 }
 
+
 // Updated styles for React Native components
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1E1E1E", // Dark background
+    backgroundColor: "#3b5998", // Updated background color
     paddingHorizontal: 16,
     paddingTop: StatusBar.currentHeight || 24,
   },
   modalButton: {
-    backgroundColor: "#3B5998", // Blue button
+    backgroundColor: "white", 
     borderRadius: 25,
     paddingVertical: 12,
     paddingHorizontal: 24,
@@ -337,8 +343,8 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   modalButtonText: {
-    color: "#FFFFFF", // White text
-    fontSize: 18,
+    color: "#3b5998", 
+    fontSize: getResponsiveFontSize(15),
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -347,34 +353,35 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.8)", // Semi-transparent black
     justifyContent: "center",
     paddingHorizontal: 20,
+    
   },
   scrollViewContent: {
     paddingVertical: 20,
   },
   modalTitle: {
-    fontSize: 22,
+    fontSize: getResponsiveFontSize(22),
     fontWeight: "bold",
     color: "#FFFFFF",
     textAlign: "center",
     marginBottom: 20,
   },
   categoryButton: {
-    backgroundColor: "#2A2A2A", // Dark grey
+    backgroundColor: "#3b5998", // Dark grey
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 10,
     marginBottom: 10,
   },
   selectedCategoryButton: {
-    backgroundColor: "#FF4500", // Highlighted orange
+    backgroundColor: "#3b5998", // Highlighted orange
   },
   categoryText: {
     color: "#FFFFFF",
-    fontSize: 16,
+    fontSize: getResponsiveFontSize(16),
     textAlign: "center",
   },
   workoutButton: {
-    backgroundColor: "#444", // Medium grey
+    backgroundColor: "#D3D3D3", // Medium grey
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -384,11 +391,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   selectedWorkoutButton: {
-    backgroundColor: "#FF8C00", // Highlighted orange
+    backgroundColor: "white", // Highlighted orange
   },
   workoutText: {
-    color: "#FFFFFF",
-    fontSize: 14,
+    color: "3b5998",
+    fontSize: getResponsiveFontSize(14),
   },
   setsRepsContainer: {
     flexDirection: "row",
@@ -404,7 +411,7 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     color: "#FFFFFF",
-    fontSize: 12,
+    fontSize: getResponsiveFontSize(12),
     marginBottom: 4,
   },
   setsRepsInput: {
@@ -414,10 +421,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     textAlign: "center",
-    fontSize: 14,
+    fontSize: getResponsiveFontSize(14),
   },
   saveButton: {
-    backgroundColor: "#32CD32", // Green
+    backgroundColor: "white", 
     borderRadius: 25,
     paddingVertical: 12,
     marginVertical: 20,
@@ -425,8 +432,8 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   saveButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
+    color: "3b5998",
+    fontSize: getResponsiveFontSize(16),
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -435,35 +442,37 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   closeModalText: {
-    color: "#FF6347", // Tomato red
+    color: "white", 
     fontSize: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: getResponsiveFontSize(35),
     fontWeight: "bold",
-    color: "#00CED1", // Turquoise
+    color: "white", // Turquoise
     textAlign: "center",
     marginVertical: 20,
+    overflow: "hidden",
   },
   workoutLog: {
-    backgroundColor: "#2F4F4F", // Dark Slate Grey
-    borderRadius: 8,
+    backgroundColor: "#2F44F", 
+    overflow: 'hidden',
+    borderRadius: 25,
     padding: 12,
     marginBottom: 10,
   },
   workoutLogTitle: {
-    fontSize: 18,
+    fontSize: getResponsiveFontSize(18),
     fontWeight: "bold",
     color: "#FFFFFF",
   },
   workoutLogDate: {
-    fontSize: 14,
+    fontSize: getResponsiveFontSize(14),
     color: "#D3D3D3", // Light Grey
     marginBottom: 4,
   },
   noWorkoutsText: {
-    fontSize: 16,
-    color: "#FF6347", // Tomato red
+    fontSize: getResponsiveFontSize(16),
+    color: "blue", // Tomato red
     textAlign: "center",
     marginTop: 20,
   },
@@ -474,7 +483,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   exerciseName: {
-    fontSize: 16,
+    fontSize: getResponsiveFontSize(16),
     fontWeight: "bold",
     color: "#FFFFFF",
   },
@@ -492,14 +501,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#2196F3",
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 6,
     alignItems: "center",
     marginTop: 10,
     alignSelf: "flex-start",
+    borderRadius: 20, // Rounded edges
+
   },
   previousWorkoutButtonText: {
     color: "#FFFFFF",
-    fontSize: 14,
+    fontSize: getResponsiveFontSize(14),
   },
   addWorkoutButton: {
     position: "absolute",
@@ -518,6 +528,14 @@ const styles = StyleSheet.create({
   },
   addWorkoutButtonText: {
     color: "#FFFFFF",
-    fontSize: 16,
+    fontSize: getResponsiveFontSize(16),
   },
 });
+function getResponsiveFontSize(size: number) {
+  const { width } = Dimensions.get("window");
+  const scale = width / 375; // 375 is a base width for scaling
+  const newSize = size * scale;
+  return Math.round(newSize);
+}
+
+

@@ -146,12 +146,7 @@ export default function Profile() {
                 {userData?.firstName || "loading"}{" "}
                 {userData?.lastName || "loading"}
               </Text>
-              <Pressable
-                style={styles.followReqsButton}
-                onPress={() => router.push("/Profile/requests")}
-              >
-                <Text style={styles.followReqsText}>Follow Requests</Text>
-              </Pressable>
+
             </View>
             <Text style={styles.bio}>{userData?.bio || "loading"}</Text>
           </View>
@@ -163,7 +158,12 @@ export default function Profile() {
             >
               <Text style={styles.editProfileText}>Edit Profile</Text>
             </Pressable>
-
+            <Pressable
+                style={styles.followReqsButton}
+                onPress={() => router.push("/Profile/requests")}
+              >
+                <Text style={styles.followReqsText}>Follow Requests</Text>
+              </Pressable>
             <MaterialCommunityIcons name="grid" size={30} color="gray" />
           </View>
         </BlurView>

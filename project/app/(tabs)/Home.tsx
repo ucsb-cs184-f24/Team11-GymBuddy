@@ -261,7 +261,10 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
+    backgroundColor: "#3b5998", // Updated background color
+    paddingHorizontal: 16,
+    paddingTop: StatusBar.currentHeight || 24,
+},
   safeArea: {
     flex: 1,
   },
@@ -273,9 +276,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: getResponsiveFontSize(15),
   },
   navbarTitle: {
-    fontSize: getResponsiveFontSize(20),
+    fontSize: getResponsiveFontSize(80),
     fontWeight: "bold",
     color: "#FFFFFF",
+    flex: 1,
+    textAlign: "center",
   },
   navbarIcons: {
     flexDirection: "row",
@@ -291,6 +296,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     padding: getResponsiveFontSize(10),
+    backgroundColor: "#3b5998", // Added backgroundColor for the post
   },
   username: {
     fontWeight: "bold",
