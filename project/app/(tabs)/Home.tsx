@@ -23,6 +23,7 @@ import {
   getAllUsersRecentWorkouts,
   WorkoutLog,
 } from "@/serviceFiles/postsDatabaseService";
+import { getUserId, getAllFollowing } from "@/serviceFiles/usersDatabaseService";
 import 'react-native-get-random-values';
 import { v4 as uuid } from "uuid";
 const { width, height } = Dimensions.get("window");
@@ -34,11 +35,15 @@ const getResponsiveFontSize = (size: number) => {
 };
 interface NavbarProps {
   setModalVisible: (visible: boolean) => void;
+  toggleFilter: () => void;
+  filterEnabled: boolean;
 }
 
 const Home = () => {
   const [posts, setPosts] = useState<WorkoutLog[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [followingPosts, setFollowingPosts] = useState<WorkoutLog[]>([]);
+  const [showFollowingPosts, setShowFollowingPosts] = useState(false);
   const [newPost, setNewPost] = useState({
     exercise: "",
     duration: "",
@@ -54,8 +59,32 @@ const Home = () => {
         const postsArray = Object.values(recentWorkouts as WorkoutLog[]);
         postsArray.sort((a, b) => b.createdAt - a.createdAt);
         setPosts(postsArray);
+        await loadFollowingPosts(postsArray);
       } catch (error) {
         console.error("Failed to load posts", error);
+      }
+    };
+
+    const loadFollowingPosts = async (allPosts: WorkoutLog[]) => {
+      try {
+        // Fetch user ID
+        const userId = await getUserId();
+    
+        // Fetch the user's following list
+        const following = await getAllFollowing(userId);
+        const followingIds = following.map((user) => user.id);
+    
+        // Filter posts by matching `userId` with following IDs
+        const filteredPosts = allPosts.filter((post) => {
+          if (!post.userId) {
+            return false;
+          }
+          return followingIds.includes(post.userId);
+        });
+    
+        setFollowingPosts(filteredPosts);
+      } catch (error) {
+        console.error("Failed to load following posts", error);
       }
     };
 
@@ -65,6 +94,7 @@ const Home = () => {
     await loadPosts()
       setRefreshing(false); // Stop the refreshing animation
   };
+
 
   useEffect(() => {
     const savePosts = async () => {
@@ -102,22 +132,24 @@ const Home = () => {
     //}
   };
 
-  const deletePost = async (id: string) => {
-    //   const updatedPosts = posts.filter((post) => post.id !== id);
-    //   setPosts(updatedPosts);
-    //   try {
-    //     await AsyncStorage.setItem("posts", JSON.stringify(updatedPosts));
-    //   } catch (error) {
-    //     Alert.alert("Error", "Failed to delete post");
-    //   }
+  const toggleFilter = () => {
+    setShowFollowingPosts((prev) => !prev);
   };
 
-  const Navbar = ({ setModalVisible }: NavbarProps) => {
+  const Navbar = ({ toggleFilter, filterEnabled }: NavbarProps) => {
     return (
       <View style={styles.navbar}>
         <Text style={styles.navbarTitle}>Workouts</Text>
         <View style={styles.navbarIcons}>
-          <TouchableOpacity style={styles.navbarIcons}>
+          <TouchableOpacity 
+          style={styles.filterButton}
+          onPress = {toggleFilter}
+        >
+          <Text style={styles.filterButtonText}>
+            {filterEnabled ? "All" : "Following"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style = {styles.navbarIcons}>
             <Image
               source={{ uri: "https://example.com/profile-pic.jpg" }}
               style={styles.profilePic}
@@ -149,7 +181,6 @@ const Home = () => {
                 },
                 {
                   text: "Delete",
-                  //onPress: () => deletePost(item.id),
                   style: "destructive",
                 },
               ]
@@ -191,11 +222,15 @@ const Home = () => {
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea} edges={["bottom", "left", "right"]}>
-        <Navbar setModalVisible={setModalVisible} />
+        <Navbar 
+        setModalVisible={setModalVisible} 
+        toggleFilter = {toggleFilter}
+        filterEnabled = {showFollowingPosts}
+        />
         <View style={styles.spacer} />
         {posts.length >0 ? (
           <FlatList
-            data={posts}
+            data={showFollowingPosts ? followingPosts : posts}
             renderItem={renderPost}
             keyExtractor={(item) => uuid()}
             style={[styles.workoutList, { paddingTop: 10 }]}
@@ -285,6 +320,16 @@ const styles = StyleSheet.create({
     width: getResponsiveFontSize(40),
     height: getResponsiveFontSize(40),
     borderRadius: getResponsiveFontSize(20),
+  },
+  filterButton: { 
+    paddingHorizontal: 10, 
+    paddingVertical: 5, 
+    borderRadius: 5, 
+    backgroundColor: "#FFFFFF" 
+  },
+  filterButtonText: { 
+    color: "#3b5998", 
+    fontWeight: "bold" 
   },
   workoutCard: {
     marginBottom: getResponsiveFontSize(10),
