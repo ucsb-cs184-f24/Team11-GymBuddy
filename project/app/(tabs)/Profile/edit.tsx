@@ -26,6 +26,7 @@ import HeightPickerModal from "@/components/heightPicker";
 import WeightPickerModal from "@/components/weightPicker";
 import GenderPickerModal from "@/components/genderPicker";
 import ImagePickerExample from "@/components/imagePicker";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 interface UserData {
   bio: string;
@@ -45,7 +46,7 @@ interface UserData {
 
 export default function EditProfile() {
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [uid, setUid] = useState("");
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
@@ -56,13 +57,15 @@ export default function EditProfile() {
   const [weight, setWeight] = useState(0);
   const [gender, setGender] = useState("");
   const [image, setImage] = useState("");
-  const [isEnabled, setIsEnabled] = useState(false); // Switch state
-  const auth = getAuth();
+  const [isEnabled, setIsEnabled] = useState(false);
 
   const [isHeightModalVisible, setIsHeightModalVisible] = useState(false);
   const [isWeightModalVisible, setIsWeightModalVisible] = useState(false);
   const [isGenderModalVisible, setIsGenderModalVisible] = useState(false);
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
+
+  const storage = getStorage();
+  const auth = getAuth();
 
   const handleHeightChange = async (newHeight: number) => {
     setHeight(newHeight);
@@ -85,7 +88,12 @@ export default function EditProfile() {
   const handleImageChange = async (newImage: string) => {
     setImage(newImage);
     const userId = await getUserId();
+    const storageRef = ref(storage, `profilePictures/${userId}`);
     await updateUserProfile(userId, { profilePicture: newImage });
+
+    const response = await fetch(newImage);
+    const blob = await response.blob();
+    uploadBytes(storageRef, blob)
   };
 
   const toggleSwitch = async () => {
