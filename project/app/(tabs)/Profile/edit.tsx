@@ -165,7 +165,7 @@ export default function EditProfile() {
         <Text style={styles.editText}>Edit Profile</Text>
       </View>
       <ScrollView>
-        <Image source={{ uri: image }} style={styles.profileImage} />
+        <Image source={{ uri: image || undefined }} style={styles.profileImage} />
         <Button
           title="Edit Picture"
           onPress={() => setIsImageModalVisible(true)}
