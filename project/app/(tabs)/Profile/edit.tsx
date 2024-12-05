@@ -26,7 +26,7 @@ import HeightPickerModal from "@/components/heightPicker";
 import WeightPickerModal from "@/components/weightPicker";
 import GenderPickerModal from "@/components/genderPicker";
 import ImagePickerExample from "@/components/imagePicker";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 interface UserData {
   bio: string;
@@ -87,14 +87,24 @@ export default function EditProfile() {
 
   const handleImageChange = async (newImage: string) => {
     setImage(newImage);
-    const userId = await getUserId();
-    const storageRef = ref(storage, `profilePictures/${userId}`);
-    await updateUserProfile(userId, { profilePicture: newImage });
+  
+    try {
+      const userId = await getUserId();
+      const storageRef = ref(storage, `profilePictures/${userId}`);
 
-    const response = await fetch(newImage);
-    const blob = await response.blob();
-    uploadBytes(storageRef, blob)
-  };
+      const response = await fetch(newImage);
+      const blob = await response.blob();
+  
+      await uploadBytes(storageRef, blob);
+  
+      const downloadURL = await getDownloadURL(storageRef);
+  
+      await updateUserProfile(userId, { profilePicture: downloadURL });
+      
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+    }
+  };  
 
   const toggleSwitch = async () => {
     setPrivate(!privacy);

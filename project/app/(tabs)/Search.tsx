@@ -40,8 +40,7 @@ const Search = () => {
   // Fetch all users from the database using databaseService
   const fetchUsers = async () => {
     try {
-      const userIds = await getAllUsernames(); // Includes firstName and lastName
-      console.log(`Fetched user IDs count: ${userIds.length}`); // Debugging
+      const userIds = await getAllUsernames();
       
       const currentUserId = await getUserId();
       const allFollowingRequests = await getAllFollowingRequests(currentUserId)
@@ -52,11 +51,10 @@ const Search = () => {
         const profile = await getUserProfile(userBasic.userId);
         if (profile) {
           userProfiles.push({
-            userId: profile.userId || userBasic.userId, 
             username: profile.username || "Unknown",
             firstName: userBasic.firstName || "",
             lastName: userBasic.lastName || "",
-            profilePic: profile.profilePic || "",
+            profilePic: profile.profilePicture || "",
             isFollowingRequest: allFollowingRequests.some(request => request.id === userBasic.userId),
             isFollowing: allFollowing.some(following => following.id === userBasic.userId),
           } as User);
@@ -65,7 +63,6 @@ const Search = () => {
 
       await Promise.all(profilePromises);
 
-      console.log(`Fetched user profiles count: ${userProfiles.length}`); // Debugging
       setUsers(userProfiles);
       setFilteredData(userProfiles.slice(0, 10));
     } catch (error) {
