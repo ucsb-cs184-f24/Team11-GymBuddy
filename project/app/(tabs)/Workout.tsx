@@ -116,7 +116,7 @@ export default function WorkoutScreen() {
         caption: workoutName,
         commentsCount: 0,
         createdAt: Date.now(),
-        image: imageURI,
+        image: image,
         likesCount: 0,
         exercises: Object.keys(selectedWorkouts).map((workout) => ({
           name: workout,
@@ -127,7 +127,10 @@ export default function WorkoutScreen() {
         })), // Store exercises with sets/reps
         userId: userData,
       };
-      await createPost(workoutLog);
+      const postId = await createPost(workoutLog);
+      if (postId) {
+        handleUploadPhoto(postId);
+      }
       const updatedWorkouts = await getWorkouts(userData);
       if (updatedWorkouts) {
         const workoutArray: WorkoutLog[] = Object.values(
@@ -171,6 +174,24 @@ export default function WorkoutScreen() {
         ))}
       </BlurView>
     );
+  };
+
+  const handleUploadPhoto = async (postId: string) => {
+    try {
+      const storageRef = ref(storage, `postPictures/${postId}`);
+
+      const response = await fetch(image);
+      const blob = await response.blob();
+  
+      await uploadBytes(storageRef, blob);
+  
+      const downloadURL = await getDownloadURL(storageRef);
+
+      setImageURI(downloadURL);
+      
+    } catch (error) {
+      console.error("Error updating post picture:", error);
+    }
   };
 
   const handleAddPhoto = async (newImage: string) => {

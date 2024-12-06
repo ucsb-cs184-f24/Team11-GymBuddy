@@ -94,9 +94,11 @@ export const getWorkouts = async (userId: string): Promise<WorkoutLog[]> => {
 export const createPost = async (post: WorkoutLog) => {
   try {
     const postsRef = collection(database, "posts");
-    await addDoc(postsRef, post);
+    const docRef = await addDoc(postsRef, post); // Add the document
+    return docRef.id; // Return the generated document ID
   } catch (e) {
     console.error("Error creating post", e);
+    throw e; // Re-throw the error for better error handling
   }
 };
 
