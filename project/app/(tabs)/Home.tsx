@@ -160,19 +160,8 @@ const Home = () => {
     //}
   };
 
-  const deletePost = async (id: string) => {
-    //   const updatedPosts = posts.filter((post) => post.id !== id);
-    //   setPosts(updatedPosts);
-    //   try {
-    //     await AsyncStorage.setItem("posts", JSON.stringify(updatedPosts));
-    //   } catch (error) {
-    //     Alert.alert("Error", "Failed to delete post");
-    //   }
-  };
-
   const toggleFilter = () => {
     setShowFollowingPosts((prev) => !prev);
-    console.log("Filter Toggled. show FollowingPosts:", !showFollowingPosts)
   };
 
   const Navbar = ({ toggleFilter, filterEnabled }: NavbarProps) => {
@@ -225,7 +214,6 @@ const Home = () => {
                 },
                 {
                   text: "Delete",
-                  //onPress: () => deletePost(item.id),
                   style: "destructive",
                 },
               ]
@@ -274,8 +262,6 @@ const Home = () => {
         />
         <View style={styles.spacer} />
         {posts.length >0 ? (
-          <>
-          {console.log("rendering FlatList with data:", showFollowingPosts ? followingPosts : posts)}
           <FlatList
             data={showFollowingPosts ? followingPosts : posts}
             renderItem={renderPost}
@@ -290,7 +276,6 @@ const Home = () => {
               />
             }
           />
-        </>
         ) : (
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>Loading...</Text>
