@@ -1,0 +1,114 @@
+{
+    "exercises": [
+      {
+        "name": "Bench Press",
+        "muscles": ["chest", "triceps", "deltoids"],
+        "position": "front"
+      },
+      {
+        "name": "Chest Fly",
+        "muscles": ["chest"],
+        "position": "front"
+      },
+      {
+        "name": "Push-Ups",
+        "muscles": ["chest", "triceps", "deltoids"],
+        "position": "front"
+      },
+      {
+        "name": "Deadlift",
+        "muscles": ["lower-back", "hamstring", "gluteal", "forearm", "trapezius"],
+        "position": "back"
+      },
+      {
+        "name": "Pull-Ups",
+        "muscles": ["back", "biceps", "forearms"],
+        "position": "back"
+      },
+      {
+        "name": "Rows",
+        "muscles": ["upper-back", "biceps", "forearm"],
+        "position": "back"
+      },
+      {
+        "name": "Lat Pulldown",
+        "muscles": ["upper-back", "biceps"],
+        "position": "back"
+      },
+      {
+        "name": "Bicep Curl",
+        "muscles": ["biceps", "forearm"],
+        "position": "front"
+      },
+      {
+        "name": "Hammer Curls",
+        "muscles": ["biceps", "forearm"],
+        "position": "front"
+      },
+      {
+        "name": "Preacher Curl",
+        "muscles": ["biceps"],
+        "position": "front"
+      },
+      {
+        "name": "Tricep Extension",
+        "muscles": ["triceps"],
+        "position": "front"
+      },
+      {
+        "name": "Dips",
+        "muscles": ["triceps", "chest", "deltoids"],
+        "position": "front"
+      },
+      {
+        "name": "Skull Crushers",
+        "muscles": ["triceps"],
+        "position": "front"
+      },
+      {
+        "name": "Squats",
+        "muscles": ["quadriceps", "hamstring", "gluteal"],
+        "position": "lower-body"
+      },
+      {
+        "name": "Lunges",
+        "muscles": ["quadriceps", "hamstring", "gluteal"],
+        "position": "lower-body"
+      },
+      {
+        "name": "Leg Press",
+        "muscles": ["quadriceps", "hamstring", "gluteal"],
+        "position": "lower-body"
+      },
+      {
+        "name": "Shoulder Press",
+        "muscles": ["deltoids", "triceps"],
+        "position": "front"
+      },
+      {
+        "name": "Lateral Raises",
+        "muscles": ["deltoids"],
+        "position": "front"
+      },
+      {
+        "name": "Front Raises",
+        "muscles": ["deltoids"],
+        "position": "front"
+      },
+      {
+        "name": "Crunches",
+        "muscles": ["adductors"],
+        "position": "core"
+      },
+      {
+        "name": "Planks",
+        "muscles": ["adductors", "lower-back"],
+        "position": "core"
+      },
+      {
+        "name": "Leg Raises",
+        "muscles": ["adductors", "knees"],
+        "position": "core"
+      }
+    ]
+  }

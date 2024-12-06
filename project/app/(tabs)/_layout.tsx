@@ -20,6 +20,7 @@ export default function TabLayout() {
         name="Home"
         options={{
           title: "Home",
+          headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? "home-sharp" : "home-outline"}
@@ -33,6 +34,7 @@ export default function TabLayout() {
         name="Search"
         options={{
           title: "Search",
+          headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? "search" : "search-outline"}
@@ -46,6 +48,7 @@ export default function TabLayout() {
         name="Workout"
         options={{
           title: "Workout",
+          headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? "barbell" : "barbell-outline"}
@@ -59,6 +62,7 @@ export default function TabLayout() {
         name="Stats"
         options={{
           title: "Stats",
+          headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? "stats-chart" : "stats-chart-outline"}
