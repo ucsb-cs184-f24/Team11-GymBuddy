@@ -22,8 +22,6 @@ const ImagePickerModal: React.FC<ImagePickerProps> = ({ isVisible, onClose, imag
         quality: 1,
       });
 
-      console.log(result);
-
       if (!result.canceled && result.assets && result.assets.length > 0) {
         onImageChange(result.assets[0].uri);  // Set the selected image URI
       }

@@ -386,7 +386,6 @@ export const getAllUsernames = async (): Promise<UserBasic[]> => {
       users.push(user);
     });
 
-    console.log(`Fetched users count: ${users.length}`); // Debugging
     return users;
   } catch (error) {
     console.error("Error fetching users:", error);
