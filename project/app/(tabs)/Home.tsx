@@ -32,6 +32,7 @@ const getResponsiveFontSize = (size: number) => {
   const newSize = size * scale * .5;
   return Math.round(newSize);
 };
+
 interface NavbarProps {
   setModalVisible: (visible: boolean) => void;
   toggleFilter: () => void;
@@ -46,17 +47,9 @@ interface User {
   profilePic: string;
 }
 
-interface User {
-  userId: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  profilePic: string;
-}
-
 const Home = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [, setFilteredData] = useState<User[]>([]);
+  const [filteredData, setFilteredData] = useState<User[]>([]);
   const [followingPosts, setFollowingPosts] = useState<WorkoutLog[]>([]);
   const [showFollowingPosts, setShowFollowingPosts] = useState(false);
   const [posts, setPosts] = useState<WorkoutLog[]>([]);
