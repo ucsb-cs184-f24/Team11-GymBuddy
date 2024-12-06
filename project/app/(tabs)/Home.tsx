@@ -59,6 +59,7 @@ interface User {
 const Home = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [filteredData, setFilteredData] = useState<User[]>([]);
+  const [showFollowingPosts, setShowFollowingPosts] = useState(false);
   const [posts, setPosts] = useState<WorkoutLog[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [followingPosts, setFollowingPosts] = useState<WorkoutLog[]>([]);
@@ -164,11 +165,24 @@ const Home = () => {
     setShowFollowingPosts((prev) => !prev);
   };
 
+  const toggleFilter = () => {
+    setShowFollowingPosts((prev) => !prev);
+  };
+
   const Navbar = ({ toggleFilter, filterEnabled }: NavbarProps) => {
     return (
       <View style={styles.navbar}>
         <Text style={styles.navbarTitle}>Workouts</Text>
         <View style={styles.navbarIcons}>
+          <TouchableOpacity 
+          style={styles.filterButton}
+          onPress = {toggleFilter}
+        >
+          <Text style={styles.filterButtonText}>
+            {filterEnabled ? "All" : "Following"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style = {styles.navbarIcons}>
           <TouchableOpacity 
           style={styles.filterButton}
           onPress = {toggleFilter}
@@ -256,9 +270,9 @@ const Home = () => {
     >
       <SafeAreaView style={styles.safeArea} edges={["bottom", "left", "right"]}>
         <Navbar 
-        setModalVisible={setModalVisible} 
-        toggleFilter = {toggleFilter}
-        filterEnabled = {showFollowingPosts}
+          setModalVisible={setModalVisible} 
+          toggleFilter = {toggleFilter}
+          filterEnabled = {showFollowingPosts}
         />
         <View style={styles.spacer} />
         {posts.length >0 ? (
