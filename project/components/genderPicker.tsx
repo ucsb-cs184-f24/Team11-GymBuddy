@@ -19,7 +19,6 @@ const GenderPickerModal: React.FC<GenderPickerProps> = ({
     if (isVisible) {
       onGenderChange(gender);
     }
-    console.log(gender);
   }, [isVisible]);
   return (
     <Modal
