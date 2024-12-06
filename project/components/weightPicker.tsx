@@ -27,6 +27,7 @@ const WeightPickerModal: React.FC< WeightPickerModalProps > = ({ isVisible, onCl
               selectedValue={weight} 
               onValueChange={(value) => {onWeightChange(Number(value))}} 
               style={styles.picker}
+              itemStyle={{ fontSize: 18, color: 'black' }}
             >
               {Array.from({ length: 400 }, (_, i) => (
                 <Picker.Item label={`${i} Ibs`} value={i} key={i} />

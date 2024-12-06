@@ -27,6 +27,7 @@ const GenderPickerModal: React.FC<GenderPickerProps> = ({ isVisible, onClose, ge
                 selectedValue={gender} 
                 onValueChange={(value) => {onGenderChange(value)}} 
                 style={styles.picker}
+                itemStyle={{ fontSize: 18, color: 'black' }}
               >
                <Picker.Item label="Male" value="male" />
                <Picker.Item label="Female" value="female" />

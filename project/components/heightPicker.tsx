@@ -28,6 +28,8 @@ const HeightPickerModal: React.FC< HeightPickerModalProps > = ({ isVisible, onCl
               selectedValue={Math.floor(height / 12)} // Feet part of height
               onValueChange={(value) => onHeightChange(Number(value) * 12 + (height % 12))} // Update height in inches
               style={styles.picker}
+              itemStyle={{ fontSize: 18, color: 'black' }}
+
             >
               {Array.from({ length: 4 }, (_, i) => (
                 <Picker.Item label={`${i + 4} feet`} value={i + 4} key={i} />
@@ -39,6 +41,7 @@ const HeightPickerModal: React.FC< HeightPickerModalProps > = ({ isVisible, onCl
               selectedValue={height % 12}
               onValueChange={(value) => onHeightChange(Math.floor(height / 12) * 12 + Number(value))} // Update height in inches
               style={styles.picker}
+              itemStyle={{ fontSize: 18, color: 'black' }}
             >
               {Array.from({ length: 12 }, (_, i) => (
                 <Picker.Item label={`${i} inches`} value={i} key={i} />
@@ -77,12 +80,12 @@ const styles = StyleSheet.create({
   },
   modalPickers: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     width: '100%',
     marginBottom: 20,
   },
   picker: {
-    width: '40%',
+    width: '50%',
   },
   modalButton: {
     paddingVertical: 10,
