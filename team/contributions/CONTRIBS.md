@@ -42,3 +42,13 @@ I set up the Registration pages in the early stages to take in a name, email, an
 I also set up the framework for how the home page originally looked. Since then, there have been many changes, but originally I implemented a design that mimicked Instagram in the sense that you could see the username, an image, and then the workout they did. It was very barebones at the time for the MVP considering we didn’t have a lot of other workout information implemented at the time, which is now displayed.
 
 For the MVP, I worked a lot on the UI and making sure we had a consistent theme across all of our pages as well as any last-minute minor error-catching that could easily and quickly be fixed before presenting. I worked on recording the MVP video with Sawyer and Aaron and edited the video myself. I also ran the first retro and worked on getting everything situated for the MVP, including the tagging and putting any finishing touches.
+
+**Cory Zhao**
+
+Over this course, my contributions have been spread out around this app. My first task was the analytic charts. I built the component, helper functions, UI, etc.
+
+For the MVP, I helped with the profile page. I helped build the UI, design, etc.
+
+For HW4, my main contribution was the design of our new feature which was the social media aspect of this app. I designed the UI, what parts we wanted: following, followers, posts, comments, etc. Furthermore, I designed the structure of the database and also implemented the backend of the users portion of the database.
+
+Now, I have mainly been doing whatever task is needed. I've cleaned up a bunch of frontend code and have been working on small bug fixes.
