@@ -133,7 +133,6 @@ export default function Profile() {
               >
                 <Text style={styles.followReqsText}>Follow Requests</Text>
               </Pressable>
-            <MaterialCommunityIcons name="grid" size={30} color="gray" />
           </View>
         </BlurView>
 
