@@ -22,8 +22,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
+const getResponsiveFontSize = (size: number) => {
+  const scale = width / 375; // 375 is a base width for scaling
+  const newSize = size * scale * .5;
+  return Math.round(newSize);
+};
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -69,13 +74,13 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaView> 
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={["#4c669f", "#3b5998", "#192f6a"]}
         style={styles.gradient}
       >
+            <SafeAreaView style={styles.safeArea}>
         <BlurView intensity={10} tint="dark" style={styles.header}></BlurView>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -136,13 +141,25 @@ const Login = () => {
             </BlurView>
           </Animated.View>
         </KeyboardAvoidingView>
+        </SafeAreaView>
+
       </LinearGradient>
     </View>
-    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',  },
+  navbar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: getResponsiveFontSize(40),
+    paddingHorizontal: getResponsiveFontSize(15),
+  },
   container: {
     flex: 1,
   },

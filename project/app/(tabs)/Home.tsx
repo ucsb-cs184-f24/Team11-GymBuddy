@@ -226,29 +226,7 @@ const Home = () => {
           style={styles.workoutProfilePic}
         />
         <Text style={styles.username}>{item.username}</Text>
-        <TouchableOpacity
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            Alert.alert(
-              "Delete Workout",
-              "Are you sure you want to delete this workout?",
-              [
-                {
-                  text: "Cancel",
-                  style: "cancel",
-                },
-                {
-                  text: "Delete",
-                  //onPress: () => deletePost(item.id),
-                  style: "destructive",
-                },
-              ]
-            );
-          }}
-        >
-          <Text style={styles.moreOptionsText}>•••</Text>
-        </TouchableOpacity>
-      </View>
+        </View>
       <View style={styles.workoutInfo}>
       {item.exercises?.map((exercise) => (
         <React.Fragment key={uuid()}>
@@ -276,12 +254,12 @@ const Home = () => {
   );
 
   return (
-          <SafeAreaView style={styles.safeArea} edges={["bottom", "left", "right"]}>
-
     <LinearGradient
       colors={["#4c669f", "#3b5998", "#192f6a"]}
       style={styles.container}
     >
+    <SafeAreaView style={styles.safeArea}>
+
         <Navbar 
           setModalVisible={setModalVisible} 
           toggleFilter = {toggleFilter}
@@ -348,8 +326,9 @@ const Home = () => {
             </View>
           </BlurView>
         </Modal>
+        </SafeAreaView>
+
     </LinearGradient>
-    </SafeAreaView>
 
   );
 };
@@ -363,7 +342,8 @@ const styles = StyleSheet.create({
 },
   safeArea: {
     flex: 1,
-  },
+    justifyContent: 'center',
+    alignItems: 'center',  },
   navbar: {
     flexDirection: "row",
     justifyContent: "space-between",

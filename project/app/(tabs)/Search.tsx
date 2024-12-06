@@ -9,9 +9,11 @@ import {
   Image,
   TouchableOpacity,
   RefreshControl,
-  Dimensions
+  Dimensions,
+  SafeAreaView
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { LinearGradient } from 'expo-linear-gradient';
 import {
   getUserProfile, // Function to fetch user profile by userId
   getAllUsernames,    // Newly implemented function
@@ -133,7 +135,13 @@ const renderItem = ({ item }: { item: User }) => (
 
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+    colors={["#4c669f", "#3b5998", "#192f6a"]}
+    style={styles.container}
+  >
+    <SafeAreaView style={styles.safeArea}>
+      <View style = {styles.tintOverlay} />
+    <View >
     <Text style={styles.navbarTitle}>Search</Text>
     <TextInput
       style={styles.input}
@@ -155,6 +163,8 @@ const renderItem = ({ item }: { item: User }) => (
       }
       />
   </View>
+  </SafeAreaView>
+  </LinearGradient>
   );
 };
 
@@ -187,6 +197,9 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     // Elevation for Android
     elevation: 5,
+  },
+  safeArea: {
+    flex: 1,
   },
   textContainer: {
     flex: 1,
@@ -238,6 +251,10 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     marginRight: 10,
+  },
+  tintOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
 

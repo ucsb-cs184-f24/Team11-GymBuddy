@@ -22,6 +22,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function WorkoutScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -167,7 +168,11 @@ export default function WorkoutScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+    colors={["#4c669f", "#3b5998", "#192f6a"]}
+    style={styles.container}
+  >
+    <View>
 
 
       <Modal
@@ -323,6 +328,7 @@ export default function WorkoutScreen() {
         <Text style={styles.modalButtonText}>Add Workout</Text>
       </TouchableOpacity>
     </View>
+    </LinearGradient>
   );
 }
 
