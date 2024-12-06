@@ -196,7 +196,8 @@ import {
   removeFollowerRequest, 
   removeFollowingRequest,
   updateUserProfile,
-  getUserProfile
+  getUserProfile,
+  getAllFollowers
 } from '@/serviceFiles/usersDatabaseService';
 
 interface FollowRequest {
@@ -247,20 +248,21 @@ export default function FollowRequests() {
       await addFollowing(requestId, userId);
       await removeFollowerRequest(userId, requestId);
       await removeFollowingRequest(requestId, userId);
-      
+
+      const followerList = await getAllFollowers(userId);
+
       if(receiverProfile){
-        await updateUserProfile(userId, { followerCount: receiverProfile.followerCount  + 1 });
+        await updateUserProfile(userId, { followerCount: followerList.length});
       }
       const senderProfile = await getUserProfile(requestId);
       if (senderProfile) {
         await updateUserProfile(requestId, { followingCount: senderProfile.followingCount + 1 });
       }
 
-      Alert.alert('Success', 'Follow request accepted');
+      
       fetchFollowRequests();
     } catch (error) {
-      console.error('Error accepting follow request:', error);
-      Alert.alert('Error', 'Failed to accept follow request');
+      console.log('Error accepting follow request:', error);
     }
   };
 
@@ -274,8 +276,8 @@ export default function FollowRequests() {
       Alert.alert('Success', 'Follow request rejected');
       fetchFollowRequests();
     } catch (error) {
-      console.error('Error rejecting follow request:', error);
-      Alert.alert('Error', 'Failed to reject follow request');
+      console.log('Error rejecting follow request:', error);
+      
     }
   };
 
