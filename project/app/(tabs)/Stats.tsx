@@ -101,11 +101,10 @@ const Stats = () => {
       keyExtractor={(item, index) => index.toString()}
       ListHeaderComponent={
         <>
-          {/* Include Analytics Chart */}
+          {/* Analytics Chart */}
           <AnalyticCharts />
-          {/* Add Spacer to Shift Leaderboard Down */}
-          <View style={styles.spacer} />
-          {/* Leaderboard Section Header */}
+
+          {/* Leaderboard Header */}
           <View style={styles.leaderboardHeader}>
             <Text style={styles.leaderboardTitle}>Leaderboard</Text>
             <View style={styles.filterContainer}>
@@ -145,26 +144,21 @@ const Stats = () => {
 };
 
 const styles = StyleSheet.create({
-
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  listContainer: {
+    flexGrow: 1,
     backgroundColor: "#3b5998",
-
-  },
-  spacer: {
-    height: 40, // Adds space between the chart and leaderboard
+    paddingBottom: 20,
   },
   leaderboardHeader: {
     padding: 20,
-    marginTop: 20, // Adds extra spacing above the leaderboard
+    marginTop: 20,
   },
   leaderboardTitle: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
+    color: "#fff", // Changed to white
   },
   filterContainer: {
     flexDirection: "row",
@@ -199,15 +193,15 @@ const styles = StyleSheet.create({
   rank: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: "#fff", // Changed to white
   },
   username: {
     fontSize: 16,
-    color: "#555",
+    color: "#fff", // Changed to white
   },
   stat: {
     fontSize: 14,
-    color: "#777",
+    color: "#fff", // Changed to white
   },
   loadingText: {
     textAlign: "center",
