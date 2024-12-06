@@ -168,15 +168,7 @@ export default function WorkoutScreen() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          openModal();
-        }}
-        style={styles.modalButton}
-      >
-        <Text style={styles.modalButtonText}>Add Workout</Text>
-      </TouchableOpacity>
+
 
       <Modal
         visible={modalVisible}
@@ -321,6 +313,15 @@ export default function WorkoutScreen() {
       ) : (
         <Text style={styles.noWorkoutsText}>No previous workouts found.</Text>
       )}
+            <TouchableOpacity
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          openModal();
+        }}
+        style={styles.modalButton}
+      >
+        <Text style={styles.modalButtonText}>Add Workout</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -330,21 +331,21 @@ export default function WorkoutScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#3b5998", // Updated background color
+    backgroundColor: "#3b5998", // blue 
     paddingHorizontal: 16,
     paddingTop: StatusBar.currentHeight || 24,
   },
   modalButton: {
     backgroundColor: "white", 
-    borderRadius: 25,
+    borderRadius: 30,
     paddingVertical: 12,
     paddingHorizontal: 24,
     alignSelf: "center",
-    marginVertical: 20,
+    marginVertical: 25,
   },
   modalButtonText: {
-    color: "#3b5998", 
-    fontSize: getResponsiveFontSize(15),
+    color: "#3b5998", // blue 
+    fontSize: getResponsiveFontSize(25),
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -366,14 +367,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   categoryButton: {
-    backgroundColor: "#3b5998", // Dark grey
+    backgroundColor: "#3b5998", // blue 
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 10,
     marginBottom: 10,
   },
   selectedCategoryButton: {
-    backgroundColor: "#3b5998", // Highlighted orange
+    backgroundColor: "#3b5998", // blue 
   },
   categoryText: {
     color: "#FFFFFF",
@@ -391,10 +392,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   selectedWorkoutButton: {
-    backgroundColor: "white", // Highlighted orange
+    backgroundColor: "white", // white
   },
   workoutText: {
-    color: "3b5998",
+    color: "3b5998", //blue 
     fontSize: getResponsiveFontSize(14),
   },
   setsRepsContainer: {
@@ -432,7 +433,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   saveButtonText: {
-    color: "3b5998",
+    color: "3b5998", //blue 
     fontSize: getResponsiveFontSize(16),
     fontWeight: "bold",
     textAlign: "center",

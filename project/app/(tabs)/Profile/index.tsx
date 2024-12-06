@@ -94,8 +94,9 @@ export default function Profile() {
   }, [fetchUserData]);
 
   return (
+    <SafeAreaView style={styles.container}>
     <LinearGradient
-      colors={["#4c669f", "#3b5998", "#192f6a"]}
+      colors={["#3b5998", "#3b5998", "#3b5998"]}
       style={styles.container}
     >
       <ScrollView
@@ -175,12 +176,14 @@ export default function Profile() {
         </View>
       </ScrollView>
     </LinearGradient>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#3b5998",
   },
   cardContainer: {
     flex: 1,
@@ -215,7 +218,6 @@ const styles = StyleSheet.create({
     height: 0.25 * width,
     borderRadius: "50%",
     borderWidth: 2,
-    borderColor: "blue",
   },
   stat: {
     flex: 1,

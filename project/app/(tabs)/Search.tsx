@@ -8,6 +8,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {
@@ -30,7 +31,13 @@ interface User {
   isFollowing?: boolean;
   isFollowingRequest?: boolean;
 }
+const { width, height } = Dimensions.get("window");
 
+const getResponsiveFontSize = (size: number) => {
+  const scale = width / 375; // 375 is a base width for scaling
+  const newSize = size * scale * .5;
+  return Math.round(newSize);
+};
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState<User[]>([]);
@@ -124,13 +131,14 @@ const renderItem = ({ item }: { item: User }) => (
 
   return (
     <View style={styles.container}>
+    <Text style={styles.navbarTitle}>Search</Text>
     <TextInput
       style={styles.input}
       placeholder="Search"
       value={searchQuery}
       onChangeText={handleSearch}
     />
-    <FlatList
+    <FlatList 
       data={filteredData}
       renderItem={renderItem}
       keyExtractor={(item, index) => uuid()}
@@ -142,57 +150,83 @@ const renderItem = ({ item }: { item: User }) => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    backgroundColor: "#3b5998", // Match Workout.tsx background color
+    paddingHorizontal: 16,
+    paddingTop: 24, // Adjust as needed
+  },
+  navbarTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
+    marginVertical: 10,
   },
   searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#f0f0f0",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 16,
+    backgroundColor: "#ffffff",
+    borderRadius: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    fontSize: 16,
+    color: "#000000",
+    marginVertical: 10,
+    // Shadow for iOS
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    // Elevation for Android
+    elevation: 5,
+  },
+  textContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  username: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
+  fullName: {
+    fontSize: 14,
+    color: "#D3D3D3",
   },
   input: {
-    height: 40, // Fixed height
-    borderColor: '#ccc',
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    marginBottom: 16,
-    borderRadius: 4,
-    textAlignVertical: 'center',
+    backgroundColor: "#ffffff",
+    borderRadius: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    fontSize: 16,
+    color: "#000000",
+    marginVertical: 10,
+    // Shadow for iOS
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    // Elevation for Android
+    elevation: 5,
   },
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
+    padding: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 25,
+    marginVertical: 5,
+  },
+  userItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "#2F44FF",
+    borderRadius: 25,
+    marginVertical: 5,
   },
   profilePic: {
     width: 50,
     height: 50,
     borderRadius: 25,
-  },
-  textContainer: {
-    marginLeft: 10,
-  },
-  username: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  fullName: {
-    fontSize: 14,
-    color: "#555",
-  },
-  userId: {
-    fontSize: 12,
-    color: "#888",
-  },
-  noResultsText: {
-    textAlign: "center",
-    marginTop: 20,
-    color: "gray",
-    fontSize: 16,
+    marginRight: 10,
   },
 });
 

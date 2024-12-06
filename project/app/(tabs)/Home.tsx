@@ -186,11 +186,12 @@ const Home = () => {
   );
 
   return (
+          <SafeAreaView style={styles.safeArea} edges={["bottom", "left", "right"]}>
+
     <LinearGradient
       colors={["#4c669f", "#3b5998", "#192f6a"]}
       style={styles.container}
     >
-      <SafeAreaView style={styles.safeArea} edges={["bottom", "left", "right"]}>
         <Navbar setModalVisible={setModalVisible} />
         <View style={styles.spacer} />
         {posts.length >0 ? (
@@ -253,8 +254,9 @@ const Home = () => {
             </View>
           </BlurView>
         </Modal>
-      </SafeAreaView>
     </LinearGradient>
+    </SafeAreaView>
+
   );
 };
 
@@ -272,7 +274,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: getResponsiveFontSize(40),
     paddingHorizontal: getResponsiveFontSize(15),
   },
   navbarTitle: {

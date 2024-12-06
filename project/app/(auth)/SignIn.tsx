@@ -69,6 +69,7 @@ const Login = () => {
   };
 
   return (
+    <SafeAreaView> 
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
@@ -137,6 +138,7 @@ const Login = () => {
         </KeyboardAvoidingView>
       </LinearGradient>
     </View>
+    </SafeAreaView>
   );
 };
 
