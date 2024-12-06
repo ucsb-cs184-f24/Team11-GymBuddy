@@ -25,6 +25,7 @@ import {
 } from "@/serviceFiles/postsDatabaseService";
 import 'react-native-get-random-values';
 import { v4 as uuid } from "uuid";
+import { getAllUsernames, getAllUsers, getUserId, getUserProfile, UserData } from "@/serviceFiles/usersDatabaseService";
 const { width, height } = Dimensions.get("window");
 
 const getResponsiveFontSize = (size: number) => {
@@ -36,7 +37,17 @@ interface NavbarProps {
   setModalVisible: (visible: boolean) => void;
 }
 
+interface User {
+  userId: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  profilePic: string;
+}
+
 const Home = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredData, setFilteredData] = useState<User[]>([]);
   const [posts, setPosts] = useState<WorkoutLog[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [newPost, setNewPost] = useState({
@@ -58,6 +69,38 @@ const Home = () => {
         console.error("Failed to load posts", error);
       }
     };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  
+  const fetchUsers = async () => {
+    try {
+      const userIds = await getAllUsernames();
+      const userProfiles: User[] = [];
+
+      const profilePromises = userIds.map(async (userBasic) => {
+        const profile = await getUserProfile(userBasic.userId);
+        if (profile) {
+          userProfiles.push({
+            userId: userBasic.userId, 
+            username: profile.username || "Unknown",
+            firstName: userBasic.firstName || "",
+            lastName: userBasic.lastName || "",
+            profilePic: profile.profilePicture || "",
+          } as User);
+        }
+      });
+
+      await Promise.all(profilePromises);
+
+      setUsers(userProfiles);
+      setFilteredData(userProfiles.slice(0, 10));
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+  
 
   const handleRefresh = async () => {
     setRefreshing(true); // Start the refreshing animation
@@ -128,11 +171,16 @@ const Home = () => {
     );
   };
 
+  const getProfilePic = (userId: string) => {
+    const user = users.find((user) => user.userId === userId);
+    return user?.profilePic || "https://example.com/profile-pic.jpg";
+  };
+
   const renderPost = ({ item }: { item: WorkoutLog }) => (
     <BlurView intensity={80} tint="dark" style={styles.workoutCard}>
       <View style={styles.workoutHeader}>
         <Image
-          source={{ uri: "https://example.com/profile-pic.jpg" }}
+          source={{ uri: getProfilePic(item.userId) }}
           style={styles.workoutProfilePic}
         />
         <Text style={styles.username}>{item.username}</Text>
