@@ -11,7 +11,6 @@ import {
   Alert,
   Modal,
   Dimensions,
-  StatusBar,
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -468,6 +467,16 @@ const styles = StyleSheet.create({
     height: getResponsiveFontSize(40),
     borderRadius: getResponsiveFontSize(20),
     marginRight: getResponsiveFontSize(10),
+  },
+  filterButton: { 
+    paddingHorizontal: 10, 
+    paddingVertical: 5, 
+    borderRadius: 5, 
+    backgroundColor: "#FFFFFF" 
+  },
+  filterButtonText: { 
+    color: "#3b5998", 
+    fontWeight: "bold" 
   },
   spacer: {
     height: getResponsiveFontSize(20),
