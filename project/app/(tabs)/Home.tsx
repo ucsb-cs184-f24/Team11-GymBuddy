@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
   },
   workoutCard: {
     marginBottom: getResponsiveFontSize(10),
-    borderRadius: 10,
+    borderRadius: 20,
     overflow: "hidden",
     padding: getResponsiveFontSize(10),
     backgroundColor: "#3b5998", // Added backgroundColor for the post
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
   username: {
     fontWeight: "bold",
     flex: 1,
-    fontSize: getResponsiveFontSize(16),
+    fontSize: getResponsiveFontSize(65),
     color: "#FFFFFF",
   },
   moreOptionsText: {

@@ -145,12 +145,14 @@ const renderItem = ({ item }: { item: User }) => (
     <TextInput
       style={styles.input}
       placeholder="Search"
+      placeholderTextColor={"#000000"}
       value={searchQuery}
       onChangeText={handleSearch}
     />
     <FlatList 
       data={filteredData}
       renderItem={renderItem}
+      contentContainerStyle={styles.contentContainer}
       keyExtractor={(item, index) => uuid()}
       refreshControl={
         <RefreshControl
@@ -251,6 +253,10 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginRight: 10,
   },
+    contentContainer: {
+      paddingBottom: getResponsiveFontSize(300), // Adjust the value as needed
+    },
+    // ...other styles
   tintOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
