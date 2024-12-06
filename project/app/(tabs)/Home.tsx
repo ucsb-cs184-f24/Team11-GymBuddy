@@ -25,7 +25,7 @@ import {
 import { getUserId, getAllFollowing } from "@/serviceFiles/usersDatabaseService";
 import 'react-native-get-random-values';
 import { v4 as uuid } from "uuid";
-import { getAllUsernames, getAllUsers, getUserId, getUserProfile, UserData } from "@/serviceFiles/usersDatabaseService";
+import { getAllFollowing, getAllUsernames, getAllUsers, getUserId, getUserProfile, UserData } from "@/serviceFiles/usersDatabaseService";
 const { width, height } = Dimensions.get("window");
 
 const getResponsiveFontSize = (size: number) => {
@@ -58,6 +58,7 @@ interface User {
 const Home = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [filteredData, setFilteredData] = useState<User[]>([]);
+  const [followingPosts, setFollowingPosts] = useState<WorkoutLog[]>([]);
   const [showFollowingPosts, setShowFollowingPosts] = useState(false);
   const [posts, setPosts] = useState<WorkoutLog[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -114,7 +115,29 @@ const Home = () => {
       console.error("Error fetching users:", error);
     }
   };
-  
+
+  const loadFollowingPosts = async (allPosts: WorkoutLog[]) => {
+    try {
+      // Fetch user ID
+      const userId = await getUserId();
+
+      // Fetch the user's following list
+      const following = await getAllFollowing(userId);
+      const followingIds = following.map((user) => user.id);
+
+      // Filter posts by matching `userId` with following IDs
+      const filteredPosts = allPosts.filter((post) => {
+        if (!post.userId) {
+          return false;
+        }
+        return followingIds.includes(post.userId);
+      });
+
+      setFollowingPosts(filteredPosts);
+    } catch (error) {
+      console.error("Failed to load following posts", error);
+    }
+  };
 
   const handleRefresh = async () => {
     setRefreshing(true); // Start the refreshing animation
@@ -173,6 +196,7 @@ const Home = () => {
       <View style={styles.navbar}>
         <Text style={styles.navbarTitle}>Workouts</Text>
         <View style={styles.navbarIcons}>
+          <TouchableOpacity style={styles.navbarIcons}></TouchableOpacity>
           <TouchableOpacity 
           style={styles.filterButton}
           onPress = {toggleFilter}
@@ -272,7 +296,7 @@ const Home = () => {
           setModalVisible={setModalVisible} 
           toggleFilter = {toggleFilter}
           filterEnabled = {showFollowingPosts}
-        />
+          />
         <View style={styles.spacer} />
         {posts.length >0 ? (
           <FlatList
@@ -497,4 +521,5 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
 });
+
 export default Home;
