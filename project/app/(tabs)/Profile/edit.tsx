@@ -26,6 +26,7 @@ import HeightPickerModal from "@/components/heightPicker";
 import WeightPickerModal from "@/components/weightPicker";
 import GenderPickerModal from "@/components/genderPicker";
 import ImagePickerExample from "@/components/imagePicker";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 interface UserData {
   bio: string;
@@ -45,7 +46,7 @@ interface UserData {
 
 export default function EditProfile() {
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [uid, setUid] = useState("");
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
@@ -56,13 +57,15 @@ export default function EditProfile() {
   const [weight, setWeight] = useState(0);
   const [gender, setGender] = useState("");
   const [image, setImage] = useState("");
-  const [isEnabled, setIsEnabled] = useState(false); // Switch state
-  const auth = getAuth();
+  const [isEnabled, setIsEnabled] = useState(false);
 
   const [isHeightModalVisible, setIsHeightModalVisible] = useState(false);
   const [isWeightModalVisible, setIsWeightModalVisible] = useState(false);
   const [isGenderModalVisible, setIsGenderModalVisible] = useState(false);
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
+
+  const storage = getStorage();
+  const auth = getAuth();
 
   const handleHeightChange = async (newHeight: number) => {
     setHeight(newHeight);
@@ -84,9 +87,24 @@ export default function EditProfile() {
 
   const handleImageChange = async (newImage: string) => {
     setImage(newImage);
-    const userId = await getUserId();
-    await updateUserProfile(userId, { profilePicture: newImage });
-  };
+  
+    try {
+      const userId = await getUserId();
+      const storageRef = ref(storage, `profilePictures/${userId}`);
+
+      const response = await fetch(newImage);
+      const blob = await response.blob();
+  
+      await uploadBytes(storageRef, blob);
+  
+      const downloadURL = await getDownloadURL(storageRef);
+  
+      await updateUserProfile(userId, { profilePicture: downloadURL });
+      
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+    }
+  };  
 
   const toggleSwitch = async () => {
     setPrivate(!privacy);
@@ -147,7 +165,7 @@ export default function EditProfile() {
         <Text style={styles.editText}>Edit Profile</Text>
       </View>
       <ScrollView>
-        <Image source={{ uri: image }} style={styles.profileImage} />
+        <Image source={{ uri: image || undefined }} style={styles.profileImage} />
         <Button
           title="Edit Picture"
           onPress={() => setIsImageModalVisible(true)}

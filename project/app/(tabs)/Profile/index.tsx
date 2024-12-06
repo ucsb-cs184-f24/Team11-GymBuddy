@@ -11,45 +11,13 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { getUserProfile, getUserId } from "@/serviceFiles/usersDatabaseService";
+import { getUserProfile, getUserId, UserData } from "@/serviceFiles/usersDatabaseService";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { getWorkouts } from "@/serviceFiles/postsDatabaseService";
+import { getWorkouts, WorkoutLog } from "@/serviceFiles/postsDatabaseService";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 
 const { width } = Dimensions.get("window");
-
-interface UserData {
-  bio: string;
-  createdAt: number;
-  email: string;
-  firstName: string;
-  followerCount: number;
-  followingCount: number;
-  gender: string;
-  height: number | null;
-  isPrivate: boolean;
-  lastName: string;
-  profilePicture: string;
-  username: string;
-  weight: number | null;
-}
-
-interface WorkoutLog {
-  caption: string;
-  commentsCount: number;
-  createdAt: number;
-  image: string;
-  likesCount: number;
-  muscleGroup: string;
-  repsCount: number;
-  setsCount: number;
-  userId: string;
-  weight: number;
-  workoutName: string;
-  workoutType: string;
-  username?: string;
-}
 
 export default function Profile() {
   const router = useRouter();

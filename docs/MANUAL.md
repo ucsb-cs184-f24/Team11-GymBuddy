@@ -16,14 +16,22 @@ When you first launch the app you are prompted by a sign in page. From here, sel
 
 # How to Login
 
-
+When launching the app you should immediately be presented with a sign in page. Input your account email and password and select "Sign In"
 
 # How to edit your profile
 
+Once logged in, navigate using the navbar at the bottom of the screen to the profile page. From there select the Edit Progile button and update whatever information you would like. Once you select the back button on the top right, your information should be saved
+
 # How to search and follow other users
+
+Once logged in, navigate using the navbar at the bottom of the screen to the search page. From there if you see a user you would like to friend, select the plus next to their username to send a friend request. Otherwise, select the search bar and type your friends' username to bring up their account, and follow them by selecting the plus.
 
 # How to log a workout 
 
-# How to post a workout
+Once logged in, navigate using the navbar at the bottom of the screen to the workout page. From there select the "Add Workout" button to bring up a list of potential workouts. Select the body part and workout you performed, typing in the number of sets, reps, and weights to be tracked. Once you have selected all your exercises, press the "Save Workout" button to log your workout.
 
-# How to remove followers or following
+# How to accept friend requests
+
+On the profile page, there will be a "follow requests" button which when selected will give you a dropdown with everyone who has requested to follow you. Either accept or reject each request.
+
+

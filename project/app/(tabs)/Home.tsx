@@ -11,8 +11,8 @@ import {
   Alert,
   Modal,
   Dimensions,
-  StatusBar,
   RefreshControl,
+  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ActivityIndicator } from "react-native";
@@ -25,6 +25,7 @@ import {
 } from "@/serviceFiles/postsDatabaseService";
 import 'react-native-get-random-values';
 import { v4 as uuid } from "uuid";
+import { getAllFollowing, getAllUsernames, getAllUsers, getUserId, getUserProfile, UserData } from "@/serviceFiles/usersDatabaseService";
 const { width, height } = Dimensions.get("window");
 
 const getResponsiveFontSize = (size: number) => {
@@ -32,11 +33,26 @@ const getResponsiveFontSize = (size: number) => {
   const newSize = size * scale * .5;
   return Math.round(newSize);
 };
+
 interface NavbarProps {
   setModalVisible: (visible: boolean) => void;
+  toggleFilter: () => void;
+  filterEnabled: boolean;
+}
+
+interface User {
+  userId: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  profilePic: string;
 }
 
 const Home = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredData, setFilteredData] = useState<User[]>([]);
+  const [followingPosts, setFollowingPosts] = useState<WorkoutLog[]>([]);
+  const [showFollowingPosts, setShowFollowingPosts] = useState(false);
   const [posts, setPosts] = useState<WorkoutLog[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [newPost, setNewPost] = useState({
@@ -54,15 +70,71 @@ const Home = () => {
         const postsArray = Object.values(recentWorkouts as WorkoutLog[]);
         postsArray.sort((a, b) => b.createdAt - a.createdAt);
         setPosts(postsArray);
+        await loadFollowingPosts(postsArray);
       } catch (error) {
         console.error("Failed to load posts", error);
       }
     };
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  
+  const fetchUsers = async () => {
+    try {
+      const userIds = await getAllUsernames();
+      const userProfiles: User[] = [];
+
+      const profilePromises = userIds.map(async (userBasic) => {
+        const profile = await getUserProfile(userBasic.userId);
+        if (profile) {
+          userProfiles.push({
+            userId: userBasic.userId, 
+            username: profile.username || "Unknown",
+            firstName: userBasic.firstName || "",
+            lastName: userBasic.lastName || "",
+            profilePic: profile.profilePicture || "",
+          } as User);
+        }
+      });
+
+      await Promise.all(profilePromises);
+
+      setUsers(userProfiles);
+      setFilteredData(userProfiles.slice(0, 10));
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const loadFollowingPosts = async (allPosts: WorkoutLog[]) => {
+    try {
+      // Fetch user ID
+      const userId = await getUserId();
+
+      // Fetch the user's following list
+      const following = await getAllFollowing(userId);
+      const followingIds = following.map((user) => user.id);
+
+      // Filter posts by matching `userId` with following IDs
+      const filteredPosts = allPosts.filter((post) => {
+        if (!post.userId) {
+          return false;
+        }
+        return followingIds.includes(post.userId);
+      });
+
+      setFollowingPosts(filteredPosts);
+    } catch (error) {
+      console.error("Failed to load following posts", error);
+    }
+  };
+
   const handleRefresh = async () => {
     setRefreshing(true); // Start the refreshing animation
 
     await loadPosts()
+    await fetchUsers()
       setRefreshing(false); // Stop the refreshing animation
   };
 
@@ -112,12 +184,25 @@ const Home = () => {
     //   }
   };
 
-  const Navbar = ({ setModalVisible }: NavbarProps) => {
+  const toggleFilter = () => {
+    setShowFollowingPosts((prev) => !prev);
+  };
+
+  const Navbar = ({ toggleFilter, filterEnabled }: NavbarProps) => {
     return (
       <View style={styles.navbar}>
         <Text style={styles.navbarTitle}>Workouts</Text>
         <View style={styles.navbarIcons}>
-          <TouchableOpacity style={styles.navbarIcons}>
+          <TouchableOpacity style={styles.navbarIcons}></TouchableOpacity>
+          <TouchableOpacity 
+          style={styles.filterButton}
+          onPress = {toggleFilter}
+        >
+          <Text style={styles.filterButtonText}>
+            {filterEnabled ? "All" : "Following"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style = {styles.navbarIcons}>
             <Image
               source={{ uri: "https://example.com/profile-pic.jpg" }}
               style={styles.profilePic}
@@ -128,11 +213,16 @@ const Home = () => {
     );
   };
 
+  const getProfilePic = (userId: string) => {
+    const user = users.find((user) => user.userId === userId);
+    return user?.profilePic || "https://example.com/profile-pic.jpg";
+  };
+
   const renderPost = ({ item }: { item: WorkoutLog }) => (
     <BlurView intensity={80} tint="dark" style={styles.workoutCard}>
       <View style={styles.workoutHeader}>
         <Image
-          source={{ uri: "https://example.com/profile-pic.jpg" }}
+          source={{ uri: getProfilePic(item.userId) }}
           style={styles.workoutProfilePic}
         />
         <Text style={styles.username}>{item.username}</Text>
@@ -192,11 +282,15 @@ const Home = () => {
       colors={["#4c669f", "#3b5998", "#192f6a"]}
       style={styles.container}
     >
-        <Navbar setModalVisible={setModalVisible} />
+        <Navbar 
+          setModalVisible={setModalVisible} 
+          toggleFilter = {toggleFilter}
+          filterEnabled = {showFollowingPosts}
+          />
         <View style={styles.spacer} />
         {posts.length >0 ? (
           <FlatList
-            data={posts}
+            data={showFollowingPosts ? followingPosts : posts}
             renderItem={renderPost}
             keyExtractor={(item) => uuid()}
             style={[styles.workoutList, { paddingTop: 10 }]}
@@ -385,6 +479,16 @@ const styles = StyleSheet.create({
     borderRadius: getResponsiveFontSize(20),
     marginRight: getResponsiveFontSize(10),
   },
+  filterButton: { 
+    paddingHorizontal: 10, 
+    paddingVertical: 5, 
+    borderRadius: 5, 
+    backgroundColor: "#FFFFFF" 
+  },
+  filterButtonText: { 
+    color: "#3b5998", 
+    fontWeight: "bold" 
+  },
   spacer: {
     height: getResponsiveFontSize(20),
   },
@@ -404,4 +508,5 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
 });
+
 export default Home;

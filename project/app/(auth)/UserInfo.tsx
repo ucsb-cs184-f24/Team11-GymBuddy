@@ -103,7 +103,7 @@ const UserInfo = () => {
             onPress={() => setIsHeightModalVisible(true)}
           >
             <Text style={styles.pickerButtonText}>
-              {height !== 0 ? `${height} cm` : "Select Height"}
+              {height !== 0 ? `${Math.floor(height / 12)}' ${height % 12}"` : "Select Height"}
             </Text>
           </TouchableOpacity>
           <HeightPickerModal
@@ -119,7 +119,7 @@ const UserInfo = () => {
             onPress={() => setIsWeightModalVisible(true)}
           >
             <Text style={styles.pickerButtonText}>
-              {weight !== 0 ? `${weight} kg` : "Select Weight"}
+              {weight !== 0 ? `${weight} lbs` : "Select Weight"}
             </Text>
           </TouchableOpacity>
           <WeightPickerModal
