@@ -229,7 +229,11 @@ const Home = () => {
       </View>
       <View>
         <Image
-          source={{ uri: item.image }}
+          source={
+            item.image
+              ? { uri: item.image }
+              : require("@/assets/defaultPost.jpeg")
+          }        
           style={{ width: "100%", height: 200 }}
         />
       </View>
