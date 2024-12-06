@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, FlatList, Pressable, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, FlatList, Pressable, ActivityIndicator, Alert} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
-import { getAllFollowers, getUserId, getUserProfile } from '@/serviceFiles/usersDatabaseService';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { getAllFollowers, getAllFollowing, getUserId, getUserProfile, removeFollower, removeFollowing } from '@/serviceFiles/usersDatabaseService';
 
 interface Follower {
   id: string;
@@ -15,10 +15,12 @@ export default function FollowersList() {
   const router = useRouter();
   const { userId } = useLocalSearchParams();
   const [followers, setFollowers] = useState<Follower[]>([]);
+  const [following, setFollowing] = useState<Follower[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchFollowers();
+    fetchFollowing();
   }, []);
 
   const fetchFollowers = async () => {
@@ -44,10 +46,65 @@ export default function FollowersList() {
     }
   };
 
+  const fetchFollowing = async () => {
+    try {
+      setLoading(true);
+      const currentUserId = await getUserId();
+      const followingList = await getAllFollowing(currentUserId);
+      
+      const fullFollowing = await Promise.all(followingList.map(async (following) => {
+        const profile = await getUserProfile(following.id);
+        return {
+          id: following.id,
+          username: profile?.username || 'Unknown',
+          profilePicture: profile?.profilePicture || 'https://via.placeholder.com/150',
+        };
+      }));
+      setFollowing(fullFollowing);
+    } catch (error) {
+      console.error('Error fetching following:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+const handleFriendPress = async (userId: string) => {
+  Alert.alert(
+      "Remove Follower?", // Title
+      "", // Message
+      [
+          {
+            text: "Remove",
+            onPress: async () => {
+              const currentUserId = await getUserId();
+              await removeFollowing(userId, currentUserId);
+              await removeFollower(currentUserId, userId);
+              await fetchFollowers();
+            }
+          },
+          {
+            text: "Cancel",
+            style: "cancel", // Makes the button appear in bold as a cancel action
+          },
+      ],
+      { cancelable: false }
+  );
+  }
+
   const renderFollower = ({ item }: { item: Follower }) => (
     <View style={styles.followerItem}>
       <Image source={{ uri: item.profilePicture || 'https://via.placeholder.com/50' }} style={styles.profileImage} />
       <Text style={styles.username}>{item.username}</Text>
+      {following.some((following) => following.id === item.id) ? (
+        <View style={{ flex: 1, paddingRight: 20, alignItems: 'flex-end' }}>
+        <Ionicons name="checkmark-done-outline" size={20} color="black" onPress={() => handleFriendPress(item.id)}/>
+        </View>): (
+        <View style={{ flex: 1, paddingRight: 20, alignItems: 'flex-end' }}>
+          <Ionicons name="remove-circle-outline" size={20} color="black" onPress={() => handleFriendPress(item.id)}/>
+        </View>
+        )
+      }
+      
     </View>
   );
 
