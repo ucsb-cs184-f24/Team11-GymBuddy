@@ -140,7 +140,6 @@ const renderItem = ({ item }: { item: User }) => (
     style={styles.container}
   >
     <SafeAreaView style={styles.safeArea}>
-      <View style = {styles.tintOverlay} />
     <View >
     <Text style={styles.navbarTitle}>Search</Text>
     <TextInput
