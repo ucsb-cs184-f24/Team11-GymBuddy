@@ -25,7 +25,7 @@ const UserInfo = () => {
   const router = useRouter();
   const [bio, setBio] = useState("");
   const [height, setHeight] = useState(0);
-  const [weight, setWeight] = useState(0);
+  const [weight, setWeight] = useState(-1);
   const [gender, setGender] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
 
@@ -103,7 +103,9 @@ const UserInfo = () => {
             onPress={() => setIsHeightModalVisible(true)}
           >
             <Text style={styles.pickerButtonText}>
-              {height !== 0 ? `${Math.floor(height / 12)}' ${height % 12}"` : "Select Height"}
+              {height !== 0
+                ? `${Math.floor(height / 12)}' ${height % 12}"`
+                : "Select Height"}
             </Text>
           </TouchableOpacity>
           <HeightPickerModal
@@ -119,13 +121,13 @@ const UserInfo = () => {
             onPress={() => setIsWeightModalVisible(true)}
           >
             <Text style={styles.pickerButtonText}>
-              {weight !== 0 ? `${weight} lbs` : "Select Weight"}
+              {weight !== -1 ? `${weight} lbs` : "Select Weight"}
             </Text>
           </TouchableOpacity>
           <WeightPickerModal
             isVisible={isWeightModalVisible}
             onClose={() => setIsWeightModalVisible(false)}
-            weight={weight}
+            weight={weight !== -1 ? weight : 100}
             onWeightChange={setWeight}
           />
 
@@ -141,7 +143,7 @@ const UserInfo = () => {
           <GenderPickerModal
             isVisible={isGenderModalVisible}
             onClose={() => setIsGenderModalVisible(false)}
-            gender={gender}
+            gender={gender ? gender : "Male"}
             onGenderChange={setGender}
           />
 

@@ -138,6 +138,10 @@ const Register = () => {
                   value={userName}
                   onChangeText={setUserName}
                   placeholderTextColor="#FFFFFFFF"
+                  autoCapitalize="none" // No automatic capitalization
+                  autoCorrect={false} // Disables auto-correction
+                  textContentType="none" // No suggestions or text prediction
+                  keyboardType="default" // Optional: keeps keyboard behavior standard
                 />
                 <TextInput
                   placeholder="Email"
