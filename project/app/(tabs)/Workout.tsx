@@ -1,13 +1,15 @@
 import {
   createPost,
   getWorkouts,
+  updatePost,
   WorkoutLog,
 } from "@/serviceFiles/postsDatabaseService";
-import { getUserId } from "@/serviceFiles/usersDatabaseService";
+import { getUserId, updateUserProfile } from "@/serviceFiles/usersDatabaseService";
 import { workoutsByCategory } from "@/utils/Workout/workoutCatagory";
 import { BlurView } from "expo-blur";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import ImagePickerExample from "@/components/imagePicker";
 import * as Haptics from "expo-haptics";
 import {
   Animated,
@@ -23,13 +25,17 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 export default function WorkoutScreen() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
+  const [imageURI, setImageURI] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [userData, setUserData] = useState<string | null>(null);
   const [previousWorkouts, setPreviousWorkouts] = useState<WorkoutLog[]>([]);
   const [workoutName, setWorkoutName] = useState("");
+  const [image, setImage] = useState("");
   const [selectedWorkouts, setSelectedWorkouts] = useState<
     Record<
       string,
@@ -42,7 +48,7 @@ export default function WorkoutScreen() {
   }
   const categories = Object.keys(workoutsByCategory);
   const { width, height } = Dimensions.get("window");
-
+  const storage = getStorage();
 
   
   useEffect(() => {
@@ -110,7 +116,7 @@ export default function WorkoutScreen() {
         caption: workoutName,
         commentsCount: 0,
         createdAt: Date.now(),
-        image: "",
+        image: imageURI,
         likesCount: 0,
         exercises: Object.keys(selectedWorkouts).map((workout) => ({
           name: workout,
@@ -166,6 +172,28 @@ export default function WorkoutScreen() {
       </BlurView>
     );
   };
+
+  const handleAddPhoto = async (newImage: string) => {
+    setImage(newImage);
+
+    try {
+      const userId = await getUserId();
+      const storageRef = ref(storage, `postPictures/${userId}`);
+
+      const response = await fetch(newImage);
+      const blob = await response.blob();
+  
+      await uploadBytes(storageRef, blob);
+  
+      const downloadURL = await getDownloadURL(storageRef);
+
+      setImageURI(downloadURL);
+      
+    } catch (error) {
+      console.error("Error updating post picture:", error);
+    }
+
+  };  
 
   return (
     <LinearGradient
@@ -288,6 +316,22 @@ export default function WorkoutScreen() {
                 </View>
               ))}
             </ScrollView>
+            <TouchableOpacity
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setIsImageModalVisible(true);
+              }}
+              style={styles.addPhotoButton}
+            >
+              <Text style={styles.saveButtonText}>Add Photo</Text>
+              <ImagePickerExample
+              isVisible={isImageModalVisible}
+              onClose={() => setIsImageModalVisible(false)}
+              image={image}
+              onImageChange={handleAddPhoto}
+            />
+            </TouchableOpacity>
+            
             <TouchableOpacity
               onPress={handleSaveWorkout}
               style={styles.saveButton}
@@ -437,6 +481,14 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     alignSelf: "center",
     width: "80%",
+  },
+  addPhotoButton: {
+    backgroundColor: "white", 
+    borderRadius: 25,
+    paddingVertical: 12,
+    marginVertical: 20,
+    alignSelf: "center",
+    width: "50%",
   },
   saveButtonText: {
     color: "3b5998", //blue 

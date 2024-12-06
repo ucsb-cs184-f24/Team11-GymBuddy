@@ -226,7 +226,13 @@ const Home = () => {
           style={styles.workoutProfilePic}
         />
         <Text style={styles.username}>{item.username}</Text>
-        </View>
+      </View>
+      <View>
+        <Image
+          source={{ uri: item.image }}
+          style={{ width: "100%", height: 200 }}
+        />
+      </View>
       <View style={styles.workoutInfo}>
       {item.exercises?.map((exercise) => (
         <React.Fragment key={uuid()}>
