@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, FlatList, Pressable, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, FlatList, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
-import { getAllFollowing, getUserId,getUserProfile } from '@/serviceFiles/usersDatabaseService';
+import { useRouter, useLocalSearchParams,  } from 'expo-router';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { getAllFollowing, getUserId,getUserProfile, removeFollower, removeFollowing } from '@/serviceFiles/usersDatabaseService';
 
 interface Following {
   id: string;
@@ -27,7 +27,6 @@ export default function FollowingList() {
       const currentUserId = await getUserId();
       const followingList = await getAllFollowing(currentUserId);
 
-
       const fullFollowing = await Promise.all(followingList.map(async (following) => {
         const profile = await getUserProfile(following.id);
         return {
@@ -45,10 +44,35 @@ export default function FollowingList() {
     }
   };
 
+  const handleFollowPress = async (userId: string) => {
+    Alert.alert(
+      "Remove Follower?", // Title
+      "", // Message
+      [
+          {
+            text: "Remove",
+            onPress: async () => {
+              const currentUserId = await getUserId();
+              await removeFollowing(currentUserId, userId);
+              await removeFollower(userId, currentUserId);
+            }
+          },
+          {
+            text: "Cancel",
+            style: "cancel", // Makes the button appear in bold as a cancel action
+          },
+      ],
+      { cancelable: false }
+  );
+  }
+
   const renderFollowing = ({ item }: { item: Following }) => (
     <View style={styles.followingItem}>
       <Image source={{ uri: item.profilePicture || 'https://via.placeholder.com/50' }} style={styles.profileImage} />
       <Text style={styles.username}>{item.username}</Text>
+      <View style={{ flex: 1, paddingRight: 20, alignItems: 'flex-end' }}>
+        <Ionicons name="remove-circle-outline" size={20} color="black" onPress={() => handleFollowPress(item.id)}/>
+      </View>
     </View>
   );
 

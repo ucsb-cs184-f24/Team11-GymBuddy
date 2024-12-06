@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
-import { View, Text, Pressable, Modal, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import React, { useEffect } from "react";
+import { View, Text, Pressable, Modal, StyleSheet } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
 interface WeightPickerModalProps {
-   isVisible: boolean;
-   onClose: () => void;
-   weight: number; 
-   onWeightChange: (newHeight: number) => void;
- }
+  isVisible: boolean;
+  onClose: () => void;
+  weight: number;
+  onWeightChange: (newHeight: number) => void;
+}
 
-const WeightPickerModal: React.FC< WeightPickerModalProps > = ({ isVisible, onClose, weight, onWeightChange }) => {
+const WeightPickerModal: React.FC<WeightPickerModalProps> = ({
+  isVisible,
+  onClose,
+  weight,
+  onWeightChange,
+}) => {
+  useEffect(() => {
+    if (isVisible) {
+      onWeightChange(weight);
+    }
+  }, [isVisible]);
   return (
     <Modal
       animationType="slide"
@@ -24,9 +34,12 @@ const WeightPickerModal: React.FC< WeightPickerModalProps > = ({ isVisible, onCl
           </View>
           <View style={styles.modalPickers}>
             <Picker
-              selectedValue={weight} 
-              onValueChange={(value) => {onWeightChange(Number(value))}} 
+              selectedValue={weight}
+              onValueChange={(value) => {
+                onWeightChange(Number(value));
+              }}
               style={styles.picker}
+              itemStyle={{ fontSize: 18, color: 'black' }}
             >
               {Array.from({ length: 400 }, (_, i) => (
                 <Picker.Item label={`${i} Ibs`} value={i} key={i} />
@@ -45,43 +58,43 @@ const WeightPickerModal: React.FC< WeightPickerModalProps > = ({ isVisible, onCl
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
-    width: '80%',
-    backgroundColor: '#fff',
+    width: "80%",
+    backgroundColor: "#fff",
     borderRadius: 8,
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalHeader: {
     marginBottom: 20,
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   modalPickers: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    width: "100%",
     marginBottom: 20,
   },
   picker: {
-   width: '80%',
+    width: "80%",
   },
   modalButton: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: '#007BFF',
+    backgroundColor: "#007BFF",
     borderRadius: 8,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
   },
 });

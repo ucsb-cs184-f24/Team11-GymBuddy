@@ -145,9 +145,13 @@ const Stats = () => {
 };
 
 const styles = StyleSheet.create({
-  listContainer: {
-    flexGrow: 1, // Ensures content fills the FlatList
-    backgroundColor: "#fff",
+
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#3b5998",
+
   },
   spacer: {
     height: 40, // Adds space between the chart and leaderboard

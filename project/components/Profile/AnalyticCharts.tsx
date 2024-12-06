@@ -213,12 +213,13 @@ const AnalyticCharts = () => {
           yAxisThickness={0}
           xAxisThickness={0}
           xAxisLabelTextStyle={{
-            color: "gray",
+            color: "white",
             fontSize: chartData.length > 25 ? 5 : 9,
           }}
           yAxisTextStyle={styles.axisText}
           showFractionalValues={false}
           showGradient
+          
         />
         <View style={styles.navigationContainer}>
           <TouchableOpacity
@@ -229,7 +230,7 @@ const AnalyticCharts = () => {
               name="chevron.left.circle.fill"
               size={40}
               type="hierarchical"
-              tintColor="gray"
+              tintColor="white"
             />
             <Text style={styles.navigationText}>prev</Text>
           </TouchableOpacity>
@@ -250,7 +251,7 @@ const AnalyticCharts = () => {
               name="chevron.right.circle.fill"
               size={40}
               type="hierarchical"
-              tintColor="gray"
+              tintColor="white"
             />
             <Text style={styles.navigationText}>next</Text>
           </TouchableOpacity>
@@ -269,17 +270,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#ECECEC",
+    backgroundColor: "#3b5998",
   },
   analyticsContainer: {
     width: "100%",
-    backgroundColor: "white",
+    backgroundColor: "#3b5998",
     padding: 15,
   },
   analyticsTitle: {
     fontSize: 32,
     fontWeight: "700",
     marginBottom: 16,
+    color: "white",
   },
   timeSegment: {
     marginBottom: 10,
@@ -289,13 +291,13 @@ const styles = StyleSheet.create({
   },
   dateRange: {
     fontSize: 14,
-    color: "#5A5A5A",
+    color: "white",
     fontWeight: "700",
     marginVertical: 5,
     marginBottom: 20,
   },
   axisText: {
-    color: "gray",
+    color: "white",
   },
   navigationContainer: {
     flexDirection: "row",
@@ -308,7 +310,7 @@ const styles = StyleSheet.create({
   },
   navigationText: {
     fontSize: 11,
-    color: "gray",
+    color: "white",
   },
 });
 
