@@ -12,6 +12,7 @@ import {
   Modal,
   Dimensions,
   RefreshControl,
+  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ActivityIndicator } from "react-native";
@@ -270,7 +271,8 @@ const Home = () => {
       colors={["#4c669f", "#3b5998", "#192f6a"]}
       style={styles.container}
     >
-      <SafeAreaView style={styles.safeArea} edges={["bottom", "left", "right"]}>
+    <SafeAreaView style={styles.safeArea}>
+
         <Navbar 
           setModalVisible={setModalVisible} 
           toggleFilter = {toggleFilter}
@@ -337,29 +339,37 @@ const Home = () => {
             </View>
           </BlurView>
         </Modal>
-      </SafeAreaView>
+        </SafeAreaView>
+
     </LinearGradient>
+
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
+    backgroundColor: "#3b5998", // Updated background color
+    paddingHorizontal: 16,
+    paddingTop: StatusBar.currentHeight || 24,
+},
   safeArea: {
     flex: 1,
-  },
+    justifyContent: 'center',
+    alignItems: 'center',  },
   navbar: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: getResponsiveFontSize(40),
     paddingHorizontal: getResponsiveFontSize(15),
   },
   navbarTitle: {
-    fontSize: getResponsiveFontSize(20),
+    fontSize: getResponsiveFontSize(80),
     fontWeight: "bold",
     color: "#FFFFFF",
+    flex: 1,
+    textAlign: "center",
   },
   navbarIcons: {
     flexDirection: "row",
@@ -381,15 +391,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   workoutCard: {
-    marginBottom: getResponsiveFontSize(10),
-    borderRadius: 10,
-    overflow: "hidden",
-    padding: getResponsiveFontSize(10),
+    overflow: 'hidden',
+    borderRadius: 25,
+    padding: 12,
+    marginBottom: 10,
   },
   username: {
     fontWeight: "bold",
     flex: 1,
-    fontSize: getResponsiveFontSize(16),
+    fontSize: getResponsiveFontSize(65),
     color: "#FFFFFF",
   },
   moreOptionsText: {

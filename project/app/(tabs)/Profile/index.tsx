@@ -14,6 +14,8 @@ import { useRouter } from "expo-router";
 import { getUserProfile, getUserId, UserData } from "@/serviceFiles/usersDatabaseService";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { getWorkouts, WorkoutLog } from "@/serviceFiles/postsDatabaseService";
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 
 const { width } = Dimensions.get("window");
 
@@ -60,81 +62,88 @@ export default function Profile() {
   }, [fetchUserData]);
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
-      <View style={styles.usernameContainer}>
-        {userData?.isPrivate && (
-          <MaterialIcons name="lock" size={20} color="gray" />
-        )}
-        <Text style={styles.usernameText}>
-          {userData?.username || "loading"}
-        </Text>
-      </View>
-
+    <SafeAreaView style={styles.container}>
+    <LinearGradient
+      colors={["#3b5998", "#3b5998", "#3b5998"]}
+      style={styles.container}
+    >
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View style={styles.statsContainer}>
-          <Image
-            source={{ uri: userData?.profilePicture }}
-            style={styles.profileImage}
-          />
-          <View style={styles.stat}>
-            <Text style={styles.numberCenter}>{userPosts?.length || 0}</Text>
-            <Text style={styles.textCenter}>posts</Text>
+        <BlurView intensity={100} style={styles.cardContainer}>
+          <View style={styles.usernameContainer}>
+            {userData?.isPrivate && (
+              <MaterialIcons name="lock" size={20} color="white" />
+            )}
+            <Text style={styles.usernameText}>
+              {userData?.username || "loading"}
+            </Text>
           </View>
-          <Pressable
-            style={styles.stat}
-            onPress={() => router.push("/Profile/followers")}
-          >
-            <Text style={styles.numberCenter}>
-              {userData?.followerCount || 0}
-            </Text>
-            <Text style={styles.textCenter}>followers</Text>
-          </Pressable>
-          <Pressable
-            style={styles.stat}
-            onPress={() => router.push("/Profile/following")}
-          >
-            <Text style={styles.numberCenter}>
-              {userData?.followingCount || 0}
-            </Text>
-            <Text style={styles.textCenter}>following</Text>
-          </Pressable>
-        </View>
-        <View style={styles.nameAndBioContainer}>
-          <View style={styles.nameAndRequestsContainer}>
-            <Text style={styles.name}>
-              {userData?.firstName || "loading"}{" "}
-              {userData?.lastName || "loading"}
-            </Text>
+          <View style={styles.statsContainer}>
+            <Image
+              source={{ uri: userData?.profilePicture }}
+              style={styles.profileImage}
+            />
+            <View style={styles.stat}>
+              <Text style={styles.numberCenter}>{userPosts?.length || 0}</Text>
+              <Text style={styles.textCenter}>posts</Text>
+            </View>
             <Pressable
-              style={styles.followReqsButton}
-              onPress={() => router.push("/Profile/requests")}
+              style={styles.stat}
+              onPress={() => router.push("/Profile/followers")}
             >
-              <Text style={styles.followReqsText}>Follow Requests</Text>
+              <Text style={styles.numberCenter}>
+                {userData?.followerCount || 0}
+              </Text>
+              <Text style={styles.textCenter}>followers</Text>
+            </Pressable>
+            <Pressable
+              style={styles.stat}
+              onPress={() => router.push("/Profile/following")}
+            >
+              <Text style={styles.numberCenter}>
+                {userData?.followingCount || 0}
+              </Text>
+              <Text style={styles.textCenter}>following</Text>
             </Pressable>
           </View>
-          <Text style={styles.bio}>{userData?.bio}</Text>
-        </View>
+          <View style={styles.nameAndBioContainer}>
+            <View style={styles.nameAndRequestsContainer}>
+              <Text style={styles.name}>
+                {userData?.firstName || "loading"}{" "}
+                {userData?.lastName || "loading"}
+              </Text>
 
-        <View style={styles.buttonAndIconContainer}>
-          <Pressable
-            style={styles.editProfileButton}
-            onPress={() => router.push("/Profile/edit")}
-          >
-            <Text style={styles.editProfileText}>Edit Profile</Text>
-          </Pressable>
+            </View>
+            <Text style={styles.bio}>{userData?.bio || "loading"}</Text>
+          </View>
 
-          <MaterialCommunityIcons name="grid" size={30} color="#000" />
-        </View>
+          <View style={styles.buttonAndIconContainer}>
+            <Pressable
+              style={styles.editProfileButton}
+              onPress={() => router.push("/Profile/edit")}
+            >
+              <Text style={styles.editProfileText}>Edit Profile</Text>
+            </Pressable>
+            <Pressable
+                style={styles.followReqsButton}
+                onPress={() => router.push("/Profile/requests")}
+              >
+                <Text style={styles.followReqsText}>Follow Requests</Text>
+              </Pressable>
+            <MaterialCommunityIcons name="grid" size={30} color="gray" />
+          </View>
+        </BlurView>
+
         <View style={styles.postGrid}>
           {imageUrls.map((url, index) => (
             <Image key={index} source={{ uri: url }} style={styles.postImage} />
           ))}
         </View>
       </ScrollView>
+    </LinearGradient>
     </SafeAreaView>
   );
 }
@@ -142,19 +151,26 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#3b5998",
+  },
+  cardContainer: {
+    flex: 1,
+    marginHorizontal: 10,
+    marginVertical: 10,
+    borderRadius: 10,
+    overflow: "hidden",
   },
   usernameContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingLeft: 16,
-    paddingTop: 8,
-    paddingBottom: 5,
+    marginTop: 12,
+    marginHorizontal: 20,
     gap: 5,
   },
   usernameText: {
     fontSize: 30,
     fontWeight: "600",
+    color: "white",
   },
   statsContainer: {
     display: "flex",
@@ -170,7 +186,6 @@ const styles = StyleSheet.create({
     height: 0.25 * width,
     borderRadius: "50%",
     borderWidth: 2,
-    borderColor: "blue",
   },
   stat: {
     flex: 1,
@@ -182,13 +197,14 @@ const styles = StyleSheet.create({
   numberCenter: {
     fontSize: 23,
     fontWeight: "700",
+    color: "white",
   },
   textCenter: {
     fontSize: (13 * width) / 375,
     fontWeight: "400",
+    color: "white",
   },
   nameAndBioContainer: {
-    backgroundColor: "white",
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
@@ -201,13 +217,14 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 21,
     fontWeight: "600",
+    color: "white",
   },
   bio: {
     fontSize: 16,
     fontWeight: "400",
+    color: "white",
   },
   buttonAndIconContainer: {
-    backgroundColor: "white",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
