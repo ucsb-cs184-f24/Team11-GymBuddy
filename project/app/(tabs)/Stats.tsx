@@ -5,7 +5,6 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  ScrollView,
 } from "react-native";
 import AnalyticCharts from "@/components/Profile/AnalyticCharts";
 import { getAllUsersRecentWorkouts } from "@/serviceFiles/postsDatabaseService";
@@ -96,61 +95,64 @@ const Stats = () => {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      {/* Include Analytics Chart */}
-      <AnalyticCharts />
-
-      {/* Add Spacer to Shift Leaderboard Down */}
-      <View style={styles.spacer} />
-
-      {/* Leaderboard Section */}
-      <View style={styles.leaderboardContainer}>
-        <Text style={styles.leaderboardTitle}>Leaderboard</Text>
-        <View style={styles.filterContainer}>
-          {Object.values(TimePeriod).map((period) => (
-            <TouchableOpacity
-              key={period}
-              style={[
-                styles.filterButton,
-                timeFilter === period && styles.activeFilterButton,
-              ]}
-              onPress={() => setTimeFilter(period)}
-            >
-              <Text
-                style={[
-                  styles.filterButtonText,
-                  timeFilter === period && styles.activeFilterButtonText,
-                ]}
-              >
-                {period}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        {loading ? (
+    <FlatList
+      data={leaderboardData}
+      renderItem={renderLeaderboardItem}
+      keyExtractor={(item, index) => index.toString()}
+      ListHeaderComponent={
+        <>
+          {/* Include Analytics Chart */}
+          <AnalyticCharts />
+          {/* Add Spacer to Shift Leaderboard Down */}
+          <View style={styles.spacer} />
+          {/* Leaderboard Section Header */}
+          <View style={styles.leaderboardHeader}>
+            <Text style={styles.leaderboardTitle}>Leaderboard</Text>
+            <View style={styles.filterContainer}>
+              {Object.values(TimePeriod).map((period) => (
+                <TouchableOpacity
+                  key={period}
+                  style={[
+                    styles.filterButton,
+                    timeFilter === period && styles.activeFilterButton,
+                  ]}
+                  onPress={() => setTimeFilter(period)}
+                >
+                  <Text
+                    style={[
+                      styles.filterButtonText,
+                      timeFilter === period && styles.activeFilterButtonText,
+                    ]}
+                  >
+                    {period}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </>
+      }
+      ListEmptyComponent={
+        loading ? (
           <Text style={styles.loadingText}>Loading...</Text>
         ) : (
-          <FlatList
-            data={leaderboardData}
-            renderItem={renderLeaderboardItem}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        )}
-      </View>
-    </ScrollView>
+          <Text style={styles.loadingText}>No data available</Text>
+        )
+      }
+      contentContainerStyle={styles.listContainer}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1, // Ensures content fills the ScrollView
+  listContainer: {
+    flexGrow: 1, // Ensures content fills the FlatList
     backgroundColor: "#fff",
-    paddingBottom: 20, // Adds space at the bottom of the ScrollView
   },
   spacer: {
-    height: 40, // Increased spacer height to shift the leaderboard further down
+    height: 40, // Adds space between the chart and leaderboard
   },
-  leaderboardContainer: {
+  leaderboardHeader: {
     padding: 20,
     marginTop: 20, // Adds extra spacing above the leaderboard
   },
