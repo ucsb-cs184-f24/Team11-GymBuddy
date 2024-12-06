@@ -143,6 +143,7 @@ const Home = () => {
     setRefreshing(true); // Start the refreshing animation
 
     await loadPosts()
+    await fetchUsers()
       setRefreshing(false); // Stop the refreshing animation
   };
 
