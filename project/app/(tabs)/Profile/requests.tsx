@@ -262,7 +262,7 @@ export default function FollowRequests() {
       
       fetchFollowRequests();
     } catch (error) {
-      console.error('Error accepting follow request:', error);
+      console.log('Error accepting follow request:', error);
     }
   };
 
@@ -276,8 +276,8 @@ export default function FollowRequests() {
       Alert.alert('Success', 'Follow request rejected');
       fetchFollowRequests();
     } catch (error) {
-      console.error('Error rejecting follow request:', error);
-      Alert.alert('Error', 'Failed to reject follow request');
+      console.log('Error rejecting follow request:', error);
+      
     }
   };
 
