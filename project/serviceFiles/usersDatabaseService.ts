@@ -145,14 +145,21 @@ export const addFollowerRequest = async (userId: string, requestId: string) => {
     );
 
     const requestProfileData = await getUserProfile(requestId);
+
+    if(requestId == userId){
+      throw new Error("User cannot follow themselves."); // Explicit error
+    }else{
+
     const requestData = {
       username: requestProfileData?.username,
       profilePicture: requestProfileData?.profilePicture,
     };
 
+
     await setDoc(requestDocRef, requestData);
+  }
   } catch (error) {
-    console.error("Error adding follower request: ", error);
+    console.log("Error adding follower request: ", error);
   }
 };
 
@@ -167,14 +174,19 @@ export const addFollowingRequest = async (
     );
 
     const requestProfileData = await getUserProfile(requestId);
+
+    if(requestId == userId){
+      throw new Error("User cannot follow themselves."); // Explicit error
+    }else{
     const requestData = {
       username: requestProfileData?.username,
       profilePicture: requestProfileData?.profilePicture,
     };
 
     await setDoc(requestDocRef, requestData);
+  }
   } catch (error) {
-    console.error("Error adding following request: ", error);
+    console.log("Error adding following request: ", error);
   }
 };
 
