@@ -163,18 +163,21 @@ export default function WorkoutScreen() {
             </Text>
           </View>
         ))}
-      </BlurView>
+
+    </BlurView>
+
+
     );
   };
 
   return (
+    <>
     <LinearGradient
     colors={["#4c669f", "#3b5998", "#192f6a"]}
     style={styles.container}
   >
+
     <View>
-
-
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -198,6 +201,7 @@ export default function WorkoutScreen() {
                         styles.selectedCategoryButton,
                     ]}
                   >
+                    
                     <Text style={styles.categoryText}>{category}</Text>
                   </TouchableOpacity>
                   {selectedCategory === category && (
@@ -286,8 +290,10 @@ export default function WorkoutScreen() {
                     </View>
                   )}
                 </View>
+                
               ))}
             </ScrollView>
+            
             <TouchableOpacity
               onPress={handleSaveWorkout}
               style={styles.saveButton}
@@ -306,6 +312,7 @@ export default function WorkoutScreen() {
           </SafeAreaView>
         </SafeAreaProvider>
       </Modal>
+      
       {/* Display Previous Workouts */}
       <Text style={styles.title}>Previous Workouts</Text>
       {previousWorkouts.length > 0 ? (
@@ -318,17 +325,27 @@ export default function WorkoutScreen() {
       ) : (
         <Text style={styles.noWorkoutsText}>No previous workouts found.</Text>
       )}
-            <TouchableOpacity
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          openModal();
-        }}
-        style={styles.modalButton}
-      >
-        <Text style={styles.modalButtonText}>Add Workout</Text>
-      </TouchableOpacity>
+        
+        
+
     </View>
     </LinearGradient>
+    <LinearGradient
+    colors={["#192f6a", "#192f6a", "#192f6a"]}
+    style={styles.buttonContainer}
+  >
+      <TouchableOpacity
+        onPress={() => { 
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); 
+          openModal(); 
+        }} 
+        style={styles.modalButton}
+      > 
+        <Text style={styles.modalButtonText}>Add Workout</Text> 
+      </TouchableOpacity>
+    </LinearGradient>
+
+    </>
   );
 }
 
@@ -341,19 +358,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: StatusBar.currentHeight || 24,
   },
+    floatingModalButton: {
+      position: "absolute",
+      bottom: 50, // Distance from the bottom of the screen
+      left: "10%", // Center horizontally (adjust as needed)
+      right: "10%", // Center horizontally
+      backgroundColor: "3b5998",
+      borderRadius: 30,
+      paddingVertical: 12,
+      alignItems: "center",
+      justifyContent: "center",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 3,
+      elevation: 5, // For Android shadow
+    
+  },
   modalButton: {
-    backgroundColor: "white", 
-    borderRadius: 30,
+    backgroundColor: '#4267B2', // Adjust button color if needed
     paddingVertical: 12,
-    paddingHorizontal: 24,
-    alignSelf: "center",
-    marginVertical: 25,
+    paddingHorizontal: 25,
+    borderRadius: 25,
   },
   modalButtonText: {
-    color: "#3b5998", // blue 
-    fontSize: getResponsiveFontSize(25),
-    fontWeight: "bold",
-    textAlign: "center",
+    color: '#fff',
+    fontSize: 16,
   },
   modalContainer: {
     flex: 1,
@@ -499,10 +529,13 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingVertical: 10,
+    paddingBottom: 80, // Add padding to ensure content is above the button
+
   },
   buttonContainer: {
-    flex: 1,
-    justifyContent: "space-between",
+    backgroundColor: '#3b5998',
+    padding: 10,
+    alignItems: 'center',
   },
   previousWorkoutButton: {
     backgroundColor: "#2196F3",
@@ -517,6 +550,27 @@ const styles = StyleSheet.create({
   previousWorkoutButtonText: {
     color: "#FFFFFF",
     fontSize: getResponsiveFontSize(14),
+  },
+  addButton: {
+    backgroundColor: "white",
+    borderRadius: 30,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    alignSelf: "center",
+    marginBottom: 25,
+    // Shadow for iOS
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    // Elevation for Android
+    elevation: 5,
+  },
+  addButtonText: {
+    color: "#3b5998",
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   addWorkoutButton: {
     position: "absolute",
@@ -544,5 +598,3 @@ function getResponsiveFontSize(size: number) {
   const newSize = size * scale;
   return Math.round(newSize);
 }
-
-
