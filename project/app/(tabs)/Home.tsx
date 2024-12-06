@@ -23,6 +23,7 @@ import {
   getAllUsersRecentWorkouts,
   WorkoutLog,
 } from "@/serviceFiles/postsDatabaseService";
+import { getUserId, getAllFollowing } from "@/serviceFiles/usersDatabaseService";
 import 'react-native-get-random-values';
 import { v4 as uuid } from "uuid";
 import { getAllUsernames, getAllUsers, getUserId, getUserProfile, UserData } from "@/serviceFiles/usersDatabaseService";
@@ -35,6 +36,16 @@ const getResponsiveFontSize = (size: number) => {
 };
 interface NavbarProps {
   setModalVisible: (visible: boolean) => void;
+  toggleFilter: () => void;
+  filterEnabled: boolean;
+}
+
+interface User {
+  userId: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  profilePic: string;
 }
 
 interface User {
@@ -50,6 +61,8 @@ const Home = () => {
   const [filteredData, setFilteredData] = useState<User[]>([]);
   const [posts, setPosts] = useState<WorkoutLog[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [followingPosts, setFollowingPosts] = useState<WorkoutLog[]>([]);
+  const [showFollowingPosts, setShowFollowingPosts] = useState(false);
   const [newPost, setNewPost] = useState({
     exercise: "",
     duration: "",
@@ -65,6 +78,7 @@ const Home = () => {
         const postsArray = Object.values(recentWorkouts as WorkoutLog[]);
         postsArray.sort((a, b) => b.createdAt - a.createdAt);
         setPosts(postsArray);
+        await loadFollowingPosts(postsArray);
       } catch (error) {
         console.error("Failed to load posts", error);
       }
@@ -108,6 +122,7 @@ const Home = () => {
     await loadPosts()
       setRefreshing(false); // Stop the refreshing animation
   };
+
 
   useEffect(() => {
     const savePosts = async () => {
@@ -155,12 +170,25 @@ const Home = () => {
     //   }
   };
 
-  const Navbar = ({ setModalVisible }: NavbarProps) => {
+  const toggleFilter = () => {
+    setShowFollowingPosts((prev) => !prev);
+    console.log("Filter Toggled. show FollowingPosts:", !showFollowingPosts)
+  };
+
+  const Navbar = ({ toggleFilter, filterEnabled }: NavbarProps) => {
     return (
       <View style={styles.navbar}>
         <Text style={styles.navbarTitle}>Workouts</Text>
         <View style={styles.navbarIcons}>
-          <TouchableOpacity style={styles.navbarIcons}>
+          <TouchableOpacity 
+          style={styles.filterButton}
+          onPress = {toggleFilter}
+        >
+          <Text style={styles.filterButtonText}>
+            {filterEnabled ? "All" : "Following"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style = {styles.navbarIcons}>
             <Image
               source={{ uri: "https://example.com/profile-pic.jpg" }}
               style={styles.profilePic}
@@ -239,11 +267,17 @@ const Home = () => {
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea} edges={["bottom", "left", "right"]}>
-        <Navbar setModalVisible={setModalVisible} />
+        <Navbar 
+        setModalVisible={setModalVisible} 
+        toggleFilter = {toggleFilter}
+        filterEnabled = {showFollowingPosts}
+        />
         <View style={styles.spacer} />
         {posts.length >0 ? (
+          <>
+          {console.log("rendering FlatList with data:", showFollowingPosts ? followingPosts : posts)}
           <FlatList
-            data={posts}
+            data={showFollowingPosts ? followingPosts : posts}
             renderItem={renderPost}
             keyExtractor={(item) => uuid()}
             style={[styles.workoutList, { paddingTop: 10 }]}
@@ -256,6 +290,7 @@ const Home = () => {
               />
             }
           />
+        </>
         ) : (
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>Loading...</Text>
@@ -333,6 +368,16 @@ const styles = StyleSheet.create({
     width: getResponsiveFontSize(40),
     height: getResponsiveFontSize(40),
     borderRadius: getResponsiveFontSize(20),
+  },
+  filterButton: { 
+    paddingHorizontal: 10, 
+    paddingVertical: 5, 
+    borderRadius: 5, 
+    backgroundColor: "#FFFFFF" 
+  },
+  filterButtonText: { 
+    color: "#3b5998", 
+    fontWeight: "bold" 
   },
   workoutCard: {
     marginBottom: getResponsiveFontSize(10),
