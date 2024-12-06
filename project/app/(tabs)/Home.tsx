@@ -22,11 +22,10 @@ import {
   getAllUsersRecentWorkouts,
   WorkoutLog,
 } from "@/serviceFiles/postsDatabaseService";
-import { getUserId, getAllFollowing } from "@/serviceFiles/usersDatabaseService";
 import 'react-native-get-random-values';
 import { v4 as uuid } from "uuid";
-import { getAllFollowing, getAllUsernames, getAllUsers, getUserId, getUserProfile, UserData } from "@/serviceFiles/usersDatabaseService";
-const { width, height } = Dimensions.get("window");
+import { getAllFollowing, getAllUsernames, getUserId, getUserProfile } from "@/serviceFiles/usersDatabaseService";
+const { width } = Dimensions.get("window");
 
 const getResponsiveFontSize = (size: number) => {
   const scale = width / 375; // 375 is a base width for scaling
@@ -57,13 +56,11 @@ interface User {
 
 const Home = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [filteredData, setFilteredData] = useState<User[]>([]);
+  const [, setFilteredData] = useState<User[]>([]);
   const [followingPosts, setFollowingPosts] = useState<WorkoutLog[]>([]);
   const [showFollowingPosts, setShowFollowingPosts] = useState(false);
   const [posts, setPosts] = useState<WorkoutLog[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [followingPosts, setFollowingPosts] = useState<WorkoutLog[]>([]);
-  const [showFollowingPosts, setShowFollowingPosts] = useState(false);
   const [newPost, setNewPost] = useState({
     exercise: "",
     duration: "",
@@ -188,10 +185,6 @@ const Home = () => {
     setShowFollowingPosts((prev) => !prev);
   };
 
-  const toggleFilter = () => {
-    setShowFollowingPosts((prev) => !prev);
-  };
-
   const Navbar = ({ toggleFilter, filterEnabled }: NavbarProps) => {
     return (
       <View style={styles.navbar}>
@@ -206,15 +199,7 @@ const Home = () => {
             {filterEnabled ? "All" : "Following"}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style = {styles.navbarIcons}>
-          <TouchableOpacity 
-          style={styles.filterButton}
-          onPress = {toggleFilter}
-        >
-          <Text style={styles.filterButtonText}>
-            {filterEnabled ? "All" : "Following"}
-            </Text>
-          </TouchableOpacity>
+          <TouchableOpacity style = {styles.navbarIcons}></TouchableOpacity>
           <TouchableOpacity style = {styles.navbarIcons}>
             <Image
               source={{ uri: "https://example.com/profile-pic.jpg" }}
@@ -303,7 +288,7 @@ const Home = () => {
           <FlatList
             data={showFollowingPosts ? followingPosts : posts}
             renderItem={renderPost}
-            keyExtractor={(item) => uuid()}
+            keyExtractor={() => uuid()}
             style={[styles.workoutList, { paddingTop: 10 }]}
             refreshControl={
               <RefreshControl
@@ -392,15 +377,15 @@ const styles = StyleSheet.create({
     height: getResponsiveFontSize(40),
     borderRadius: getResponsiveFontSize(20),
   },
-  filterButton: { 
-    paddingHorizontal: 10, 
-    paddingVertical: 5, 
-    borderRadius: 5, 
-    backgroundColor: "#FFFFFF" 
+  filterButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    backgroundColor: "#FFFFFF",
   },
-  filterButtonText: { 
-    color: "#3b5998", 
-    fontWeight: "bold" 
+  filterButtonText: {
+    color: "#3b5998",
+    fontWeight: "bold",
   },
   workoutCard: {
     marginBottom: getResponsiveFontSize(10),
@@ -492,16 +477,6 @@ const styles = StyleSheet.create({
     height: getResponsiveFontSize(40),
     borderRadius: getResponsiveFontSize(20),
     marginRight: getResponsiveFontSize(10),
-  },
-  filterButton: { 
-    paddingHorizontal: 10, 
-    paddingVertical: 5, 
-    borderRadius: 5, 
-    backgroundColor: "#FFFFFF" 
-  },
-  filterButtonText: { 
-    color: "#3b5998", 
-    fontWeight: "bold" 
   },
   spacer: {
     height: getResponsiveFontSize(20),
