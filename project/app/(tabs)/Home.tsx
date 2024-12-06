@@ -33,8 +33,11 @@ const getResponsiveFontSize = (size: number) => {
   const newSize = size * scale * .5;
   return Math.round(newSize);
 };
+
 interface NavbarProps {
   setModalVisible: (visible: boolean) => void;
+  toggleFilter: () => void;
+  filterEnabled: boolean;
 }
 
 interface User {
