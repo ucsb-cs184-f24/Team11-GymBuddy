@@ -54,6 +54,7 @@ For HW4, my main contribution was the design of our new feature which was the so
 Now, I have mainly been doing whatever task is needed. I've cleaned up a bunch of frontend code and have been working on small bug fixes.
 
 **Liam Ronarch**
+
 In the first couple of weeks of the quarter I was more focused on getting an understanding of Javascript and React Native as I had not worked with these technologies in depth before. After this for the MVP I spent most of my time changing the file structure in order to implement a Navigation Bar using Expo Router.
 
 After this I got a lot of work done during HW04. Cory made a great design document that allowed me to implement a functional Instagram like profile page as a placeholder before putting in more GymBuddy specific UI changes. This involved frontend implementation for the profile and edit profile pages as wellas linking to the database in order to update Profile attributes in the edit page.
