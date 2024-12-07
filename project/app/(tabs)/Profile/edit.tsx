@@ -159,7 +159,7 @@ export default function EditProfile() {
           style={styles.backButton}
           name="arrow-back"
           size={35}
-          color="black"
+          color="white"
           onPress={() => router.push("/(tabs)/Profile")}
         />
         <Text style={styles.editText}>Edit Profile</Text>
@@ -168,6 +168,7 @@ export default function EditProfile() {
         <Image source={{ uri: image || undefined }} style={styles.profileImage} />
         <Button
           title="Edit Picture"
+          color = "white"
           onPress={() => setIsImageModalVisible(true)}
         />
         <ImagePickerExample
@@ -181,7 +182,7 @@ export default function EditProfile() {
             <Text style={styles.label}>First Name</Text>
             <TextInput
               autoCapitalize="none"
-              style={styles.input}
+              style={[styles.input, styles.inputColored]}
               placeholder={firstName}
               value={firstName}
               onChangeText={async (text) => {
@@ -194,7 +195,7 @@ export default function EditProfile() {
             <Text style={styles.label}>Last Name</Text>
             <TextInput
               autoCapitalize="none"
-              style={styles.input}
+              style={[styles.input, styles.inputColored]}
               placeholder={lastName}
               value={lastName}
               onChangeText={async (text) => {
@@ -207,7 +208,7 @@ export default function EditProfile() {
             <Text style={styles.label}>Username</Text>
             <TextInput
               autoCapitalize="none"
-              style={styles.input}
+              style={[styles.input, styles.inputColored]}
               placeholder={username}
               value={username}
               onChangeText={async (text) => {
@@ -221,7 +222,7 @@ export default function EditProfile() {
             <TextInput
               autoCapitalize="none"
               multiline={true}
-              style={styles.input}
+              style={[styles.input, styles.inputColored]}
               placeholder={bio}
               value={bio}
               onChangeText={async (text) => {
@@ -236,7 +237,7 @@ export default function EditProfile() {
               style={styles.edit}
               onPress={() => setIsHeightModalVisible(true)}
             >
-              <Text style={styles.input}>
+              <Text style={[styles.input, styles.inputColored]}>
                 {Math.floor(height / 12)}' {height % 12}"
               </Text>
             </Pressable>
@@ -250,10 +251,10 @@ export default function EditProfile() {
           <View style={styles.row}>
             <Text style={styles.label}>Weight</Text>
             <Pressable
-              style={styles.edit}
+              style={[styles.edit]}
               onPress={() => setIsWeightModalVisible(true)}
             >
-              <Text style={styles.input}>{weight} Ibs</Text>
+              <Text style={[styles.inputColored, styles.input]}>{weight} Ibs</Text>
             </Pressable>
             <WeightPickerModal
               isVisible={isWeightModalVisible}
@@ -266,7 +267,7 @@ export default function EditProfile() {
             <Text style={styles.label}>Email</Text>
             <TextInput
               autoCapitalize="none"
-              style={styles.input}
+              style={[styles.input, styles.inputColored]}
               placeholder={email}
               value={email}
               onChangeText={async (text) => {
@@ -281,7 +282,7 @@ export default function EditProfile() {
               style={styles.edit}
               onPress={() => setIsGenderModalVisible(true)}
             >
-              <Text style={styles.input}>{capitalizeFirstLetter(gender)} </Text>
+              <Text style={[styles.inputColored,styles.input]}>{capitalizeFirstLetter(gender)} </Text>
             </Pressable>
             <GenderPickerModal
               isVisible={isGenderModalVisible}
@@ -310,8 +311,11 @@ export default function EditProfile() {
 }
 
 const styles = StyleSheet.create({
+  inputColored: {
+    color: 'white', // desired text color
+  },
   container: {
-    backgroundColor: "#fff",
+    backgroundColor: "#3b5998",
     flex: 1,
     paddingHorizontal: 1,
   },
@@ -332,6 +336,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     fontSize: 20,
     fontWeight: "600",
+    color: "white",
   },
   profileImage: {
     width: 100,
@@ -353,6 +358,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingRight: 20,
     width: 110,
+    color:"white",
   },
   input: {
     flex: 1,
