@@ -117,7 +117,7 @@ export default function Profile() {
               </Text>
 
             </View>
-            <Text style={styles.bio}>{userData?.bio || "loading"}</Text>
+            <Text style={styles.bio}>{userData?.bio}</Text>
           </View>
 
           <View style={styles.buttonAndIconContainer}>
