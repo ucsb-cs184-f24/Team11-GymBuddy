@@ -177,7 +177,6 @@ export default function WorkoutScreen() {
     style={styles.container}
   >
 
-    <View>
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -328,7 +327,6 @@ export default function WorkoutScreen() {
         
         
 
-    </View>
     </LinearGradient>
     <LinearGradient
     colors={["#192f6a", "#192f6a", "#192f6a"]}
@@ -380,6 +378,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 25,
+    marginBottom: 20,
   },
   modalButtonText: {
     color: '#fff',
@@ -487,7 +486,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white", // Turquoise
     textAlign: "center",
-    marginVertical: 20,
+    marginTop: 50,
     overflow: "hidden",
   },
   workoutLog: {
