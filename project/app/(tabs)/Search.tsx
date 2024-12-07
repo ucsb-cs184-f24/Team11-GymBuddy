@@ -57,7 +57,6 @@ const Search = () => {
 
       const profilePromises = userIds.map(async (userBasic) => {
         const profile = await getUserProfile(userBasic.userId);
-        console.log(profile?.profilePicture)
         if (profile  && (userBasic.userId !== currentUserId)) {
           userProfiles.push({
             userId: userBasic.userId, 

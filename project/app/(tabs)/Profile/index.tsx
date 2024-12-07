@@ -135,12 +135,6 @@ export default function Profile() {
               </Pressable>
           </View>
         </BlurView>
-
-        <View style={styles.postGrid}>
-          {imageUrls.map((url, index) => (
-            <Image key={index} source={{ uri: url }} style={styles.postImage} />
-          ))}
-        </View>
       </ScrollView>
     </LinearGradient>
     </SafeAreaView>
