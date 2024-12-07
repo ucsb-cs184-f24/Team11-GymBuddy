@@ -168,6 +168,7 @@ export default function EditProfile() {
         <Image source={{ uri: image || undefined }} style={styles.profileImage} />
         <Button
           title="Edit Picture"
+          color = "white"
           onPress={() => setIsImageModalVisible(true)}
         />
         <ImagePickerExample
