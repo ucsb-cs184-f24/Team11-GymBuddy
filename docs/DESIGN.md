@@ -103,7 +103,7 @@ posts (collection)
 			- createdAt: timestamp
 			- likes: number
 ```
-# TESTING 
+# Testing and User Feedback
 <img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/team/tmcanepa/HW04%20Evaluation%20Feedback-1.png" alt="Flow 1" width="600">
 <img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/team/sawyerRice/workout.jpg" alt="Flow 1" width="600">
 
