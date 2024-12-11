@@ -108,8 +108,9 @@ posts (collection)
 <img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/team/sawyerRice/workout.jpg" alt="Flow 1" width="600">
 
 # Final product
-<img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/project/assets/IMG_5105.png" alt="Flow 1" width="600">
 <img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/project/assets/IMG_5095.png" alt="Flow 1" width="600">
+<img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/project/assets/IMG_5104.png" alt="Flow 1" width="600">
+<img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/project/assets/IMG_5105.png" alt="Flow 1" width="600">
 <img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/project/assets/IMG_5096.png" alt="Flow 1" width="600">
 <img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/project/assets/IMG_5097.png" alt="Flow 1" width="600">
 <img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/project/assets/IMG_5098.png" alt="Flow 1" width="600">
@@ -118,5 +119,4 @@ posts (collection)
 <img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/project/assets/IMG_5101.png" alt="Flow 1" width="600">
 <img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/project/assets/IMG_5102.png" alt="Flow 1" width="600">
 <img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/project/assets/IMG_5103.png" alt="Flow 1" width="600">
-<img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/project/assets/IMG_5104.png" alt="Flow 1" width="600">
 
