@@ -74,6 +74,7 @@ Implementing these roles ensures that while regular users can fully engage with 
 
 Before you begin, ensure you have the following installed:
 
+- **Expo Go Mobile App**: download Expo Go app from the app store on your mobile device
 - **Node.js** (version 14.x or higher): [Download Node.js](https://nodejs.org/)
 - **npm** (version 6.x or higher): Comes with Node.js
 - **Expo CLI**: Install globally using:
