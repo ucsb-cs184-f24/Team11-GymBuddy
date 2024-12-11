@@ -104,6 +104,6 @@ posts (collection)
 			- likes: number
 ```
 ##TESTING 
-<img src="https://github.com/user-attachments/assets/dcf6827c-e83b-4bbf-85ab-2ba87da3b4ac" alt="Flow 1" width="600">
-<img src="https://github.com/user-attachments/assets/dcf6827c-e83b-4bbf-85ab-2ba87da3b4ac" alt="Flow 1" width="600">
+<img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/team/tmcanepa/HW04%20Evaluation%20Feedback-1.png" alt="Flow 1" width="600">
+<img src="https://github.com/ucsb-cs184-f24/Team11-GymBuddy/blob/main/team/sawyerRice/workout.jpg" alt="Flow 1" width="600">
 
